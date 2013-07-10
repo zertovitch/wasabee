@@ -1,7 +1,17 @@
 -- This is a GNAT, GCC or GNAT Programming Studio (GPS) project file
 -- for the Wasabee project ( http:// ), version using GWindows - native MS Windows UI.
 -- Build me with "gnatmake -P wasa_gwindows", or open me with GPS
+
+-- External libraries.
+--   You need to make the following source files visible to GNAT through the
+--   Ada_Include_Path environment variable.
 --
+-- GWindows and contributions:
+--   [gnavi]\gwindows\framework
+--   [gnavi]\gwindows\contrib
+--   [gnavi]\gnatcom\framework
+--   Project URL: http://sf.net/projects/gnavi/
+
 project Wasa_GWindows is
 
    type Build_Mode_Type is
@@ -52,7 +62,7 @@ project Wasa_GWindows is
    end Compiler;
 
    package Builder is
-      for Default_Switches ("ada") use ("-j7", "-C");
+      for Default_Switches ("ada") use ("-j7", "-C", "-x");
    end Builder;
    
 end Wasa_GWindows;
