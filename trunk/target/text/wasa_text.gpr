@@ -1,33 +1,28 @@
 -- This is a GNAT, GCC or GNAT Programming Studio (GPS) project file
--- for the Wasabee project ( http:// ), version using GWindows - native MS Windows UI.
--- Build me with "gnatmake -P wasa_gwindows", or open me with GPS
+-- for the Wasabee project ( http:// ), test version for console ("Lynx" mode).
+-- Build me with "gnatmake -P wasa_text", or open me with GPS
 
 -- External libraries.
 --   You need to make the following source files visible to GNAT through the
 --   Ada_Include_Path environment variable.
 --
--- GWindows and contributions:
---   [gnavi]\gwindows\framework
---   [gnavi]\gwindows\contrib
---   [gnavi]\gnatcom\framework
---   Project URL: http://sf.net/projects/gnavi/
 
-project Wasa_GWindows is
+project Wasa_Text is
 
    type Build_Mode_Type is
       ("Debug", "Fast", "Profiling");
    Build_Mode : Build_Mode_Type := external ("Build_Mode", "Debug");
-   for Source_Dirs use ("../common", ".", "frameworks");
+   for Source_Dirs use ("../../common", ".");
    for Exec_Dir use ".";
    for Main use ("wasabee.adb");
 
    case Build_Mode is
       when "Debug" =>
-         for Object_Dir use "../obj/debug";
+         for Object_Dir use "../../obj/debug";
       when "Fast" =>
-         for Object_Dir use "../obj/fast";
+         for Object_Dir use "../../obj/fast";
       when "Profiling" =>
-         for Object_Dir use "../obj/profiling";
+         for Object_Dir use "../../obj/profiling";
    end case;
 
    package Binder is
@@ -42,11 +37,11 @@ project Wasa_GWindows is
    package Linker is
       case Build_Mode is
          when "Debug" =>
-            for Default_Switches ("ada") use ("-g", "wasabee.rbj");
+            for Default_Switches ("ada") use ("-g");
          when "Fast" =>
-            for Default_Switches ("ada") use ("-mwindows", "-s", "-Wl,--gc-sections", "wasabee.rbj");
+            for Default_Switches ("ada") use ("-s", "-Wl,--gc-sections");
          when "Profiling" =>
-            for Default_Switches ("ada") use ("-mwindows", "-pg", "wasabee.rbj");
+            for Default_Switches ("ada") use ("-pg");
       end case;
    end Linker;
 
@@ -65,5 +60,5 @@ project Wasa_GWindows is
       for Default_Switches ("ada") use ("-j7", "-C", "-x");
    end Builder;
    
-end Wasa_GWindows;
+end Wasa_Text;
 
