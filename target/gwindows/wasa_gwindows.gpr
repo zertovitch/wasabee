@@ -1,0 +1,69 @@
+-- This is a GNAT, GCC or GNAT Programming Studio (GPS) project file
+-- for the Wasabee project ( http:// ), version using GWindows - native MS Windows UI.
+-- Build me with "gnatmake -P wasa_gwindows", or open me with GPS
+
+-- External libraries.
+--   You need to make the following source files visible to GNAT through the
+--   Ada_Include_Path environment variable.
+--
+-- GWindows and contributions:
+--   [gnavi]\gwindows\framework
+--   [gnavi]\gwindows\contrib
+--   [gnavi]\gnatcom\framework
+--   Project URL: http://sf.net/projects/gnavi/
+
+project Wasa_GWindows is
+
+   type Build_Mode_Type is
+      ("Debug", "Fast", "Profiling");
+   Build_Mode : Build_Mode_Type := external ("Build_Mode", "Debug");
+   for Source_Dirs use ("../../common", ".");
+   for Exec_Dir use ".";
+   for Main use ("wasabee.adb");
+
+   case Build_Mode is
+      when "Debug" =>
+         for Object_Dir use "../../obj/debug";
+      when "Fast" =>
+         for Object_Dir use "../../obj/fast";
+      when "Profiling" =>
+         for Object_Dir use "../../obj/profiling";
+   end case;
+
+   package Binder is
+      case Build_Mode is
+         when "Debug" =>
+            for Default_Switches ("ada") use ("-E");
+         when "Fast" =>
+         when "Profiling" =>
+      end case;
+   end Binder;
+
+   package Linker is
+      case Build_Mode is
+         when "Debug" =>
+            for Default_Switches ("ada") use ("-g", "wasabee.rbj");
+         when "Fast" =>
+            for Default_Switches ("ada") use ("-mwindows", "-s", "-Wl,--gc-sections", "wasabee.rbj");
+         when "Profiling" =>
+            for Default_Switches ("ada") use ("-mwindows", "-pg", "wasabee.rbj");
+      end case;
+   end Linker;
+
+   package Compiler is
+      case Build_Mode is
+         when "Debug" =>
+            for Default_Switches ("ada") use ("-gnat05", "-gnatf", "-gnato", "-fstack-check", "-g", "-gnatwa", "-gnatVa", "-gnatecdebug.pra");
+         when "Fast" =>
+            for Default_Switches ("ada") use ("-gnat05", "-gnatwa", "-O2", "-gnatpn", "-funroll-loops", "-fpeel-loops", "-funswitch-loops", "-ftracer", "-fweb", "-frename-registers", "-ffunction-sections");
+         when "Profiling" =>
+            for Default_Switches ("ada") use ("-gnat05", "-gnatwa", "-O2", "-gnatp",  "-funroll-loops", "-fpeel-loops", "-funswitch-loops", "-ftracer", "-fweb", "-frename-registers", "-g", "-pg");
+      end case;
+   end Compiler;
+
+   package Builder is
+      for Default_Switches ("ada") use ("-j7", "-C", "-x");
+   end Builder;
+   
+end Wasa_GWindows;
+
