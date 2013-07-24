@@ -1,5 +1,5 @@
 -- This is a GNAT, GCC or GNAT Programming Studio (GPS) project file
--- for the Wasabee project ( http:// ), version using GWindows - native MS Windows UI.
+-- for the Wasabee project ( http://wasabee.sf.net ), version using GWindows - native MS Windows UI.
 -- Build me with "gnatmake -P wasa_gwindows", or open me with GPS
 
 -- External libraries.
