@@ -4,7 +4,13 @@ with Ada.Strings.Wide_Unbounded;        use Ada.Strings.Wide_Unbounded;
 
 package Wasabee_common is
 
-  type HTML_object is new Ada.Finalization.Controlled with null record;
+  type Refresh_mode is
+    (nothing,
+     full);
+
+  type HTML_object is new Ada.Finalization.Controlled with record
+    refresh: Refresh_mode;
+  end record;
 
   procedure Load_frame(object: in out HTML_object; URL: String);
 
