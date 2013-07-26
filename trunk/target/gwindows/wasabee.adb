@@ -10,7 +10,7 @@ with GNAT.Traceback.Symbolic;
 
 procedure Wasabee is
 
-  Top: Wasabee_GWin.Main.Main_Window_Type;
+  Top: Wasabee_GWin.Main.Main_Wasa_Window_Type;
 
   procedure Interactive_crash(
     Window : in out GWindows.Base.Base_Window_Type'Class;
