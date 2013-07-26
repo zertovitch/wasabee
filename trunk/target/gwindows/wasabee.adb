@@ -34,6 +34,6 @@ procedure Wasabee is
 
 begin
     GWindows.Base.On_Exception_Handler (Handler => Interactive_crash'Unrestricted_Access);
-    Create_MDI_Top (Top, "Wasabee");
+    Create (Top, "Wasabee");
     Message_Loop;
 end Wasabee;

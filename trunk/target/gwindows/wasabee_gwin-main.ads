@@ -9,7 +9,7 @@ with GWindows.Windows;                  use GWindows.Windows;
 
 package Wasabee_GWin.Main is
 
-  type Window_access is access Wasabee_GWin.Windows.Window_type;
+  type Window_access is access Wasabee_GWin.Windows.Wasa_Window_type;
 
   package Windows_Vectors is new Ada.Containers.Vectors(
     Index_Type   => Positive,
@@ -24,5 +24,9 @@ package Wasabee_GWin.Main is
 
   overriding
   procedure On_Create (Window : in out Main_Window_Type);
+
+  procedure New_Wasa_Window(Window : in out Main_Window_Type);
+
+  procedure Update_control_frame(Window : in out Main_Window_Type);
 
 end Wasabee_GWin.Main;

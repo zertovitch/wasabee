@@ -9,6 +9,10 @@
 
 package Wasabee_GWin is
 
-  -- All with children so far :-)
+  -- Almost everything with children so far :-)
+
+private
+
+  super_user: constant Boolean:= True;
 
 end Wasabee_GWin;
