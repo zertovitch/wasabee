@@ -10,7 +10,10 @@ package body Wasabee_GWin.Main is
     --
     -- Control frame
     --
-    Window.control_frame.Create_Child(Parent => Window);
+    Window.control_frame.Create_Child(
+      Parent => Window,
+      Title  => "Wasa control frame"
+    );
     Create_contents(
       Window     => Window.control_frame,
       for_dialog => False,
@@ -22,19 +25,23 @@ package body Wasabee_GWin.Main is
     --
     -- First window
     --
-    Window.New_Wasa_Window;
+    Window.New_Browser_Window;
   end On_Create;
 
-  procedure New_Wasa_Window(Window : in out Main_Wasa_Window_Type) is
+  procedure New_Browser_Window(Window : in out Main_Wasa_Window_Type) is
     newcomer: Window_access:= new Browser_window_type;
   begin
     newcomer:= new Browser_window_type;
     newcomer.main:= Window'Unchecked_Access;
-    newcomer.Create(Title => "Wasa is there");
-    newcomer.Show;
     Window.windows.Append(newcomer);
     Window.Update_control_frame;
-  end New_Wasa_Window;
+    newcomer.Create(
+      Title =>
+        "Wasa browser, window opened as #" &
+        Integer'Wide_Image(Window.windows.Find_Index(newcomer))
+    );
+    newcomer.Show;
+  end New_Browser_Window;
 
   procedure Update_control_frame(Window : in out Main_Wasa_Window_Type) is
     w, t: Natural;

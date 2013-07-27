@@ -6,6 +6,9 @@ package body Wasabee_GWin.Windows is
   overriding
   procedure On_Create (Window : in out Browser_window_type) is
   begin
+    --  Wasabee_Resource_GUI.Create_Full_Menu(Window.hidden_menu);
+    --  Window.Menu(Window.hidden_menu.Main);
+    Accelerator_Table (Window, "Browser_Window_Shortcuts");
     --
     -- First tab
     --
@@ -17,11 +20,36 @@ package body Wasabee_GWin.Windows is
     main_window: Main_Wasa_Window_Type
       renames Main_Wasa_Window_Type(Window.main.all);
   begin
-    newcomer.Create(Title => "Another Tab");
+    newcomer.Create_As_Control(
+      Window,
+      "Another Tab",
+      0,
+      0,
+      Window.Client_Area_Width,
+      Window.Client_Area_Height
+    );
     newcomer.Show;
     Window.tabs.Append(newcomer);
     main_window.Update_control_frame;
   end New_Tab;
+
+  overriding
+  procedure On_Menu_Select (
+        Window : in out Browser_window_type;
+        Item   : in     Integer        )
+  is
+    main_window: Main_Wasa_Window_Type
+      renames Main_Wasa_Window_Type(Window.main.all);
+  begin
+    case Item is
+      when ID_New_Browser_Window =>
+        main_window.New_Browser_Window;
+      when ID_New_Tab =>
+        Window.New_Tab;
+      when others =>
+        On_Menu_Select (Window_Type (Window), Item);
+    end case;
+  end On_Menu_Select;
 
   overriding
   procedure On_Close (Window    : in out Browser_window_type;

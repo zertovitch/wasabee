@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------
 -- GUI contents of resource script file: wasabee.rc
--- Transcription time: 2013/07/26   17:03:03
+-- Transcription time: 2013/07/27   21:55:44
 --
 -- Translated by the RC2GW or by the GWenerator tool.
 -- URL: http://sf.net/projects/gnavi
@@ -21,7 +21,20 @@ package body wasabee_Resource_GUI is
   -- ** Generated code begins here \/ \/ \/.
 
 
-  -- Dialog at resource line 20
+  -- Menu at line 17
+  procedure Create_Full_Menu
+     (Menu        : in out Browser_Menu_Type)
+  is
+  begin
+    Menu.Main:= Create_Menu;
+    Menu.Popup_0001:= Create_Popup;
+    Append_Menu(Menu.Main, "&File", Menu.Popup_0001);
+    Append_Item(Menu.Popup_0001, "&New browser window ", ID_New_Browser_Window);
+    Append_Item(Menu.Popup_0001, "New &tab", ID_New_Tab);
+  end Create_Full_Menu; -- Browser_Menu_Type
+
+
+  -- Dialog at resource line 35
 
   --  a) Create_As_Dialog & create all contents -> ready-to-use dialog
   --
@@ -38,7 +51,7 @@ package body wasabee_Resource_GUI is
   is
     x,y,w,h: Integer;
   begin
-    Dlg_to_Scn(  0, 0, 186, 95, x,y,w,h);
+    Dlg_to_Scn(  0, 0, 159, 95, x,y,w,h);
     if Left   /= Use_Default then x:= Left;   end if;
     if Top    /= Use_Default then y:= Top;    end if;
     if Width  /= Use_Default then w:= Width;  end if;
@@ -72,18 +85,18 @@ package body wasabee_Resource_GUI is
     x,y,w,h: Integer;
   begin
     if resize then
-    Dlg_to_Scn(  0, 0, 186, 95, x,y,w,h);
+    Dlg_to_Scn(  0, 0, 159, 95, x,y,w,h);
       Move(Window, x,y);
       Client_Area_Size(Window, w, h);
     end if;
     Use_GUI_Font(Window);
-    Dlg_to_Scn(  9, 11, 96, 8, x,y,w,h);
+    Dlg_to_Scn(  5, 10, 63, 10, x,y,w,h);
     Create_label( Window, "Open windows", x,y,w,h, GWindows.Static_Controls.LEFT, NONE);
-    Dlg_to_Scn(  120, 9, 49, 15, x,y,w,h);
+    Dlg_to_Scn(  75, 10, 30, 15, x,y,w,h);
     Create( Window.Open_windows_info, Window, "", x,y,w,h, Horizontal_Scroll => TRUE, Read_Only => TRUE, ID => Open_windows_info);
-    Dlg_to_Scn(  9, 32, 85, 8, x,y,w,h);
+    Dlg_to_Scn(  5, 30, 63, 10, x,y,w,h);
     Create_label( Window, "Open tabs", x,y,w,h, GWindows.Static_Controls.LEFT, NONE);
-    Dlg_to_Scn(  120, 30, 49, 15, x,y,w,h);
+    Dlg_to_Scn(  75, 30, 30, 15, x,y,w,h);
     Create( Window.Open_tabs_info, Window, "", x,y,w,h, Horizontal_Scroll => TRUE, Read_Only => TRUE, ID => Open_tabs_info);
   end Create_Contents; -- Main_control_window_Type
 
@@ -198,6 +211,6 @@ package body wasabee_Resource_GUI is
 begin
   Common_Fonts.Create_Common_Fonts;
 
-  -- Last line of resource script file: 67
+  -- Last line of resource script file: 94
 
 end wasabee_Resource_GUI;
