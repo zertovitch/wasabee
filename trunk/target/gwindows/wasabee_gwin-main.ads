@@ -9,7 +9,7 @@ with GWindows.Windows;                  use GWindows.Windows;
 
 package Wasabee_GWin.Main is
 
-  type Window_access is access all Wasabee_GWin.Windows.Wasa_Window_type;
+  type Window_access is access all Wasabee_GWin.Windows.Browser_window_type;
 
   package Windows_Vectors is new Ada.Containers.Vectors(
     Index_Type   => Positive,

@@ -20,6 +20,9 @@ package Wasabee_GWin.Tabs is
   end record;
 
   overriding
+  procedure On_Create (Window : in out Tab_Type);
+
+  overriding
   procedure On_Paint (Window : in out Tab_type;
                       Canvas : in out GWindows.Drawing.Canvas_Type;
                       Area   : in     GWindows.Types.Rectangle_Type);
