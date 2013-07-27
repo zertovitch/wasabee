@@ -25,7 +25,7 @@ package Wasabee_GWin.Main is
   overriding
   procedure On_Create (Window : in out Main_Wasa_Window_Type);
 
-  procedure New_Wasa_Window(Window : in out Main_Wasa_Window_Type);
+  procedure New_Browser_Window(Window : in out Main_Wasa_Window_Type);
 
   procedure Update_control_frame(Window : in out Main_Wasa_Window_Type);
 

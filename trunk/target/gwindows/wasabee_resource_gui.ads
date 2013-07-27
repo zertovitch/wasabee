@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------
 -- GUI contents of resource script file: wasabee.rc
--- Transcription time: 2013/07/26   17:03:03
+-- Transcription time: 2013/07/27   21:55:44
 --
 -- Translated by the RC2GW or by the GWenerator tool.
 -- URL: http://sf.net/projects/gnavi
@@ -28,6 +28,15 @@ with Interfaces.C;                      use Interfaces.C;
 
 package wasabee_Resource_GUI is
 
+  type Browser_Menu_Type is tagged record
+    Main: Menu_Type; -- Root of the whole menu tree
+    Popup_0001: Menu_Type;  -- level 1; title: "&File"
+  end record; -- Browser_Menu_Type
+
+  -- Menu at line 23
+  procedure Create_Full_Menu
+     (Menu        : in out Browser_Menu_Type);
+
   type Main_control_window_Type is new Window_type with record
 
     -- Label: IDC_STATIC
@@ -36,7 +45,7 @@ package wasabee_Resource_GUI is
     Open_tabs_info: Edit_Box_Type;
   end record; -- Main_control_window_Type
 
-  -- Dialog at resource line 25
+  -- Dialog at resource line 40
 
   --  a) Create_As_Dialog & create all contents -> ready-to-use dialog
   --
@@ -77,10 +86,13 @@ package wasabee_Resource_GUI is
   -- NB: only items with a defined symbol get a constant here
   -- These constants are needed for getting button and menu feedbacks.
 
-  IDC_STATIC         : constant:=    -1;
-  Main_control_window: constant:=   100;
-  Open_windows_info  : constant:=  1004;
-  Open_tabs_info     : constant:=  1005;
+  IDC_STATIC           : constant:=     -1;
+  Main_control_window  : constant:=    100;
+  Browser_Menu         : constant:=    106;
+  Open_windows_info    : constant:=   1004;
+  Open_tabs_info       : constant:=   1005;
+  ID_New_Browser_Window: constant:=  40000;
+  ID_New_Tab           : constant:=  40001;
 
   -- ** Some helper utilities (spec).
 
@@ -93,6 +105,6 @@ package wasabee_Resource_GUI is
   function Num_resource(id: Natural) return GString;
 
 
-  -- Last line of resource script file: 67
+  -- Last line of resource script file: 94
 
 end wasabee_Resource_GUI;
