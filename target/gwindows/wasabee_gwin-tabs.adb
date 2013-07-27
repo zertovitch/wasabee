@@ -2,6 +2,12 @@ with Wasabee_GWin.Display;
 
 package body Wasabee_GWin.Tabs is
 
+  overriding
+  procedure On_Create (Window : in out Tab_Type) is
+  begin
+    Window.HTML_contents.refresh:= nothing; -- blank page so far
+  end On_Create;
+
   procedure Display_saved_bitmap(
     window : in out Tab_type;
     area   :        GWindows.Types.Rectangle_Type)

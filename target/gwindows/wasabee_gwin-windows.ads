@@ -15,17 +15,19 @@ package Wasabee_GWin.Windows is
     Element_Type => Tab_access
   );
 
-  type Wasa_Window_Type is
+  type Browser_window_type is
     new GWindows.Windows.Window_Type with record
       tabs: Tabs_Vectors.Vector;
       main: Pointer_To_Main_Window_Class;
     end record;
 
   overriding
-  procedure On_Create (Window : in out Wasa_Window_Type);
+  procedure On_Create (Window : in out Browser_window_type);
+
+  procedure New_Tab(Window : in out Browser_window_type);
 
   overriding
-  procedure On_Close (Window    : in out Wasa_Window_Type;
+  procedure On_Close (Window    : in out Browser_window_type;
                       Can_Close :    out Boolean);
 
 end Wasabee_GWin.Windows;

@@ -26,12 +26,12 @@ package body Wasabee_GWin.Main is
   end On_Create;
 
   procedure New_Wasa_Window(Window : in out Main_Wasa_Window_Type) is
-    newcomer: Window_access;
+    newcomer: Window_access:= new Browser_window_type;
   begin
-    newcomer:= new Wasa_Window_type;
+    newcomer:= new Browser_window_type;
+    newcomer.main:= Window'Unchecked_Access;
     newcomer.Create(Title => "Wasa is there");
     newcomer.Show;
-    newcomer.main:= Window'Unchecked_Access;
     Window.windows.Append(newcomer);
     Window.Update_control_frame;
   end New_Wasa_Window;
@@ -39,7 +39,6 @@ package body Wasabee_GWin.Main is
   procedure Update_control_frame(Window : in out Main_Wasa_Window_Type) is
     w, t: Natural;
     w_curs: Windows_Vectors.Cursor;
-    t_curs: Tabs_Vectors.Cursor;
     use Windows_Vectors, Tabs_Vectors;
   begin
     if not super_user then
@@ -50,15 +49,7 @@ package body Wasabee_GWin.Main is
     w_curs:= Window.windows.First;
     while w_curs /= Windows_Vectors.No_Element loop
       w:= w + 1;
-      declare
-        ww: Wasa_Window_Type renames Element(w_curs).all;
-      begin
-        t_curs:= ww.tabs.First;
-        while t_curs /= Tabs_Vectors.No_Element loop
-          t:= t + 1;
-          t_curs:= Next(t_curs);
-        end loop;
-      end;
+      t:= t + Natural(Length(Element(w_curs).tabs));
       w_curs:= Next(w_curs);
     end loop;
     Window.control_frame.Open_windows_info.Text(Integer'Wide_Image(w));
