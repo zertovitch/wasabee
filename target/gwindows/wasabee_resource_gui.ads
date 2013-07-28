@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------
 -- GUI contents of resource script file: wasabee.rc
--- Transcription time: 2013/07/27   21:55:44
+-- Transcription time: 2013/07/28   20:24:07
 --
 -- Translated by the RC2GW or by the GWenerator tool.
 -- URL: http://sf.net/projects/gnavi
@@ -43,9 +43,11 @@ package wasabee_Resource_GUI is
     Open_windows_info: Edit_Box_Type;
     -- Label: IDC_STATIC
     Open_tabs_info: Edit_Box_Type;
+    -- Label: IDC_STATIC
+    Cached_objects_info: Edit_Box_Type;
   end record; -- Main_control_window_Type
 
-  -- Dialog at resource line 40
+  -- Dialog at resource line 42
 
   --  a) Create_As_Dialog & create all contents -> ready-to-use dialog
   --
@@ -89,6 +91,7 @@ package wasabee_Resource_GUI is
   IDC_STATIC           : constant:=     -1;
   Main_control_window  : constant:=    100;
   Browser_Menu         : constant:=    106;
+  Cached_objects_info  : constant:=   1001;
   Open_windows_info    : constant:=   1004;
   Open_tabs_info       : constant:=   1005;
   ID_New_Browser_Window: constant:=  40000;
@@ -105,6 +108,6 @@ package wasabee_Resource_GUI is
   function Num_resource(id: Natural) return GString;
 
 
-  -- Last line of resource script file: 94
+  -- Last line of resource script file: 96
 
 end wasabee_Resource_GUI;

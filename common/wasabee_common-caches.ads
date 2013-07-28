@@ -5,8 +5,27 @@
 --
 
 with Ada.Calendar;                      use Ada.Calendar;
+with Ada.Containers.Hashed_Maps;
+with Ada.Containers.Ordered_Maps;
+with Ada.Strings.Unbounded.Hash;
+with Ada.Containers.Vectors;
 
 package Wasabee_common.Caches is
+
+  -- A variable of type Cache_type contains the entire browser cache,
+  -- with URLs cached in files, memory, not neither (to be loaded)
+
+  type Cache_type is private;
+
+  procedure Get_contents(
+    cache    : in out Cache_type;
+    URL      : in     Unbounded_String;
+    reload   : in     Boolean
+  );
+
+  function Object_count(c: Cache_type) return Natural;
+
+private
 
   type Cache_item is record
     URL,
@@ -20,15 +39,32 @@ package Wasabee_common.Caches is
   -- contents = "" means item is not (yet) in memory
   -- file_name = "" means item is not (yet) in a file
 
-  procedure Get_contents(
-    item     : in out Cache_item;
-    contents :    out Unbounded_String
+  package Cache_Vectors is new Ada.Containers.Vectors(
+    Index_Type   => Positive,
+    Element_Type => Cache_item
   );
 
-  -- During idle times, or eventually when closing Wasabee,
-  -- we save memory cache to files if not yet done.
+  -- Quick search by URL
 
-  procedure Save_to_file(item: in out Cache_item);
+  package URL_catalogues is new Ada.Containers.Hashed_Maps
+    (Key_Type        => Unbounded_String,
+     Element_Type    => Positive,
+     Hash            => Ada.Strings.Unbounded.Hash,
+     Equivalent_Keys => Ada.Strings.Unbounded."="
+    );
+
+  -- Quick sort by latest_hit time - for reducing cache size when needed
+
+  package Access_time_catalogues is new Ada.Containers.Ordered_Maps
+    (Key_Type        => Ada.Calendar.Time,
+     Element_Type    => Positive
+    );
+
+  type Cache_type is record
+    data    : Cache_Vectors.Vector;
+    URL_cat : URL_catalogues.Map;
+    hit_cat : Access_time_catalogues.Map;
+  end record;
 
 end Wasabee_common.Caches;
 

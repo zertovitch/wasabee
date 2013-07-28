@@ -27,27 +27,73 @@ package body Wasabee_common.Caches is
     Close(file);
   end Save;
 
-  procedure Get_contents(
-    item     : in out Cache_item;
-    contents :    out Unbounded_String
-  )
-  is
+  function Create_new_item(URL: Unbounded_String) return Cache_item is
+    new_item: Cache_item;
+    now: constant Time:= Clock;
+  begin
+    new_item.URL:= URL;
+    new_item.first_hit:= now;
+    new_item.latest_hit:= now;
+    new_item.hits:= 0;
+    return new_item;
+  end Create_new_item;
+
+  procedure Get_item_contents_from_Web(item: in out Cache_item) is
+    now: constant Time:= Clock;
+  begin
+    item.contents:= U("from URL..."); -- load item.contents from URL !!
+    if Ada.Directories.Exists(S(item.file_name)) then
+      Ada.Directories.Delete_File(S(item.file_name));
+      item.file_name:= U("");
+    end if;
+    item.first_hit:= now;
+    item.latest_hit:= now;
+    item.hits:= 1;
+  end Get_item_contents_from_Web;
+
+  procedure Get_item_contents(item: in out Cache_item) is
   begin
     if item.contents = "" then
       if item.file_name = "" then
-        item.contents:= U("from URL..."); -- load item.contents from URL !!
-        item.first_hit:= Clock;
-        item.hits:= 0;
+        Get_item_contents_from_Web(item);
+        return;
       else
+        -- Read from file
         item.contents:= U(Load(S(item.file_name)));
       end if;
     end if;
-    contents:= item.contents;
     item.hits:= item.hits + 1;
     item.latest_hit:= Clock;
+  end Get_item_contents;
+
+  procedure Get_contents(
+    cache    : in out Cache_type;
+    URL      : in     Unbounded_String;
+    reload   : in     Boolean
+  )
+  is
+    idx: Positive;
+    new_item: Cache_item;
+  begin
+    begin
+      idx:= cache.URL_cat.Element(URL);
+    exception
+      when Constraint_Error =>
+        new_item:= Create_new_item(URL);
+        cache.data.Append(new_item);
+        idx:= cache.URL_cat.Element(URL);
+        -- Update catalogues
+        cache.URL_cat.Insert(URL, idx);
+        cache.hit_cat.Insert(new_item.latest_hit, idx);
+    end;
+    if reload then
+      cache.data.Update_Element(idx, Get_item_contents_from_Web'Access);
+    else
+      cache.data.Update_Element(idx, Get_item_contents'Access);
+    end if;
   end Get_contents;
 
-  function Free_cache_item_name return String is
+  function Available_cache_item_name return String is
     T  : constant Time:= Clock;
     sY : constant String:= Integer'Image( Year(T));
     sM : constant String:= Integer'Image( Month(T) + 100);
@@ -74,14 +120,22 @@ package body Wasabee_common.Caches is
       end;
     end loop;
     raise Constraint_Error with "No free file name!";
-  end Free_cache_item_name;
+  end Available_cache_item_name;
+
+  -- During idle times, or eventually when closing Wasabee,
+  -- we save memory cache to files if not yet done.
 
   procedure Save_to_file(item: in out Cache_item) is
   begin
     if item.file_name = "" then
-      item.file_name:= U(Free_cache_item_name);
+      item.file_name:= U(Available_cache_item_name);
       Save(S(item.file_name), S(item.contents));
     end if;
   end Save_to_file;
+
+  function Object_count(c: Cache_type) return Natural is
+  begin
+    return Integer(c.data.Length);
+  end Object_count;
 
 end Wasabee_common.Caches;

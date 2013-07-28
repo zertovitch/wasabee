@@ -38,6 +38,8 @@ FONT 8, "Ms Shell Dlg"
     EDITTEXT        Open_windows_info, 75, 10, 30, 15, ES_AUTOHSCROLL | ES_READONLY
     LTEXT           "Open tabs", IDC_STATIC, 5, 30, 63, 10, SS_LEFT
     EDITTEXT        Open_tabs_info, 75, 30, 30, 15, ES_AUTOHSCROLL | ES_READONLY
+    LTEXT           "Cached objects", IDC_STATIC, 5, 50, 63, 10, SS_LEFT
+    EDITTEXT        Cached_objects_info, 75, 50, 30, 15, ES_AUTOHSCROLL | ES_READONLY
 }
 
 
