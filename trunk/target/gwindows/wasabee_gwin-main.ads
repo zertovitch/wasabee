@@ -1,3 +1,4 @@
+with Wasabee_common.Caches;
 with Wasabee_GWin.Windows;
 with Wasabee_Resource_GUI;
 
@@ -20,6 +21,7 @@ package Wasabee_GWin.Main is
     new GWindows.Windows.Main.Main_Window_Type with record
       windows       : Windows_Vectors.Vector;
       control_frame : Wasabee_Resource_GUI.Main_control_window_Type;
+      cache         : Wasabee_common.Caches.Cache_type;
     end record;
 
   overriding

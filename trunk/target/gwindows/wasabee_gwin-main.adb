@@ -46,7 +46,7 @@ package body Wasabee_GWin.Main is
   procedure Update_control_frame(Window : in out Main_Wasa_Window_Type) is
     w, t: Natural;
     w_curs: Windows_Vectors.Cursor;
-    use Windows_Vectors, Tabs_Vectors;
+    use Windows_Vectors, Tabs_Vectors, Wasabee_common.Caches;
   begin
     if not super_user then
       return;
@@ -61,6 +61,7 @@ package body Wasabee_GWin.Main is
     end loop;
     Window.control_frame.Open_windows_info.Text(Integer'Wide_Image(w));
     Window.control_frame.Open_tabs_info.Text(Integer'Wide_Image(t));
+    Window.control_frame.Cached_objects_info.Text(Integer'Wide_Image(Object_count(Window.cache)));
   end Update_control_frame;
 
 end Wasabee_GWin.Main;

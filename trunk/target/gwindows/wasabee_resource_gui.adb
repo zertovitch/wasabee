@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------
 -- GUI contents of resource script file: wasabee.rc
--- Transcription time: 2013/07/27   21:55:44
+-- Transcription time: 2013/07/28   20:24:07
 --
 -- Translated by the RC2GW or by the GWenerator tool.
 -- URL: http://sf.net/projects/gnavi
@@ -98,6 +98,10 @@ package body wasabee_Resource_GUI is
     Create_label( Window, "Open tabs", x,y,w,h, GWindows.Static_Controls.LEFT, NONE);
     Dlg_to_Scn(  75, 30, 30, 15, x,y,w,h);
     Create( Window.Open_tabs_info, Window, "", x,y,w,h, Horizontal_Scroll => TRUE, Read_Only => TRUE, ID => Open_tabs_info);
+    Dlg_to_Scn(  5, 50, 63, 10, x,y,w,h);
+    Create_label( Window, "Cached objects", x,y,w,h, GWindows.Static_Controls.LEFT, NONE);
+    Dlg_to_Scn(  75, 50, 30, 15, x,y,w,h);
+    Create( Window.Cached_objects_info, Window, "", x,y,w,h, Horizontal_Scroll => TRUE, Read_Only => TRUE, ID => Cached_objects_info);
   end Create_Contents; -- Main_control_window_Type
 
 
@@ -211,6 +215,6 @@ package body wasabee_Resource_GUI is
 begin
   Common_Fonts.Create_Common_Fonts;
 
-  -- Last line of resource script file: 94
+  -- Last line of resource script file: 96
 
 end wasabee_Resource_GUI;
