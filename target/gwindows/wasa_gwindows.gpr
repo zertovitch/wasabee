@@ -11,6 +11,10 @@
 --   [gnavi]\gwindows\contrib
 --   [gnavi]\gnatcom\framework
 --   Project URL: http://sf.net/projects/gnavi/
+--
+-- Generic Image Decoder
+--   Project URL: http://gen-img-dec.sf.net/
+
 
 project Wasa_GWindows is
 
