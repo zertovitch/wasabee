@@ -20,12 +20,15 @@ package Wasabee_GWin.Windows is
     Element_Type => Tab_access
   );
 
-  type Control_Box_Type is new Packing_Box_Type with record
-    tab_carets         : Drawing_Panel_Type;
-    navigarion_and_url : Packing_Box_Type;
-    navigation_buttons : Panel_Type;
+  type Control_Box_Type is new Panel_Type with record
+    tab_visuals        : Drawing_Panel_Type;
+    navigation_and_url : Packing_Box_Type;
+    navigation_buttons : Drawing_Panel_Type;
     url_box            : Edit_Box_Type;
   end record;
+
+  overriding
+  procedure On_Create (Window : in out Control_Box_Type);
 
   type Browser_window_type is new GWindows.Windows.Window_Type with record
     tabs        : Tabs_Vectors.Vector;
