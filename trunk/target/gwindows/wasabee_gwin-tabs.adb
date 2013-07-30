@@ -8,7 +8,7 @@ package body Wasabee_GWin.Tabs is
     Window.HTML_contents.refresh:= nothing; -- blank page so far
   end On_Create;
 
-  procedure Display_saved_bitmap(
+  procedure Display_saved_area(
     window : in out Tab_type;
     area   :        GWindows.Types.Rectangle_Type)
   is
@@ -24,7 +24,7 @@ package body Wasabee_GWin.Tabs is
           );
     --### For monitoring (interesting!): ###
     -- Line(window.Drawing_Area,Area.Left,Area.Top,Area.Right,Area.Bottom);
-  end Display_saved_bitmap;
+  end Display_saved_area;
 
   procedure Update_bitmap(Window : in out Tab_type ) is
   begin
@@ -55,7 +55,7 @@ package body Wasabee_GWin.Tabs is
     pragma Warnings (Off, Area);
   begin
     Update_bitmap(Window);
-    Display_saved_bitmap(Window,Area);
+    Display_saved_area(Window,Area);
   end On_Paint;
 
 end Wasabee_GWin.Tabs;
