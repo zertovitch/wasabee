@@ -1,4 +1,5 @@
 with Wasabee_common;                    use Wasabee_common;
+with Wasabee_GWin.Display;              use Wasabee_GWin.Display;
 
 with GWindows.Cursors;
 with GWindows.Drawing;                  use GWindows.Drawing;
@@ -14,7 +15,7 @@ package Wasabee_GWin.Tabs is
     --  Windows graphics, including double-buffering
     --
     Drawing_Area : Canvas_Type;
-    Saved_Area   : Memory_Canvas_Type;
+    Saved_Area   : Wasa_GWin_Canvas; -- contains a Memory_Canvas_Type;
     Saved_Bitmap : Bitmap_Type;
     --
     Cursor       : GWindows.Cursors.Cursor_Type;
