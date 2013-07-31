@@ -1,7 +1,5 @@
 with Wasabee_GWin.Tabs;
-with Wasabee_Resource_GUI;              use Wasabee_Resource_GUI;
 
-with GWindows;                          use GWindows;
 with GWindows.Edit_Boxes;               use GWindows.Edit_Boxes;
 with GWindows.Drawing_Panels;           use GWindows.Drawing_Panels;
 with GWindows.Packing_Boxes;            use GWindows.Packing_Boxes;
@@ -13,7 +11,7 @@ with Ada.Containers.Vectors;
 
 package Wasabee_GWin.Windows is
 
-  type Tab_access is access Wasabee_GWin.Tabs.Tab_type;
+  type Tab_access is access Wasabee_GWin.Tabs.HTML_area_type;
 
   package Tabs_Vectors is new Ada.Containers.Vectors(
     Index_Type   => Positive,
@@ -35,10 +33,12 @@ package Wasabee_GWin.Windows is
   procedure On_Create (Window : in out Control_box_type);
 
   type Browser_window_type is new GWindows.Windows.Window_Type with record
-    tabs        : Tabs_Vectors.Vector;
-    control_box : Control_Box_Type;
-    main        : Pointer_To_Main_Window_Class;
-    hidden_menu : Browser_Menu_Type;
+    tabs               : Tabs_Vectors.Vector;
+    control_box        : Control_Box_Type;
+    main               : Pointer_To_Main_Window_Class;
+    active_tab         : Positive;
+    window_info_string : GString_Unbounded; -- only for monitoring
+    -- hidden_menu : Browser_Menu_Type;
   end record;
 
   ---------------------------------
@@ -55,6 +55,8 @@ package Wasabee_GWin.Windows is
   procedure On_Lost_Focus (Window : in out Browser_window_type);
 
   procedure New_Tab(Window : in out Browser_window_type);
+  procedure Next_tab(Window : in out Browser_window_type);
+  procedure Close_tab(Window : in out Browser_window_type);
 
   -- NB: the menu is not created; only commands and shortcuts are used
 

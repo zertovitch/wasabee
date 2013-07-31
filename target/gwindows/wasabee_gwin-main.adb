@@ -1,4 +1,5 @@
 with Wasabee_GWin.Windows;              use Wasabee_GWin.Windows;
+with Wasabee_common;                    use Wasabee_common;
 
 package body Wasabee_GWin.Main is
 
@@ -35,18 +36,18 @@ package body Wasabee_GWin.Main is
     newcomer.main:= Window'Unchecked_Access;
     Window.windows.Append(newcomer);
     Window.Update_control_frame;
-    newcomer.Create(
-      Title =>
+    newcomer.window_info_string:=
+      G2GU(
         "Wasa browser, window opened as #" &
-        Integer'Wide_Image(Window.windows.Find_Index(newcomer))
-    );
+        Integer'Wide_Image(Window.windows.Find_Index(newcomer)));
+    newcomer.Create;
     newcomer.Show;
   end New_Browser_Window;
 
   procedure Update_control_frame(Window : in out Main_Wasa_Window_Type) is
     w, t: Natural;
     w_curs: Windows_Vectors.Cursor;
-    use Windows_Vectors, Tabs_Vectors, Wasabee_common.Caches;
+    use Windows_vectors, Tabs_vectors, Wasabee_common.Caches;
   begin
     if not super_user then
       return;

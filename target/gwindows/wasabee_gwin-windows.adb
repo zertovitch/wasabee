@@ -1,5 +1,6 @@
 with Wasabee_GWin.Main;                 use Wasabee_GWin.Main;
 with Wasabee_GWin.Tabs;                 use Wasabee_GWin.Tabs;
+with Wasabee_Resource_GUI;              use Wasabee_Resource_GUI;
 
 with GWindows.Base;                     use GWindows.Base;
 
@@ -80,8 +81,29 @@ package body Wasabee_GWin.Windows is
     Accelerator_Table (Window, "nix");
   end On_Lost_Focus;
 
-  procedure New_Tab(Window : in out Browser_window_type) is
-    newcomer: constant Tab_access:= new Tab_type;
+  procedure Set_active_tab(
+    Window : in out Browser_window_type;
+    idx    : in     Positive)
+  is
+    t_curs: Tabs_Vectors.Cursor:= Window.tabs.First;
+    use Tabs_vectors;
+  begin
+    Window.active_tab:= idx;
+    while t_curs /= Tabs_vectors.No_Element loop
+      if To_Index(t_curs)=idx then
+        Element(t_curs).Show;
+      else
+        Element(t_curs).Hide;
+      end if;
+      t_curs:= Next(t_curs);
+    end loop;
+    Window.Text(
+      GU2G(Window.window_info_string) & " - active tab:" &
+      Integer'Wide_Image(idx));
+  end Set_active_tab;
+
+  procedure New_tab(Window : in out Browser_window_type) is
+    newcomer: constant Tab_access:= new HTML_area_type;
     main_window: Main_Wasa_Window_Type
       renames Main_Wasa_Window_Type(Window.main.all);
   begin
@@ -94,8 +116,44 @@ package body Wasabee_GWin.Windows is
     );
     newcomer.Dock(Fill);
     Window.tabs.Append(newcomer);
+    Set_active_tab(Window, Window.tabs.Find_Index(newcomer));
     main_window.Update_control_frame;
-  end New_Tab;
+  end New_tab;
+
+  procedure Next_tab(Window : in out Browser_window_type) is
+    t_curs: Tabs_Vectors.Cursor:= Window.tabs.To_Cursor(Window.active_tab);
+    use Tabs_vectors;
+  begin
+    t_curs:= Next(t_curs);
+    if t_curs = No_Element then
+      t_curs:= Window.tabs.First;
+    end if;
+    Set_active_tab(Window, To_Index(t_curs));
+  end Next_tab;
+
+  procedure Close_tab(Window : in out Browser_window_type) is
+    tabs_cursor_to_delete: Tabs_Vectors.Cursor;
+    p_active_tab: Tab_access;
+    use Tabs_vectors, Ada.Containers;
+    main_window: Main_Wasa_Window_Type
+      renames Main_Wasa_Window_Type(Window.main.all);
+  begin
+    if Window.tabs.Length = 0 then
+      return;
+    end if;
+    Window.tabs.Element(Window.active_tab).Close;
+    tabs_cursor_to_delete:= Window.tabs.To_Cursor(Window.active_tab);
+    if Window.tabs.Length = 1 then
+      Window.Close; -- Last tab closing -> we close the whole window
+    else
+      Window.Next_tab;
+      p_active_tab:= Window.tabs.Element(Window.active_tab);
+      Window.tabs.Delete(tabs_cursor_to_delete);
+      -- The new active index may have changed through deletion
+      Window.active_tab:= Window.tabs.Find_Index(p_active_tab);
+    end if;
+    main_window.Update_control_frame;
+  end Close_tab;
 
   procedure On_Menu_Select (
         Window : in out Browser_window_type;
@@ -109,10 +167,13 @@ package body Wasabee_GWin.Windows is
         main_window.New_Browser_Window;
       when ID_New_Tab =>
         Window.New_Tab;
+      when ID_Next_Tab =>
+        Window.Next_Tab;
+      when ID_Close_Tab =>
+        Window.Close_tab;
       when ID_New_Address =>
         Window.control_box.url_box.Set_Selection(
-          1,
-          Window.control_box.url_box.Text'Length
+          0, Window.control_box.url_box.Text'Length
         );
         Window.control_box.url_box.Focus;
       when others =>
