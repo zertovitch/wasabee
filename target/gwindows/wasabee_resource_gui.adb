@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------
 -- GUI contents of resource script file: wasabee.rc
--- Transcription time: 2013/07/28   20:24:07
+-- Transcription time: 2013/07/31   08:04:43
 --
 -- Translated by the RC2GW or by the GWenerator tool.
 -- URL: http://sf.net/projects/gnavi
@@ -29,12 +29,13 @@ package body wasabee_Resource_GUI is
     Menu.Main:= Create_Menu;
     Menu.Popup_0001:= Create_Popup;
     Append_Menu(Menu.Main, "&File", Menu.Popup_0001);
-    Append_Item(Menu.Popup_0001, "&New browser window ", ID_New_Browser_Window);
-    Append_Item(Menu.Popup_0001, "New &tab", ID_New_Tab);
+    Append_Item(Menu.Popup_0001, "&New browser window" & To_GString_from_String((1=>ASCII.HT)) & "Ctrl+N", ID_New_Browser_Window);
+    Append_Item(Menu.Popup_0001, "New &tab" & To_GString_from_String((1=>ASCII.HT)) & "Ctrl+T", ID_New_Tab);
+    Append_Item(Menu.Popup_0001, "New &address " & To_GString_from_String((1=>ASCII.HT)) & "Ctrl+L", ID_New_Address);
   end Create_Full_Menu; -- Browser_Menu_Type
 
 
-  -- Dialog at resource line 35
+  -- Dialog at resource line 36
 
   --  a) Create_As_Dialog & create all contents -> ready-to-use dialog
   --
@@ -215,6 +216,6 @@ package body wasabee_Resource_GUI is
 begin
   Common_Fonts.Create_Common_Fonts;
 
-  -- Last line of resource script file: 96
+  -- Last line of resource script file: 97
 
 end wasabee_Resource_GUI;

@@ -5,8 +5,11 @@ with GWindows.Base;                     use GWindows.Base;
 
 package body Wasabee_GWin.Windows is
 
-  overriding
-  procedure On_Create (Window : in out Control_Box_Type) is
+  ------------------------------
+  -- Control_box_type methods --
+  ------------------------------
+
+  procedure On_Create (Window : in out Control_box_type) is
   begin
     Window.navigation_and_url.Create_As_Control(
       Parent     => Window,
@@ -43,7 +46,10 @@ package body Wasabee_GWin.Windows is
     Window.navigation_and_url.Dock(Fill);
   end On_Create;
 
-  overriding
+  ---------------------------------
+  -- Browser_window_type methods --
+  ---------------------------------
+
   procedure On_Create (Window : in out Browser_window_type) is
   begin
     Use_Gui_Font(Window);
@@ -57,12 +63,22 @@ package body Wasabee_GWin.Windows is
     Window.control_box.Dock(At_Top);
     --  Wasabee_Resource_GUI.Create_Full_Menu(Window.hidden_menu);
     --  Window.Menu(Window.hidden_menu.Main);
-    Accelerator_Table (Window, "Browser_Window_Shortcuts");
     --
     -- First tab
     --
     Window.New_Tab;
   end On_Create;
+
+  procedure On_Focus (Window : in out Browser_window_type) is
+  begin
+    Accelerator_Table (Window, "Browser_Window_Shortcuts");
+  end On_Focus;
+
+  overriding
+  procedure On_Lost_Focus (Window : in out Browser_window_type) is
+  begin
+    Accelerator_Table (Window, "nix");
+  end On_Lost_Focus;
 
   procedure New_Tab(Window : in out Browser_window_type) is
     newcomer: constant Tab_access:= new Tab_type;
@@ -81,7 +97,6 @@ package body Wasabee_GWin.Windows is
     main_window.Update_control_frame;
   end New_Tab;
 
-  overriding
   procedure On_Menu_Select (
         Window : in out Browser_window_type;
         Item   : in     Integer        )
@@ -94,12 +109,17 @@ package body Wasabee_GWin.Windows is
         main_window.New_Browser_Window;
       when ID_New_Tab =>
         Window.New_Tab;
+      when ID_New_Address =>
+        Window.control_box.url_box.Set_Selection(
+          1,
+          Window.control_box.url_box.Text'Length
+        );
+        Window.control_box.url_box.Focus;
       when others =>
         On_Menu_Select (Window_Type (Window), Item);
     end case;
   end On_Menu_Select;
 
-  overriding
   procedure On_Close (Window    : in out Browser_window_type;
                       Can_Close :    out Boolean) is
     w_curs: Windows_Vectors.Cursor;

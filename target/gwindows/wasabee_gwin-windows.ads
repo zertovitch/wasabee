@@ -20,7 +20,11 @@ package Wasabee_GWin.Windows is
     Element_Type => Tab_access
   );
 
-  type Control_Box_Type is new Panel_Type with record
+  ------------------------------
+  -- Control_box_type methods --
+  ------------------------------
+
+  type Control_box_type is new Panel_Type with record
     tab_visuals        : Drawing_Panel_Type;
     navigation_and_url : Packing_Box_Type;
     navigation_buttons : Drawing_Panel_Type;
@@ -28,7 +32,7 @@ package Wasabee_GWin.Windows is
   end record;
 
   overriding
-  procedure On_Create (Window : in out Control_Box_Type);
+  procedure On_Create (Window : in out Control_box_type);
 
   type Browser_window_type is new GWindows.Windows.Window_Type with record
     tabs        : Tabs_Vectors.Vector;
@@ -37,8 +41,18 @@ package Wasabee_GWin.Windows is
     hidden_menu : Browser_Menu_Type;
   end record;
 
+  ---------------------------------
+  -- Browser_window_type methods --
+  ---------------------------------
+
   overriding
   procedure On_Create (Window : in out Browser_window_type);
+
+  overriding
+  procedure On_Focus (Window : in out Browser_window_type);
+
+  overriding
+  procedure On_Lost_Focus (Window : in out Browser_window_type);
 
   procedure New_Tab(Window : in out Browser_window_type);
 
