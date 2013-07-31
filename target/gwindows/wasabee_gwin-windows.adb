@@ -110,13 +110,14 @@ package body Wasabee_GWin.Windows is
     newcomer.Create_As_Control(
       Parent => Window,
       Left   => 0,
-      Top    => 20,
-      Width  => Window.Client_Area_Width,
-      Height => Window.Client_Area_Height
+      Top    => 100, -- will be adjusted by docking
+      Width  => 1,   -- will be extended by docking
+      Height => 1    -- will be extended by docking
     );
     newcomer.Dock(Fill);
     Window.tabs.Append(newcomer);
     Set_active_tab(Window, Window.tabs.Find_Index(newcomer));
+    Window.Dock_Children;
     main_window.Update_control_frame;
   end New_tab;
 
