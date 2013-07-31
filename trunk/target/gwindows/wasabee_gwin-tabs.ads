@@ -8,7 +8,7 @@ with GWindows.Types;
 
 package Wasabee_GWin.Tabs is
 
-  type Tab_type is new Drawing_Panel_Type with record
+  type HTML_area_type is new Drawing_Panel_Type with record
     HTML_contents: Wasabee_common.HTML_object;
     --
     --  Windows graphics, including double-buffering
@@ -21,10 +21,10 @@ package Wasabee_GWin.Tabs is
   end record;
 
   overriding
-  procedure On_Create (Window : in out Tab_Type);
+  procedure On_Create (Window : in out HTML_area_type);
 
   overriding
-  procedure On_Paint (Window : in out Tab_type;
+  procedure On_Paint (Window : in out HTML_area_type;
                       Canvas : in out GWindows.Drawing.Canvas_Type;
                       Area   : in     GWindows.Types.Rectangle_Type);
 

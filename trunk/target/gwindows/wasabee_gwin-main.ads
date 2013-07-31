@@ -4,7 +4,6 @@ with Wasabee_Resource_GUI;
 
 with Ada.Containers.Vectors;
 
-with GWindows;                          use GWindows;
 with GWindows.Windows.Main;
 with GWindows.Windows;                  use GWindows.Windows;
 

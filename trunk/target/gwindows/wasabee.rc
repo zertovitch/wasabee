@@ -21,6 +21,8 @@ Browser_Menu MENU
         MENUITEM "&New browser window\tCtrl+N", ID_New_Browser_Window
         MENUITEM "New &tab\tCtrl+T", ID_New_Tab
         MENUITEM "New &address \tCtrl+L", ID_New_Address
+        MENUITEM "Next tab\tCtrl+Tab", ID_Next_Tab
+        MENUITEM "Close tab\tCtrl+W / Ctrl+F4", ID_Close_Tab
     }
 }
 
@@ -53,6 +55,10 @@ Browser_Window_Shortcuts ACCELERATORS
 {
     "N",            ID_New_Browser_Window, VIRTKEY, CONTROL
     "T",            ID_New_Tab, VIRTKEY, CONTROL
+    "L",            ID_New_Address, VIRTKEY, CONTROL
+    VK_TAB,        ID_Next_Tab, VIRTKEY, CONTROL
+    VK_F4,        ID_Close_Tab, VIRTKEY, CONTROL
+    "W",        ID_Close_Tab, VIRTKEY, CONTROL
 }
 
 
