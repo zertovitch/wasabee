@@ -18,8 +18,9 @@ Browser_Menu MENU
 {
     POPUP "&File"
     {
-        MENUITEM "&New browser window ", ID_New_Browser_Window
-        MENUITEM "New &tab", ID_New_Tab
+        MENUITEM "&New browser window\tCtrl+N", ID_New_Browser_Window
+        MENUITEM "New &tab\tCtrl+T", ID_New_Tab
+        MENUITEM "New &address \tCtrl+L", ID_New_Address
     }
 }
 

@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------
 -- GUI contents of resource script file: wasabee.rc
--- Transcription time: 2013/07/28   20:24:07
+-- Transcription time: 2013/07/31   08:04:43
 --
 -- Translated by the RC2GW or by the GWenerator tool.
 -- URL: http://sf.net/projects/gnavi
@@ -33,7 +33,7 @@ package wasabee_Resource_GUI is
     Popup_0001: Menu_Type;  -- level 1; title: "&File"
   end record; -- Browser_Menu_Type
 
-  -- Menu at line 23
+  -- Menu at line 24
   procedure Create_Full_Menu
      (Menu        : in out Browser_Menu_Type);
 
@@ -47,7 +47,7 @@ package wasabee_Resource_GUI is
     Cached_objects_info: Edit_Box_Type;
   end record; -- Main_control_window_Type
 
-  -- Dialog at resource line 42
+  -- Dialog at resource line 43
 
   --  a) Create_As_Dialog & create all contents -> ready-to-use dialog
   --
@@ -96,6 +96,7 @@ package wasabee_Resource_GUI is
   Open_tabs_info       : constant:=   1005;
   ID_New_Browser_Window: constant:=  40000;
   ID_New_Tab           : constant:=  40001;
+  ID_New_Address       : constant:=  40002;
 
   -- ** Some helper utilities (spec).
 
@@ -108,6 +109,6 @@ package wasabee_Resource_GUI is
   function Num_resource(id: Natural) return GString;
 
 
-  -- Last line of resource script file: 96
+  -- Last line of resource script file: 97
 
 end wasabee_Resource_GUI;
