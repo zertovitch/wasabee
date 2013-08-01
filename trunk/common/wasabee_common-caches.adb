@@ -1,4 +1,5 @@
 with Ada.Directories, Ada.Environment_Variables, Ada.Sequential_IO;
+with Ada.IO_Exceptions;                 use Ada.IO_Exceptions;
 
 package body Wasabee_common.Caches is
 
@@ -42,6 +43,7 @@ package body Wasabee_common.Caches is
     now: constant Time:= Clock;
   begin
     item.contents:= U("from URL..."); -- load item.contents from URL !!
+    item.uncompressed_contents:= Null_Unbounded_String;
     if Ada.Directories.Exists(S(item.file_name)) then
       Ada.Directories.Delete_File(S(item.file_name));
       item.file_name:= U("");
@@ -59,7 +61,16 @@ package body Wasabee_common.Caches is
         return;
       else
         -- Read from file
-        item.contents:= U(Load(S(item.file_name)));
+        begin
+          item.contents:= U(Load(S(item.file_name)));
+          item.uncompressed_contents:= Null_Unbounded_String;
+        exception
+          when Name_Error | Use_Error =>
+            -- Something wrong with the file...
+            item.file_name:= Null_Unbounded_String;
+            Get_item_contents_from_Web(item);
+            return;
+        end;
       end if;
     end if;
     item.hits:= item.hits + 1;
@@ -93,6 +104,9 @@ package body Wasabee_common.Caches is
     end if;
   end Get_contents;
 
+  wasa_file_cache_path : constant String:=
+    Ada.Environment_Variables.Value("TEMP") & "/wasabee_temp";
+
   function Available_cache_item_name return String is
     T  : constant Time:= Clock;
     sY : constant String:= Integer'Image( Year(T));
@@ -105,14 +119,14 @@ package body Wasabee_common.Caches is
     sD( sD'Last-1 .. sD'Last ) &
     sS( sS'First+1 .. sS'Last );
   begin
+    Ada.Directories.Create_Path(wasa_file_cache_path);
     for i in Positive loop
       declare
         num0: constant String:= Integer'Image(i);
         num: constant String:= num0(num0'First+1 .. num0'Last);
         -- ^ Skip the @#*% leading space
         test_name: constant String:=
-          Ada.Environment_Variables.Value("TEMP") &
-          "/wasa_" & stamp & '_' & num & ".cache";
+          wasa_file_cache_path & "/wasa_" & stamp & '_' & num & ".cache";
       begin
         if not Ada.Directories.Exists(test_name) then
           return test_name;

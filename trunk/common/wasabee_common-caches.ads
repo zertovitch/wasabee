@@ -30,10 +30,11 @@ private
   type Cache_item is record
     URL,
     contents,
-    file_name  : Unbounded_String;
+    uncompressed_contents,   -- e.g. bitmap of a jpeg, current frame of an anim.
+    file_name              : Unbounded_String;
     first_hit,
-    latest_hit : Time;
-    hits       : Natural;
+    latest_hit             : Time;
+    hits                   : Natural;
   end record;
 
   -- contents = "" means item is not (yet) in memory
