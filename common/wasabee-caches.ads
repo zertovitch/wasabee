@@ -7,10 +7,11 @@
 with Ada.Calendar;                      use Ada.Calendar;
 with Ada.Containers.Hashed_Maps;
 with Ada.Containers.Ordered_Maps;
+with Ada.Strings.Unbounded;             use Ada.Strings.Unbounded;
 with Ada.Strings.Unbounded.Hash;
 with Ada.Containers.Vectors;
 
-package Wasabee_common.Caches is
+package Wasabee.Caches is
 
   -- A variable of type Cache_type contains the entire browser cache,
   -- with URLs cached in files, memory, not neither (to be loaded)
@@ -67,7 +68,7 @@ private
     hit_cat : Access_time_catalogues.Map;
   end record;
 
-end Wasabee_common.Caches;
+end Wasabee.Caches;
 
 --  Below a tagged version - a "wrong good idea"...
 

@@ -1,4 +1,4 @@
-with Wasabee_GWin.Tabs;
+with Wasabee.GWin.Tabs;
 
 with GWindows.Edit_Boxes;               use GWindows.Edit_Boxes;
 with GWindows.Drawing_Panels;           use GWindows.Drawing_Panels;
@@ -9,9 +9,9 @@ with GWindows.Windows.Main;             use GWindows.Windows.Main;
 
 with Ada.Containers.Vectors;
 
-package Wasabee_GWin.Windows is
+package Wasabee.GWin.Windows is
 
-  type Tab_access is access Wasabee_GWin.Tabs.HTML_area_type;
+  type Tab_access is access Wasabee.GWin.Tabs.HTML_area_type;
 
   package Tabs_Vectors is new Ada.Containers.Vectors(
     Index_Type   => Positive,
@@ -69,4 +69,4 @@ package Wasabee_GWin.Windows is
   procedure On_Close (Window    : in out Browser_window_type;
                       Can_Close :    out Boolean);
 
-end Wasabee_GWin.Windows;
+end Wasabee.GWin.Windows;

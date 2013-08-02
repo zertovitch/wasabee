@@ -3,14 +3,14 @@ with GWindows.Base;               use GWindows.Base;
 with GWindows.GStrings;           use GWindows.GStrings;
 with GWindows.Message_Boxes;      use GWindows.Message_Boxes;
 
-with Wasabee_GWin.Main;           use Wasabee_GWin.Main;
+with Wasabee.GWin.Main;           use Wasabee.GWin.Main;
 
 with Ada.Exceptions;
 with GNAT.Traceback.Symbolic;
 
-procedure Wasabee is
+procedure Wasabee_GWin is
 
-  Top: Wasabee_GWin.Main.Main_Wasa_Window_Type;
+  Top: Wasabee.GWin.Main.Main_Wasa_Window_Type;
 
   procedure Interactive_crash(
     Window : in out GWindows.Base.Base_Window_Type'Class;
@@ -36,4 +36,4 @@ begin
     GWindows.Base.On_Exception_Handler (Handler => Interactive_crash'Unrestricted_Access);
     Create (Top, "Wasabee");
     Message_Loop;
-end Wasabee;
+end Wasabee_GWin;

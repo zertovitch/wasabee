@@ -1,5 +1,5 @@
-with Wasabee_common.Caches;
-with Wasabee_GWin.Windows;
+with Wasabee.Caches;
+with Wasabee.GWin.Windows;
 with Wasabee_Resource_GUI;
 
 with Ada.Containers.Vectors;
@@ -7,9 +7,9 @@ with Ada.Containers.Vectors;
 with GWindows.Windows.Main;
 with GWindows.Windows;                  use GWindows.Windows;
 
-package Wasabee_GWin.Main is
+package Wasabee.GWin.Main is
 
-  type Window_access is access all Wasabee_GWin.Windows.Browser_window_type;
+  type Window_access is access all Wasabee.GWin.Windows.Browser_window_type;
 
   package Windows_Vectors is new Ada.Containers.Vectors(
     Index_Type   => Positive,
@@ -20,7 +20,7 @@ package Wasabee_GWin.Main is
     new GWindows.Windows.Main.Main_Window_Type with record
       windows       : Windows_Vectors.Vector;
       control_frame : Wasabee_Resource_GUI.Main_control_window_Type;
-      cache         : Wasabee_common.Caches.Cache_type;
+      cache         : Wasabee.Caches.Cache_type;
     end record;
 
   overriding
@@ -30,4 +30,4 @@ package Wasabee_GWin.Main is
 
   procedure Update_control_frame(Window : in out Main_Wasa_Window_Type);
 
-end Wasabee_GWin.Main;
+end Wasabee.GWin.Main;

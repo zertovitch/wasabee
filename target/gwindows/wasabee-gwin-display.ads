@@ -1,12 +1,13 @@
-with Wasabee_common;                    use Wasabee_common;
-with Wasabee_common.Display;            use Wasabee_common.Display;
+with Wasabee;                           use Wasabee;
+with Wasabee.Display;                   use Wasabee.Display;
+with Wasabee.Util;                      use Wasabee.Util;
 
 with GWindows.Cursors;
 with GWindows.Drawing;                  use GWindows.Drawing;
 with GWindows.Drawing_Objects;          use GWindows.Drawing_Objects;
 with GWindows.Drawing_Panels;
 
-package Wasabee_GWin.Display is
+package Wasabee.GWin.Display is
 
   -- Here we mix the abstract Wasa graphics and the GWindows graphics
   -- (phew!)
@@ -28,4 +29,4 @@ package Wasabee_GWin.Display is
     width  : Integer;
     height : Integer);
 
-end Wasabee_GWin.Display;
+end Wasabee.GWin.Display;

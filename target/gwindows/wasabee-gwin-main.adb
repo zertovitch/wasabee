@@ -1,7 +1,7 @@
-with Wasabee_GWin.Windows;              use Wasabee_GWin.Windows;
-with Wasabee_common;                    use Wasabee_common;
+with Wasabee.GWin.Windows;              use Wasabee.GWin.Windows;
+with Wasabee;                           use Wasabee;
 
-package body Wasabee_GWin.Main is
+package body Wasabee.GWin.Main is
 
   use Wasabee_Resource_GUI;
 
@@ -47,7 +47,7 @@ package body Wasabee_GWin.Main is
   procedure Update_control_frame(Window : in out Main_Wasa_Window_Type) is
     w, t: Natural;
     w_curs: Windows_Vectors.Cursor;
-    use Windows_vectors, Tabs_vectors, Wasabee_common.Caches;
+    use Windows_vectors, Tabs_vectors, Wasabee.Caches;
   begin
     if not super_user then
       return;
@@ -65,4 +65,4 @@ package body Wasabee_GWin.Main is
     Window.control_frame.Cached_objects_info.Text(Integer'Wide_Image(Object_count(Window.cache)));
   end Update_control_frame;
 
-end Wasabee_GWin.Main;
+end Wasabee.GWin.Main;

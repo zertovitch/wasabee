@@ -1,5 +1,6 @@
-with Wasabee_common;                    use Wasabee_common;
-with Wasabee_GWin.Display;              use Wasabee_GWin.Display;
+with Wasabee.Util;                      use Wasabee.Util;
+
+with Wasabee.GWin.Display;              use Wasabee.GWin.Display;
 
 with GWindows.Cursors;
 with GWindows.Drawing;                  use GWindows.Drawing;
@@ -7,10 +8,10 @@ with GWindows.Drawing_Objects;          use GWindows.Drawing_Objects;
 with GWindows.Drawing_Panels;           use GWindows.Drawing_Panels;
 with GWindows.Types;
 
-package Wasabee_GWin.Tabs is
+package Wasabee.GWin.Tabs is
 
   type HTML_area_type is new Drawing_Panel_Type with record
-    HTML_contents: Wasabee_common.HTML_object;
+    HTML_contents: Wasabee.Util.HTML_object;
     --
     --  Windows graphics, including double-buffering
     --
@@ -29,4 +30,4 @@ package Wasabee_GWin.Tabs is
                       Canvas : in out GWindows.Drawing.Canvas_Type;
                       Area   : in     GWindows.Types.Rectangle_Type);
 
-end Wasabee_GWin.Tabs;
+end Wasabee.GWin.Tabs;

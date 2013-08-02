@@ -1,4 +1,8 @@
-package Wasabee_common.Display is
+with Wasabee.Util;                      use Wasabee.Util;
+
+with Ada.Finalization;
+
+package Wasabee.Display is
 
   type Frame_plane is abstract new Ada.Finalization.Limited_Controlled with null record;
   
@@ -10,4 +14,4 @@ package Wasabee_common.Display is
  
   procedure Draw (on: in out Frame_plane'Class; o: HTML_object);
   
-end Wasabee_common.Display;
+end Wasabee.Display;

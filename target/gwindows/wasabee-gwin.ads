@@ -9,7 +9,7 @@
 with GWindows;                          use GWindows;
 with GWindows.GStrings;                 use GWindows.GStrings;
 
-package Wasabee_GWin is
+package Wasabee.GWin is
 
   -- Almost everything with children so far :-)
 
@@ -26,4 +26,4 @@ private
 
   super_user: constant Boolean:= True;
 
-end Wasabee_GWin;
+end Wasabee.GWin;

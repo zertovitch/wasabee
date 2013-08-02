@@ -1,7 +1,11 @@
-with Ada.Directories, Ada.Environment_Variables, Ada.Sequential_IO;
-with Ada.IO_Exceptions;                 use Ada.IO_Exceptions;
+with Wasabee.Util;                      use Wasabee.Util;
 
-package body Wasabee_common.Caches is
+with Ada.IO_Exceptions;                 use Ada.IO_Exceptions;
+with Ada.Directories,
+     Ada.Environment_Variables,
+     Ada.Sequential_IO;
+
+package body Wasabee.Caches is
 
   function Load(file_name: String) return String is
     size: constant Ada.Directories.File_Size:= Ada.Directories.Size(file_name);
@@ -152,4 +156,4 @@ package body Wasabee_common.Caches is
     return Integer(c.data.Length);
   end Object_count;
 
-end Wasabee_common.Caches;
+end Wasabee.Caches;
