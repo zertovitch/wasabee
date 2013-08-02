@@ -1,10 +1,10 @@
-with Wasabee_GWin.Main;                 use Wasabee_GWin.Main;
-with Wasabee_GWin.Tabs;                 use Wasabee_GWin.Tabs;
+with Wasabee.GWin.Main;                 use Wasabee.GWin.Main;
+with Wasabee.GWin.Tabs;                 use Wasabee.GWin.Tabs;
 with Wasabee_Resource_GUI;              use Wasabee_Resource_GUI;
 
 with GWindows.Base;                     use GWindows.Base;
 
-package body Wasabee_GWin.Windows is
+package body Wasabee.GWin.Windows is
 
   ------------------------------
   -- Control_box_type methods --
@@ -200,4 +200,4 @@ package body Wasabee_GWin.Windows is
     end if;
   end On_Close;
 
-end Wasabee_GWin.Windows;
+end Wasabee.GWin.Windows;

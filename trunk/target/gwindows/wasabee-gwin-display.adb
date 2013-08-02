@@ -3,7 +3,7 @@ with GWindows.Types;                    use GWindows.Types;
 -- with GWindows.Colors;                   use GWindows.Colors;
 -- with GWindows.Message_Boxes;            use GWindows.Message_Boxes;
 
-package body Wasabee_GWin.Display is
+package body Wasabee.GWin.Display is
 
   procedure Text_XY (
     on   : in out Wasa_GWin_Canvas; 
@@ -52,4 +52,4 @@ package body Wasabee_GWin.Display is
         );
   end Draw_object;
 
-end Wasabee_GWin.Display;
+end Wasabee.GWin.Display;

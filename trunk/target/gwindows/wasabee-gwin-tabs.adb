@@ -2,7 +2,7 @@ with Wasabee_Resource_GUI;              use Wasabee_Resource_GUI;
 
 with GWindows.Application;
 
-package body Wasabee_GWin.Tabs is
+package body Wasabee.GWin.Tabs is
 
   procedure Display_saved_area(
     window : in out HTML_area_type;
@@ -25,7 +25,7 @@ package body Wasabee_GWin.Tabs is
   procedure Update_bitmap(Window : in out HTML_area_type ) is
   begin
     if Window.HTML_contents.refresh /= nothing then
-      Wasabee_GWin.Display.Draw_object(
+      Wasabee.GWin.Display.Draw_object(
         Window.Saved_Area,
         Window.HTML_contents,
         Width(Window),
@@ -76,4 +76,4 @@ package body Wasabee_GWin.Tabs is
     Display_saved_area(Window,Area);
   end On_Paint;
 
-end Wasabee_GWin.Tabs;
+end Wasabee.GWin.Tabs;

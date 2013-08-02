@@ -23,7 +23,7 @@ project Wasa_GWindows is
    Build_Mode : Build_Mode_Type := external ("Build_Mode", "Debug");
    for Source_Dirs use ("../../common", ".");
    for Exec_Dir use ".";
-   for Main use ("wasabee.adb");
+   for Main use ("wasabee_gwin.adb");
 
    case Build_Mode is
       when "Debug" =>
