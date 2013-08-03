@@ -36,6 +36,14 @@ package body Wasabee.URL is
          Base := Pos_Protocole + 3 ;
       end if ;
 
+      if U.Protocole = "file" then
+         U.host := To_Unbounded_String("-- localhost - unused --") ;
+         U.Ressource := Unbounded_Slice (Adr, Base, Last);
+         U.Port := 0 ;
+         return ;
+      end if;
+
+
       Pos_Port      := Index(Adr, ":" , Base);
       -- Put_Line("port     : " & Natural'Image(Pos_Port));
 
@@ -89,6 +97,10 @@ package body Wasabee.URL is
       Test("http://destination.com:8080");
       Test("http://destination.com:8080/toto.xml");
       Test("http://destination.com:8080/toto/toto.xml");
+
+      Test("file://toto.txt");
+      Test("file://c:\tmp\toto.html");
+
    end;
 
 end ;
