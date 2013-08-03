@@ -54,6 +54,25 @@ package body Wasabee.Net is
       end if;
    end;
 
+
+   procedure Get_Http_Content (U : String ;
+                               Content : in out Unbounded_String) is
+      Adr : Unbounded_String := To_Unbounded_String(U);
+      The_Url : Wasabee.URL.URL ;
+      Port : Port_Type ;
+   begin
+      Decode(Adr, The_Url);
+      if The_Url.Protocole /= "http" then
+         Put_Line("Seul le protocole HTTP est supporté pour le moment");
+         return ;
+      end if;
+      Port := Port_Type(The_Url.Port) ;
+      Get_Http_Content ( To_String(The_Url.Host),
+                         To_String(The_Url.Ressource),
+                         Port,
+                         content);
+   end ;
+
    procedure Get_Http_Content (Base_Url : in String ;
                               Extension_Url : in String ;
                               Port : in Port_Type ;
@@ -74,7 +93,7 @@ package body Wasabee.Net is
       Put_Line("Trying to open " & Base_Url & ", Port " & Port_Type'Image(Port));
       Connect_Socket (Client, Address);
       Channel := Stream(Client);
-      
+
       Put_Line("Request: " & "GET " & Extension_Url & " HTTP/1.0" & Send) ;
       String'Write (Channel, "GET " & Extension_Url & " HTTP/1.0" & Send) ;
       -- Je ramene tout cela et je stocket dans une variable ...
@@ -86,6 +105,10 @@ package body Wasabee.Net is
          end loop;
       end loop;
    end ;
+
+
+
+
 end;
 
 

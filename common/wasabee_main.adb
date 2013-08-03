@@ -46,43 +46,30 @@ begin
    --
    Put_Line("Wasabee test line version 0.0.1") ;
 
-   --
-   -- Construire tout ce dont j'ai besoin d'un point de vue réseau
-   --
-   Get_Url (Base_Url, Extension_Url , Port) ;
+   if Argument_Count = 1 then
+      Get_Http_Content (Argument(1), Html_Content) ;
+   else
+      Get_Url (Base_Url, Extension_Url , Port) ;
+      begin
+         Get_Http_Content (To_String(Base_Url),
+                           To_String(Extension_Url) ,
+                           Port,
+                           Html_Content) ;
+      exception
+         when Error : GNAT.Sockets.Socket_Error =>
+            begin
+               Put_Line ("Unknown Address");
+               Abort_Task (Current_Task);
+            end ;
+      end;
+   end if ;
 
-   --
-   -- Recuperation du contenu du fichier
-   --
-   -- Put_Line("********************* QUERY ****************************");
-   
-   begin
-      Get_Http_Content (To_String(Base_Url),
-                        To_String(Extension_Url) ,
-                        Port,
-                        Html_Content) ;
-   exception
-      when Error : GNAT.Sockets.Socket_Error =>
-         begin
-            Put_Line ("Unknown Address");
-            Abort_Task (Current_Task);
-         end ;
-   end;
 
-   -- Put_Line("********************* RESPONSE **************************");
-   --
-   -- Affichage dans le terminal de ce qu'il ne faut
-   --
-   -- Put_Line (To_String(Html_Content));
-
-   --
-   -- Extraire la partie XHTML qui nous interesse ...
-   --
-    
    -- Put_Line("********************* EXTRACTING *************************");
+   -- Put_Line (To_String(html_Content));
    Extract_Html (Html_Content,Xhtml_Content);
-   -- Put_Line (To_String(Xhtml_Content));
-   
+   -- Put_Line (To_String(xhtml_Content));
+
    --
    -- Envoyer cela dans SAX
    --
@@ -95,7 +82,7 @@ begin
       -- when others =>
          -- Put_Line("Unknown error");
    end;
-   
+
    --
    -- Maintenant on peut faire joujou avec le XHTML
    --

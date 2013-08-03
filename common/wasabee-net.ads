@@ -1,5 +1,5 @@
 with Wasabee ; use Wasabee ;
-
+with Wasabee.Url ; use Wasabee.Url ;
 with GNAT.Sockets ; use GNAT.Sockets ;
 
 with Ada.Strings.Unbounded ; use Ada.Strings.Unbounded ;
@@ -11,6 +11,10 @@ package Wasabee.Net is
    procedure Get_Url (Base_Url : in out Unbounded_String ;
                       Extension_Url : in out Unbounded_String ;
                       Port : in out Port_Type) ;
+
+   procedure Get_Http_Content (U : String ;
+                               Content : in out Unbounded_String) ;
+
 
    procedure Get_Http_Content (Base_Url : in String ;
                               Extension_Url : in String ;
