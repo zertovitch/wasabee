@@ -115,6 +115,10 @@ package body Wasabee.GWin.Windows is
       Height => 1    -- will be extended by docking
     );
     newcomer.Dock(Fill);
+    Window.Dock_Children;
+    newcomer.Finish_creation;
+    newcomer.Wasa_Panel.Draw(newcomer.HTML_contents);
+    newcomer.Redraw(Redraw_Now => True);
     Window.tabs.Append(newcomer);
     Set_active_tab(Window, Window.tabs.Find_Index(newcomer));
     Window.Dock_Children;

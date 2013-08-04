@@ -6,6 +6,8 @@ package Wasabee.Display is
 
   type Frame_plane is abstract new Ada.Finalization.Limited_Controlled with null record;
   
+  procedure Clear_area (on: in out Frame_plane) is abstract;
+  
   procedure Text_XY (
     on   : in out Frame_plane; 
     x,y  : in     Integer; 
