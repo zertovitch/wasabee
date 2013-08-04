@@ -17,7 +17,7 @@ package Wasabee.Xhtml is
 
    procedure Display_All_Node (L : Node_List) ;
 
-   procedure Display_All_Children (Nd : Node) ;
+   procedure Display_All_Children (Nd : Node; Level: Natural:= 0) ;
 
    procedure Get_Xhtml_Content (Content : String ;
                                 List : in out Node_List;
