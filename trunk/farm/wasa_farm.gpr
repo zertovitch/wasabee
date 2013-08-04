@@ -4,8 +4,10 @@
 
 -- External libraries.
 --   You need to make the following source files visible to GNAT through the
---   Ada_Include_Path environment variable.
+--   ADA_INCLUDE_PATH environment variable.
 --
+-- XMLAda:
+--   [GNAT directory]/include/xmlada
 
 project Wasa_Farm is
 
@@ -14,7 +16,7 @@ project Wasa_Farm is
    Build_Mode : Build_Mode_Type := external ("Build_Mode", "Debug");
    for Source_Dirs use ("../common", ".");
    for Exec_Dir use ".";
-   for Main use ("main.adb");
+   for Main use ("main.adb", "wasabee_main.adb", "wasabee_url.adb", "wasabee_xhttp.adb");
 
    case Build_Mode is
       when "Debug" =>
