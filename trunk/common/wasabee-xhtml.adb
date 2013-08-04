@@ -1,3 +1,4 @@
+with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 with Ada.Text_IO ; use Ada.Text_IO ;
 
 with Unicode.CES.Utf8        ;
@@ -13,12 +14,13 @@ package body Wasabee.Xhtml is
       Lgt   : Natural ;
       Tmp   : Node;
    begin
-      Put_Line(Node_Name(Nd) & " " & Value(Nd));
+      Put_Line(Node_Name(Nd) & " -> " & Value(Nd));
 
       Attrs := Attributes (Nd);
       Lgt := Length(Attrs);
       for Index in 1..Lgt loop
          Tmp := Item(Attrs,Index-1);
+         Put(" attribute #" & Integer'Image(Index) & ": ");
          Display_Node(Tmp);
       end loop;
 
@@ -33,15 +35,15 @@ package body Wasabee.Xhtml is
       end loop;
    end ;
 
-   procedure Display_All_Children (Nd : Node) is
-      L : Node_List := Child_Nodes(Nd);
+   procedure Display_All_Children (Nd : Node; Level: Natural:= 0) is
+      L : constant Node_List := Child_Nodes(Nd);
       Tmp : Node ;
    begin
       for Index in 1 .. Length (L) loop
          Tmp := Item(L, Index-1);
-         Put(Integer'Image(Index) & " : " );
+         Put(Level * 3 * ' ' & Integer'Image(Index) & " => " );
          Display_Node(Tmp);
-         Display_All_Children(Tmp);
+         Display_All_Children(Tmp, Level + 1);
       end loop;
    end ;
 
@@ -61,17 +63,22 @@ package body Wasabee.Xhtml is
 
    procedure Extract_Html ( Source : in Unbounded_String ;
                             Target : in out Unbounded_String ) is
-      L : Natural ;
+      -- L : Natural ;
       Start_Tag, End_Tag : Natural ;
+      Text_trace: constant Boolean:= True;
    begin
-      L := Length(Source);
+      -- L := Length(Source);
       Start_Tag := Index(Source,"<html",1);
       End_Tag := Index(Source,"</html>",1);
-      -- Put_Line("************************* SOURCE ****************************") ;
-      -- Put_Line(To_String(Source));
+      if Text_trace then
+         Put_Line("************************* SOURCE ****************************") ;
+         Put_Line(To_String(Source));
+      end if;
       Target := Unbounded_Slice(Source, Start_Tag , End_Tag+6);
-      -- Put_Line("************************* TARGET ****************************") ;
-      -- Put_Line(To_String(Target));
+      -- if Text_trace then
+      --    Put_Line("************************* TARGET ****************************") ;
+      --    Put_Line(To_String(Target));
+      -- end if;
    end;
 
 
