@@ -14,7 +14,9 @@
 --
 -- Generic Image Decoder
 --   Project URL: http://gen-img-dec.sf.net/
-
+--
+-- XMLAda:
+--   [GNAT directory]\include\xmlada
 
 project Wasa_GWindows is
 

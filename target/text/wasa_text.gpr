@@ -4,8 +4,13 @@
 
 -- External libraries.
 --   You need to make the following source files visible to GNAT through the
---   Ada_Include_Path environment variable.
+--   ADA_INCLUDE_PATH environment variable.
 --
+-- Generic Image Decoder
+--   Project URL: http://gen-img-dec.sf.net/
+--
+-- XMLAda:
+--   [GNAT directory]/include/xmlada
 
 project Wasa_Text is
 
@@ -14,7 +19,7 @@ project Wasa_Text is
    Build_Mode : Build_Mode_Type := external ("Build_Mode", "Debug");
    for Source_Dirs use ("../../common", ".");
    for Exec_Dir use ".";
-   for Main use ("wasabee.adb");
+   for Main use ("wasabee_text.adb");
 
    case Build_Mode is
       when "Debug" =>
