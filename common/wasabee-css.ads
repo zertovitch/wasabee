@@ -35,12 +35,12 @@ package Wasabee.Css is
    function  Clean (Content : in Unbounded_String) return Unbounded_String ;
 
    procedure Read_CSS_File (S: String) ;
-
+   
    procedure Parse_CSS_Element (Element : Unbounded_String) ;
 
    procedure Parse_Information ;
 
-
+   procedure Set_CSS_Value ( Content : String) ;
 
 
 
