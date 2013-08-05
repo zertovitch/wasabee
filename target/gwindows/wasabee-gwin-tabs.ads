@@ -9,16 +9,19 @@ with GWindows.Cursors;
 with GWindows.Scroll_Panels;            use GWindows.Scroll_Panels;
 -- with GWindows.Types;
 
+with Ada.Strings.Unbounded;             use Ada.Strings.Unbounded;
+
 package Wasabee.GWin.Tabs is
 
   type HTML_area_type is new Scroll_Panel_Type with record
+    URL          : Unbounded_String;
     HTML_contents: Wasabee.Hypertext.HTML_object;
     --
     --  Windows graphics
     --
-    Wasa_Panel  : Wasa_GWin_Panel;
+    Wasa_Panel   : Wasa_GWin_Panel;
     --
-    Cursor      : GWindows.Cursors.Cursor_Type;
+    Cursor       : GWindows.Cursors.Cursor_Type;
   end record;
 
   -- After scroll_panel first resizing(with Dock)

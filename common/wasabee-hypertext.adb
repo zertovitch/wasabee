@@ -43,7 +43,6 @@ package body Wasabee.Hypertext is
             when in_head =>
               if Name = "title" then
                 ho.title:= To_Unbounded_Wide_String(To_UTF_16(Value));
-                put_line("#### title =" & value);
               end if;
             when in_body =>
               null; --!!
@@ -65,5 +64,10 @@ package body Wasabee.Hypertext is
   begin
     Process(Item(from,0));
   end Load_frame;
+
+  function Title(ho: HTML_object) return UTF_16_String is
+  begin
+    return To_Wide_String(ho.title);
+  end Title;
 
 end Wasabee.Hypertext;

@@ -13,6 +13,8 @@ package Wasabee.Hypertext is
 
   procedure Load_frame(ho: in out HTML_object; from: DOM.Core.Node_List);
 
+  function Title(ho: HTML_object) return UTF_16_String;
+
 private
 
   type Body_node;
