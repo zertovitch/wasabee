@@ -8,7 +8,7 @@ with Wasabee.GWin.Main;           use Wasabee.GWin.Main;
 with Ada.Exceptions;
 with GNAT.Traceback.Symbolic;
 
-procedure Wasabee_GWin is
+procedure Wasabee_GWindows is
 
   Top: Wasabee.GWin.Main.Main_Wasa_Window_Type;
 
@@ -36,4 +36,4 @@ begin
     GWindows.Base.On_Exception_Handler (Handler => Interactive_crash'Unrestricted_Access);
     Create (Top, "Wasabee");
     Message_Loop;
-end Wasabee_GWin;
+end Wasabee_GWindows;

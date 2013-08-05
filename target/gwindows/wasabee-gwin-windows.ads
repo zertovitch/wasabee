@@ -1,6 +1,5 @@
 with Wasabee.GWin.Tabs;
 
-with GWindows.Base;
 with GWindows.Edit_Boxes;               use GWindows.Edit_Boxes;
 with GWindows.Drawing_Panels;           use GWindows.Drawing_Panels;
 with GWindows.Packing_Boxes;            use GWindows.Packing_Boxes;

@@ -25,7 +25,7 @@ project Wasa_GWindows is
    Build_Mode : Build_Mode_Type := external ("Build_Mode", "Debug");
    for Source_Dirs use ("../../common", ".");
    for Exec_Dir use ".";
-   for Main use ("wasabee_gwin.adb");
+   for Main use ("wasabee_gwindows.adb");
 
    case Build_Mode is
       when "Debug" =>
@@ -50,9 +50,11 @@ project Wasa_GWindows is
          when "Debug" =>
             for Default_Switches ("ada") use ("-g", "wasabee.rbj");
          when "Fast" =>
-            for Default_Switches ("ada") use ("-mwindows", "-s", "-Wl,--gc-sections", "wasabee.rbj");
+            for Default_Switches ("ada") use ("-s", "-Wl,--gc-sections", "wasabee.rbj"); 
+			-- "-mwindows"
          when "Profiling" =>
-            for Default_Switches ("ada") use ("-mwindows", "-pg", "wasabee.rbj");
+            for Default_Switches ("ada") use ("-pg", "wasabee.rbj");
+			-- "-mwindows"
       end case;
    end Linker;
 
