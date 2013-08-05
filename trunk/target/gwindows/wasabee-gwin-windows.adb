@@ -1,10 +1,47 @@
+with Wasabee.Util;                      use Wasabee.Util;
+with Wasabee.Request;
+with Wasabee.Hypertext;
+
 with Wasabee.GWin.Main;                 use Wasabee.GWin.Main;
 with Wasabee.GWin.Tabs;                 use Wasabee.GWin.Tabs;
 with Wasabee_Resource_GUI;              use Wasabee_Resource_GUI;
 
 with GWindows.Base;                     use GWindows.Base;
+-- with GWindows.Constants;                use GWindows.Constants;
+with GWindows.Message_Boxes;            use GWindows.Message_Boxes;
+
+with DOM.Core;
+
+-- with Ada.Text_IO;                       use Ada.Text_IO;
 
 package body Wasabee.GWin.Windows is
+
+  --------------------------
+  -- URL_box_type methods --
+  --------------------------
+
+  procedure On_Message
+    (Window       : in out URL_box_type;
+     message      : in     Interfaces.C.unsigned;
+     wParam       : in     GWindows.Types.Wparam;
+     lParam       : in     GWindows.Types.Lparam;
+     Return_Value : in out GWindows.Types.Lresult)
+  is
+    use Interfaces.C, GWindows.Types;
+    WM_CHAR: constant := 258;
+  begin
+    if message = WM_CHAR and then wParam = 13 then
+      declare
+        the_browser: Browser_window_type
+          renames Browser_window_type(Window.Parent.Parent.Parent.all);
+      begin
+        the_browser.Focus;
+        the_browser.New_URL;
+      end;
+    else
+      Edit_Box_Type(Window).On_Message(message, wparam, lParam, return_Value);
+    end if;
+  end;
 
   ------------------------------
   -- Control_box_type methods --
@@ -159,6 +196,26 @@ package body Wasabee.GWin.Windows is
     end if;
     main_window.Update_control_frame;
   end Close_tab;
+
+  procedure New_URL(Window : in out Browser_window_type) is
+    active_tab: HTML_area_type
+      renames Window.tabs.Element(Window.active_tab).all;
+    Xhtml : DOM.Core.Node_List ;
+  begin
+    active_tab.URL:= U(G2S(Window.control_box.url_box.Text));
+    Wasabee.Request.Open_Url (S(active_tab.URL), Xhtml) ;
+    -- ^ !! we will go through the cache to get the xhtml
+    Wasabee.Hypertext.Load_frame(active_tab.HTML_contents, Xhtml);
+    declare
+      new_title: constant GString:= active_tab.HTML_contents.Title;
+    begin
+      if new_title = "" then
+        Window.Text("Untitled");
+      else
+        Window.Text(new_title);
+      end if;
+    end;
+  end New_URL;
 
   procedure On_Menu_Select (
         Window : in out Browser_window_type;

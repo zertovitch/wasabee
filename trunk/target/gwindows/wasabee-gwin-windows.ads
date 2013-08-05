@@ -1,13 +1,16 @@
 with Wasabee.GWin.Tabs;
 
+with GWindows.Base;
 with GWindows.Edit_Boxes;               use GWindows.Edit_Boxes;
 with GWindows.Drawing_Panels;           use GWindows.Drawing_Panels;
 with GWindows.Packing_Boxes;            use GWindows.Packing_Boxes;
 with GWindows.Panels;                   use GWindows.Panels;
+with GWindows.Types;
 with GWindows.Windows;                  use GWindows.Windows;
 with GWindows.Windows.Main;             use GWindows.Windows.Main;
 
 with Ada.Containers.Vectors;
+with Interfaces.C;
 
 package Wasabee.GWin.Windows is
 
@@ -18,15 +21,29 @@ package Wasabee.GWin.Windows is
     Element_Type => Tab_access
   );
 
-  ------------------------------
-  -- Control_box_type methods --
-  ------------------------------
+  ----------------------------
+  -- URL_box_type & methods --
+  ----------------------------
+
+  type URL_box_type is new Edit_Box_Type with null record;
+
+  overriding
+  procedure On_Message
+    (Window       : in out URL_box_type;
+     message      : in     Interfaces.C.unsigned;
+     wParam       : in     GWindows.Types.Wparam;
+     lParam       : in     GWindows.Types.Lparam;
+     Return_Value : in out GWindows.Types.Lresult);
+
+  --------------------------------
+  -- Control_box_type & methods --
+  --------------------------------
 
   type Control_box_type is new Panel_Type with record
     tab_visuals        : Drawing_Panel_Type;
     navigation_and_url : Packing_Box_Type;
     navigation_buttons : Drawing_Panel_Type;
-    url_box            : Edit_Box_Type;
+    url_box            : URL_box_type;
   end record;
 
   overriding
@@ -34,7 +51,7 @@ package Wasabee.GWin.Windows is
 
   type Browser_window_type is new GWindows.Windows.Window_Type with record
     tabs               : Tabs_Vectors.Vector;
-    control_box        : Control_Box_Type;
+    control_box        : Control_box_type;
     main               : Pointer_To_Main_Window_Class;
     active_tab         : Positive;
     window_info_string : GString_Unbounded; -- only for monitoring
@@ -57,6 +74,9 @@ package Wasabee.GWin.Windows is
   procedure New_Tab(Window : in out Browser_window_type);
   procedure Next_tab(Window : in out Browser_window_type);
   procedure Close_tab(Window : in out Browser_window_type);
+
+  -- New URL was given (perhaps typed in the URL box) and should be started
+  procedure New_URL(Window : in out Browser_window_type);
 
   -- NB: the menu is not created; only commands and shortcuts are used
 

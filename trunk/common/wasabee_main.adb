@@ -25,6 +25,7 @@ with Wasabee.Net ;            use Wasabee.Net ;
 with Wasabee.Xhtml ;          use Wasabee.Xhtml ;
 with Wasabee.Url   ;          use Wasabee.Url ;
 with Wasabee.Request   ;      use Wasabee.Request ;
+with Wasabee.Hypertext;                 use Wasabee.Hypertext;
 
 with Sax.Readers ;
 
@@ -44,6 +45,7 @@ procedure Wasabee_Main is
    Reader : Tree_Reader ;
    N : Node;
 
+   ho: HTML_object;
 begin
    --
    -- Programme de test
@@ -67,6 +69,8 @@ begin
    N := Item(Xhtml,0);
    Display_Node(N);
    Display_All_Children(N);
+
+   Wasabee.Hypertext.Load_frame(ho, Xhtml);
 
    --
    -- Fin du programme de test
