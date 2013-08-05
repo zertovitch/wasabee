@@ -1,3 +1,4 @@
+with Wasabee.Hypertext;                 use Wasabee.Hypertext;
 with Wasabee.Util;                      use Wasabee.Util;
 
 with Ada.Finalization;

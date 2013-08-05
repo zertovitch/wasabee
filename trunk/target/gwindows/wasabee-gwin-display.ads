@@ -1,5 +1,6 @@
 with Wasabee;                           use Wasabee;
 with Wasabee.Display;                   use Wasabee.Display;
+with Wasabee.Hypertext;                 use Wasabee.Hypertext;
 with Wasabee.Util;                      use Wasabee.Util;
 
 -- with GWindows.Cursors;

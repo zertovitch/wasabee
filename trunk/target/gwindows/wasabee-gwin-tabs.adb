@@ -9,7 +9,6 @@ package body Wasabee.GWin.Tabs is
 
   procedure Finish_creation (Window : in out HTML_area_type) is
   begin
-    Window.HTML_contents.refresh:= full;
     -- Preparing the panel that is moved through scrolling (= Window.Panel)
     Panel_Size (Window, 1234, 765); -- !! tentative; will depend on HTML page
     -- Draw control covering all of Window.Panel
