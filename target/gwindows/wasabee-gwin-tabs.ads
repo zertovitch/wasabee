@@ -1,4 +1,4 @@
-with Wasabee.Util;                      use Wasabee.Util;
+with Wasabee.Hypertext;                 use Wasabee.Hypertext;
 
 with Wasabee.GWin.Display;              use Wasabee.GWin.Display;
 
@@ -12,7 +12,7 @@ with GWindows.Scroll_Panels;            use GWindows.Scroll_Panels;
 package Wasabee.GWin.Tabs is
 
   type HTML_area_type is new Scroll_Panel_Type with record
-    HTML_contents: Wasabee.Util.HTML_object;
+    HTML_contents: Wasabee.Hypertext.HTML_object;
     --
     --  Windows graphics
     --
