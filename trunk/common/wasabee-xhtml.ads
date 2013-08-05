@@ -25,5 +25,7 @@ package Wasabee.Xhtml is
 
    procedure Extract_Html ( Source : in Unbounded_String ;
                             Target : in out Unbounded_String ) ;
-
+   
+   procedure Get_Style (Doc : Document) ;
+   
 end ;

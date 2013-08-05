@@ -28,7 +28,6 @@ with Wasabee.Url   ;             use Wasabee.Url ;
 
 with Sax.Readers ;
 
-
 package body Wasabee.Request is
    procedure Open_Url (The_Url : in String ; Nl : in out Node_List) is
       U : Wasabee.Url.URL ;
@@ -42,6 +41,7 @@ package body Wasabee.Request is
          begin
             Get_Http_Content (The_Url, Html_Content) ;
             Extract_Html (Html_Content,Xhtml_Content);
+	    -- Recuperation du style la dedans ...
             Get_Xhtml_Content (To_String(Xhtml_Content), Nl, Reader);
          exception
             when Error : Sax.Readers.XML_FATAL_ERROR =>
@@ -62,7 +62,8 @@ package body Wasabee.Request is
             Close(Input);
             -- Put_Line("getting elements");
             Doc := Get_Tree(Reader);
-            Nl  := Get_Elements_By_Tag_Name(Doc,"html");
+            Get_Style(Doc);
+	    Nl  := Get_Elements_By_Tag_Name(Doc,"html");
             -- Free(Reader) ;
          exception
             when Error : Sax.Readers.XML_FATAL_ERROR =>

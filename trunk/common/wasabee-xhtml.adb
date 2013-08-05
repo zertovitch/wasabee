@@ -3,6 +3,8 @@ with Ada.Text_IO ; use Ada.Text_IO ;
 
 with Unicode.CES.Utf8        ;
 
+with Wasabee.Css ; use Wasabee.Css ; 
+
 package body Wasabee.Xhtml is
 
    -- N                : Node ;
@@ -47,20 +49,6 @@ package body Wasabee.Xhtml is
       end loop;
    end ;
 
-   procedure Get_Xhtml_Content (Content : String ;
-                                List : in out Node_List ;
-                                Reader : in out Tree_reader
-                               ) is
-      Doc              : Document ;
-      Input            : Input_Sources.Strings.String_Input ;
-   begin
-      Input_Sources.Strings.Open (Content, Unicode.CES.Utf8.Utf8_Encoding, Input);
-      Parse(Reader, Input) ;
-      Close(Input);
-      Doc := Get_Tree(Reader);
-      List  := Get_Elements_By_Tag_Name(Doc,"html");
-   end;
-
    procedure Extract_Html ( Source : in Unbounded_String ;
                             Target : in out Unbounded_String ) is
       -- L : Natural ;
@@ -81,6 +69,40 @@ package body Wasabee.Xhtml is
       -- end if;
    end;
 
+   procedure Get_Xhtml_Content (Content : String ;
+                                List : in out Node_List ;
+                                Reader : in out Tree_reader
+                               ) is
+      Doc              : Document ;
+      Input            : Input_Sources.Strings.String_Input ;
+   begin
+      Input_Sources.Strings.Open (Content, Unicode.CES.Utf8.Utf8_Encoding, Input);
+      Parse(Reader, Input) ;
+      Close(Input);
+      Doc := Get_Tree(Reader);
+      List  := Get_Elements_By_Tag_Name(Doc,"html");
+      Get_Style(Doc) ;
+   end;
+   
+   --
+   -- Recupere le style d'un document ... roxe
+   --
+   procedure Get_Style (Doc : Document) is
+      List : Node_List ;
+      Style : Node ;
+      Style_Content : Unbounded_String ;
+   begin
+      List := Get_Elements_By_Tag_Name(Doc,"style");
+      Style := Item(List,0);      
+      List := Child_Nodes(Style) ;
+      Style := Item(List,0);
+      Put_Line("*********************** STYLE ******************************");
+      Put_Line(Value(Style));
+      
+      Set_Css_Value (Value(Style)) ;
+      Parse_Information ;
+      Put_Line("*********************** STYLE (FIN) *************************");
+   end ;
 
 
 end ;

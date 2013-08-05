@@ -3,6 +3,7 @@ package body Wasabee.Css is
       Tmp : Unbounded_String ;
       C : Character ;
    begin
+      
       for I in 1..Length(Content) loop
          C := Element(Content,I) ;
          -- On ne prend pas les espaces
@@ -11,10 +12,35 @@ package body Wasabee.Css is
             null ;
          elsif Character'Pos(C) = 9 then
             null ;
+         elsif Character'Pos(C) = 10 then
+            null ;
          else
-            -- Put_Line(C & ":" &Integer'Image(Character'Pos(C))) ;
+            -- Put_Line(C & ":" & Integer'Image(Character'Pos(C))) ;
             Append(Tmp, C);
          end if;
+      end loop;
+      return Tmp ;
+   end;
+
+   function Clean_Key(Content : in Unbounded_String) return Unbounded_String is
+      Tmp : Unbounded_String ;
+      C : Character ;
+   begin
+      
+      for I in 1..Length(Content) loop
+         C := Element(Content,I) ;
+         -- On ne prend pas les espaces
+         -- et les tabulations
+	 
+	 if Character'Pos(C) = 9 then
+            null ;
+         elsif Character'Pos(C) = 10 then
+            null ;
+         else
+            -- Put_Line(C & ":" & Integer'Image(Character'Pos(C))) ;
+            Append(Tmp, C);
+         end if;
+
       end loop;
       return Tmp ;
    end;
@@ -65,7 +91,10 @@ package body Wasabee.Css is
          exit when Openbracket = 0 ;
          Closebracket := Index(Css, "}", Base+1) ;
          Key := Unbounded_Slice(Css, Base, Openbracket-1);
-         Put_Line("CSS Element:" & To_String(Key));
+         
+	 Key := Clean_Key(Key);
+	 
+	 Put_Line("CSS Element:" & To_String(Key));
          -- Put_Line("Ouverture : " & Integer'Image(Base)) ;
          -- Put_Line("Fermeture : " & Integer'Image(Closebracket)) ;
          Css_Content := Unbounded_Slice(Css, Openbracket+1, Closebracket-1);
@@ -81,5 +110,10 @@ package body Wasabee.Css is
    begin
       return "" ;
    end ;
+   
+   procedure Set_CSS_Value ( Content : String) is
+   begin
+      CSS := To_Unbounded_String(Content) ;
+   end;
 
 end ;
