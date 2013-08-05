@@ -1,6 +1,5 @@
 with Wasabee.Util;                      use Wasabee.Util;
 with Wasabee.Request;
-with Wasabee.Hypertext;
 
 with Wasabee.GWin.Main;                 use Wasabee.GWin.Main;
 with Wasabee.GWin.Tabs;                 use Wasabee.GWin.Tabs;
@@ -8,7 +7,7 @@ with Wasabee_Resource_GUI;              use Wasabee_Resource_GUI;
 
 with GWindows.Base;                     use GWindows.Base;
 -- with GWindows.Constants;                use GWindows.Constants;
-with GWindows.Message_Boxes;            use GWindows.Message_Boxes;
+-- with GWindows.Message_Boxes;            use GWindows.Message_Boxes;
 
 with DOM.Core;
 
@@ -205,7 +204,7 @@ package body Wasabee.GWin.Windows is
     active_tab.URL:= U(G2S(Window.control_box.url_box.Text));
     Wasabee.Request.Open_Url (S(active_tab.URL), Xhtml) ;
     -- ^ !! we will go through the cache to get the xhtml
-    Wasabee.Hypertext.Load_frame(active_tab.HTML_contents, Xhtml);
+    active_tab.HTML_contents.Load_frame(Xhtml);
     declare
       new_title: constant GString:= active_tab.HTML_contents.Title;
     begin
