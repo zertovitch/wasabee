@@ -1,0 +1,15 @@
+body h1 {
+    background:red;color:black;
+}
+
+h1 {
+    font-size : 200% ;
+    color : red ;
+}
+
+#toto {
+    color : green;
+    background : yellow ;
+    
+}
+
