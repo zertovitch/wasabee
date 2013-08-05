@@ -41,7 +41,7 @@ package body Wasabee.GWin.Windows is
     else
       Edit_Box_Type(Window).On_Message(message, wparam, lParam, return_Value);
     end if;
-  end;
+  end On_Message;
 
   ------------------------------
   -- Control_box_type methods --

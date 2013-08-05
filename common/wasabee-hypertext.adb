@@ -1,8 +1,9 @@
+with Wasabee.Util;                      use Wasabee.Util;
+
 with Dom.Core                     ; use Dom.Core                         ;
 with Dom.Core.Nodes               ; use Dom.Core.Nodes                        ;
 
 with Ada.Strings.UTF_Encoding.Conversions;
-
 with Ada.Text_IO;                       use Ada.Text_IO;
 
 package body Wasabee.Hypertext is
@@ -41,8 +42,11 @@ package body Wasabee.Hypertext is
         when others =>
           case location is
             when in_head =>
-              if Name = "title" then
-                ho.title:= To_Unbounded_Wide_String(To_UTF_16(Value));
+              if Name = "title" and then
+                Length (Children) > 0 and then
+                Node_Name(Item(Children, 0)) = "#text"
+              then
+                ho.title:= U(To_UTF_16(Node_Value(Item(Children, 0))));
               end if;
             when in_body =>
               null; --!!
