@@ -29,7 +29,7 @@ package body Wasabee.GWin.Windows is
     use Interfaces.C, GWindows.Types;
     WM_CHAR: constant := 258;
   begin
-    if message = WM_CHAR and then wParam = 13 then
+    if message = WM_CHAR and then wParam = 13 then -- Return was pressed -> Go!
       declare
         the_browser: Browser_window_type
           renames Browser_window_type(Window.Parent.Parent.Parent.all);
@@ -41,6 +41,16 @@ package body Wasabee.GWin.Windows is
       Edit_Box_Type(Window).On_Message(message, wparam, lParam, return_Value);
     end if;
   end On_Message;
+
+  beginner_URL_blurb: constant GString:=
+    "Click here or press Ctrl-L for entering new Web address";
+
+  procedure On_Focus (Window : in out URL_box_type) is
+  begin
+    if Window.Text = beginner_URL_blurb then
+      Window.Text("");
+    end if;
+  end On_Focus;
 
   ------------------------------
   -- Control_box_type methods --
@@ -69,7 +79,7 @@ package body Wasabee.GWin.Windows is
       Top        => 0,
       Width      => 1, -- will be extended by docking
       Height     => 1, -- will be extended by docking
-      Text       => "Click here or press Ctrl-L for entering new Web address"
+      Text       => beginner_URL_blurb
     );
     Window.url_box.Dock(Fill);
     Window.tab_visuals.Create_As_Control(
@@ -117,6 +127,22 @@ package body Wasabee.GWin.Windows is
     Accelerator_Table (Window, "nix");
   end On_Lost_Focus;
 
+  procedure Refresh_title_and_URL(Window : in out Browser_window_type) is
+    active_tab: HTML_area_type
+      renames Window.tabs.Element(Window.active_tab).all;
+    title: constant GString:= active_tab.HTML_contents.Title;
+  begin
+    if title = "" then
+      Window.Text(
+        GU2G(Window.window_info_string) & " - active tab:" &
+             Integer'Wide_Image(Window.active_tab)
+        );
+    else
+      Window.Text(title);
+    end if;
+    Window.control_box.url_box.Text(S2G(S(active_tab.URL)));
+  end Refresh_title_and_URL;
+
   procedure Set_active_tab(
     Window : in out Browser_window_type;
     idx    : in     Positive)
@@ -133,9 +159,7 @@ package body Wasabee.GWin.Windows is
       end if;
       t_curs:= Next(t_curs);
     end loop;
-    Window.Text(
-      GU2G(Window.window_info_string) & " - active tab:" &
-      Integer'Wide_Image(idx));
+    Refresh_title_and_URL(Window);
   end Set_active_tab;
 
   procedure New_tab(Window : in out Browser_window_type) is
@@ -205,15 +229,7 @@ package body Wasabee.GWin.Windows is
     Wasabee.Request.Open_Url (S(active_tab.URL), Xhtml) ;
     -- ^ !! we will go through the cache to get the xhtml
     active_tab.HTML_contents.Load_frame(Xhtml);
-    declare
-      new_title: constant GString:= active_tab.HTML_contents.Title;
-    begin
-      if new_title = "" then
-        Window.Text("Untitled");
-      else
-        Window.Text(new_title);
-      end if;
-    end;
+    Refresh_title_and_URL(Window);
   end New_URL;
 
   procedure On_Menu_Select (
@@ -233,9 +249,13 @@ package body Wasabee.GWin.Windows is
       when ID_Close_Tab =>
         Window.Close_tab;
       when ID_New_Address =>
-        Window.control_box.url_box.Set_Selection(
-          0, Window.control_box.url_box.Text'Length
-        );
+        if Window.control_box.url_box.Text = beginner_URL_blurb then
+          Window.control_box.url_box.Text("");
+        else
+          Window.control_box.url_box.Set_Selection(
+            0, Window.control_box.url_box.Text'Length
+          );
+        end if;
         Window.control_box.url_box.Focus;
       when others =>
         On_Menu_Select (Window_Type (Window), Item);
