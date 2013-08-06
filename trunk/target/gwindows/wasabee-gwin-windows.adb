@@ -79,7 +79,7 @@ package body Wasabee.GWin.Windows is
       Top        => 0,
       Width      => 1, -- will be extended by docking
       Height     => 1, -- will be extended by docking
-      Text       => beginner_URL_blurb
+      Text       => ""
     );
     Window.url_box.Dock(Fill);
     Window.tab_visuals.Create_As_Control(
@@ -181,6 +181,7 @@ package body Wasabee.GWin.Windows is
     newcomer.Redraw(Redraw_Now => True);
     Window.tabs.Append(newcomer);
     Set_active_tab(Window, Window.tabs.Find_Index(newcomer));
+    Window.control_box.url_box.Text(beginner_URL_blurb);
     Window.Dock_Children;
     main_window.Update_control_frame;
   end New_tab;
@@ -249,13 +250,9 @@ package body Wasabee.GWin.Windows is
       when ID_Close_Tab =>
         Window.Close_tab;
       when ID_New_Address =>
-        if Window.control_box.url_box.Text = beginner_URL_blurb then
-          Window.control_box.url_box.Text("");
-        else
-          Window.control_box.url_box.Set_Selection(
-            0, Window.control_box.url_box.Text'Length
-          );
-        end if;
+        Window.control_box.url_box.Set_Selection(
+          0, Window.control_box.url_box.Text'Length
+        );
         Window.control_box.url_box.Focus;
       when others =>
         On_Menu_Select (Window_Type (Window), Item);
