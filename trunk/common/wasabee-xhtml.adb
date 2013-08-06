@@ -93,15 +93,16 @@ package body Wasabee.Xhtml is
       Style_Content : Unbounded_String ;
    begin
       List := Get_Elements_By_Tag_Name(Doc,"style");
-      Style := Item(List,0);      
-      List := Child_Nodes(Style) ;
-      Style := Item(List,0);
-      Put_Line("*********************** STYLE ******************************");
-      Put_Line(Value(Style));
-      
-      Set_Css_Value (Value(Style)) ;
-      Parse_Information ;
-      Put_Line("*********************** STYLE (FIN) *************************");
+      if Length(List) = 1 then
+	 Style := Item(List,0);      
+	 List := Child_Nodes(Style) ;
+	 Style := Item(List,0);
+	 Put_Line("*********************** STYLE ******************************");
+	 Put_Line(Value(Style));
+	 Set_Css_Value (Value(Style)) ;
+	 Parse_Information ;
+	 Put_Line("*********************** STYLE (FIN) *************************");	 
+      end if;      
    end ;
 
 
