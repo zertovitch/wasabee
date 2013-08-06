@@ -6,6 +6,10 @@ with GWindows.Message_Boxes;      use GWindows.Message_Boxes;
 with Wasabee.GWin.Main;           use Wasabee.GWin.Main;
 
 with Ada.Exceptions;
+with Ada.Command_Line;            use Ada.Command_Line;
+with Ada.Strings.UTF_Encoding.Conversions;
+use Ada.Strings.UTF_Encoding.Conversions;
+
 with GNAT.Traceback.Symbolic;
 
 procedure Wasabee_GWindows is
@@ -34,6 +38,16 @@ procedure Wasabee_GWindows is
 
 begin
     GWindows.Base.On_Exception_Handler (Handler => Interactive_crash'Unrestricted_Access);
-    Create (Top, "Wasabee");
+    Create (Top, "Wasabee invisble main window");
+    -- Open all arguments in separate tabs
+    for i in 1..Argument_Count loop
+      if i > 1 then
+        Top.windows.Element(1).New_Tab;
+      end if;
+      Top.windows.Element(1).control_box.url_box.Text(
+        Convert(Argument(i))
+      );
+      Top.windows.Element(1).New_URL;
+    end loop;
     Message_Loop;
 end Wasabee_GWindows;

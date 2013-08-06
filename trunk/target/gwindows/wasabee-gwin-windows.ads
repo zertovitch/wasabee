@@ -34,6 +34,9 @@ package Wasabee.GWin.Windows is
      lParam       : in     GWindows.Types.Lparam;
      Return_Value : in out GWindows.Types.Lresult);
 
+  overriding
+  procedure On_Focus (Window : in out URL_box_type);
+
   --------------------------------
   -- Control_box_type & methods --
   --------------------------------
@@ -74,7 +77,7 @@ package Wasabee.GWin.Windows is
   procedure Next_tab(Window : in out Browser_window_type);
   procedure Close_tab(Window : in out Browser_window_type);
 
-  -- New URL was given (perhaps typed in the URL box) and should be started
+  -- New URL was given (perhaps typed) in the URL box and should be started
   procedure New_URL(Window : in out Browser_window_type);
 
   -- NB: the menu is not created; only commands and shortcuts are used
