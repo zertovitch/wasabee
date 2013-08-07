@@ -25,7 +25,8 @@ package body Wasabee.Hypertext is
       Attrs    : constant Named_Node_Map := Attributes (Nd);
       Name     : constant DOM_String:= Node_Name(Nd);
       Value    : constant DOM_String:= Node_Value(Nd);
-      Tmp_attr   : Node;
+      Tmp_attr : Node;
+      kind     : Body_kind;
     begin
       -- Process the node itself
       case Level is
@@ -49,7 +50,17 @@ package body Wasabee.Hypertext is
                 ho.title:= U(To_UTF_16(Node_Value(Item(Children, 0))));
               end if;
             when in_body =>
-              null; --!!
+              if Name = "#text" then
+                put_line(value); --!!
+              else
+                begin
+                  kind:= Body_kind'Value(Name);
+                  put_line(kind'img);--!!
+                exception
+                  when Constraint_Error =>
+                    null; -- unknown tag
+                end;
+              end if;
             when nowhere =>
               null;
           end case;

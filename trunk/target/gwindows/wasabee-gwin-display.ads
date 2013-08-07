@@ -15,6 +15,7 @@ package Wasabee.GWin.Display is
   type Wasa_GWin_Panel is new Frame_plane with record
     -- Wasabee stuff
     -- GWindows stuff
+    -- !! font vector !!
     Draw_Control   : Drawing_Panel_Type;
     Drawing_Canvas : Drawing_Canvas_Type;
   end record;

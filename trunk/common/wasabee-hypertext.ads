@@ -21,9 +21,17 @@ private
 
   type p_Body_node is access Body_node;
 
-  type Body_Node is record
+  type Body_kind is (text, b,i,u, h1,h2,h3,h4,h5,h6);
+
+  type Body_Node(kind: Body_kind) is record
     x, y, w, h: Natural;
     next      : p_Body_node:= null; -- Next sibling
+    case kind is
+      when text       => content: UTF_16_Unbounded_String;
+      when b|i|u|
+           h1|h2|h3|
+           h4|h5|h6   => part: p_Body_node:= null;
+    end case;
   end record;
 
   type HTML_object is new Ada.Finalization.Controlled with record
