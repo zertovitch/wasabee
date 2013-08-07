@@ -1,5 +1,6 @@
 with Wasabee.Util;                      use Wasabee.Util;
 with Wasabee.Request;
+with Wasabee.Xhtml;
 
 with Wasabee.GWin.Main;                 use Wasabee.GWin.Main;
 with Wasabee.GWin.Tabs;                 use Wasabee.GWin.Tabs;
@@ -10,6 +11,7 @@ with GWindows.Base;                     use GWindows.Base;
 -- with GWindows.Message_Boxes;            use GWindows.Message_Boxes;
 
 with DOM.Core;
+with Dom.Core.Nodes;                    use Dom.Core.Nodes;
 
 -- with Ada.Text_IO;                       use Ada.Text_IO;
 
@@ -229,6 +231,7 @@ package body Wasabee.GWin.Windows is
     active_tab.URL:= U(G2S(Window.control_box.url_box.Text));
     Wasabee.Request.Open_Url (S(active_tab.URL), Xhtml) ;
     -- ^ !! we will go through the cache to get the xhtml
+    Wasabee.Xhtml.Display_All_Children(Item(xhtml,0));
     active_tab.HTML_contents.Load_frame(Xhtml);
     Refresh_title_and_URL(Window);
   end New_URL;

@@ -15,6 +15,10 @@ package body Wasabee.Display is
     on.Clear_area;
     -- Startup font
     on.Select_font(default_font);
+    on.bold_level:= 0;     
+    on.italic_level:= 0;  
+    on.undeline_level:= 0;  
+    on.font_list.Clear;
     on.Text_XY(10, 20, "This is Draw from Wasabee.Display (portable)");
     -- !!
   end Draw;
