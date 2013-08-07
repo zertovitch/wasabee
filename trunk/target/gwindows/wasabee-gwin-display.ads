@@ -1,7 +1,6 @@
 with Wasabee;                           use Wasabee;
 with Wasabee.Display;                   use Wasabee.Display;
 with Wasabee.Hypertext;                 use Wasabee.Hypertext;
-with Wasabee.Util;                      use Wasabee.Util;
 
 -- with GWindows.Cursors;
 -- with GWindows.Drawing;                  use GWindows.Drawing;
@@ -22,10 +21,24 @@ package Wasabee.GWin.Display is
   procedure Clear_area (on: in out Wasa_GWin_Panel);
 
   overriding
+  procedure Select_font(
+    on         : in out Wasa_GWin_Panel;
+    descriptor : in     Font_descriptor;
+    color      : in     Color_Code
+  );
+
+  overriding
   procedure Text_XY (
     on   : in out Wasa_GWin_Panel;
     x,y  : in     Integer;
     text : in     UTF_16_String
+  );
+
+  overriding
+  procedure Text_size (
+    on   : in out Wasa_GWin_Panel;
+    text : in     UTF_16_String;
+    x,y  :    out Integer
   );
 
 end Wasabee.GWin.Display;
