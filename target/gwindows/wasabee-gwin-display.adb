@@ -17,15 +17,24 @@ package body Wasabee.GWin.Display is
     );
   end Clear_area;
 
-  procedure Select_font(
+  procedure Create_target_font(
     on         : in out Wasa_GWin_Panel; 
     descriptor : in     Font_descriptor;
-    color      : in     Color_Code
+    index      : in     Positive
   )
   is
   begin
     null; -- !!
-  end Select_font;
+  end Create_target_font;
+  
+  procedure Select_target_font(
+    on         : in out Wasa_GWin_Panel; 
+    index      : in     Positive
+  )
+  is
+  begin
+    null; -- !!
+  end Select_target_font;
 
   procedure Text_XY (
     on   : in out Wasa_GWin_Panel; 

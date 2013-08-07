@@ -13,6 +13,8 @@ package Wasabee.GWin.Display is
   -- (phew!)
 
   type Wasa_GWin_Panel is new Frame_plane with record
+    -- Wasabee stuff
+    -- GWindows stuff
     Draw_Control   : Drawing_Panel_Type;
     Drawing_Canvas : Drawing_Canvas_Type;
   end record;
@@ -21,10 +23,16 @@ package Wasabee.GWin.Display is
   procedure Clear_area (on: in out Wasa_GWin_Panel);
 
   overriding
-  procedure Select_font(
+  procedure Create_target_font(
     on         : in out Wasa_GWin_Panel;
     descriptor : in     Font_descriptor;
-    color      : in     Color_Code
+    index      : in     Positive
+  );
+
+  overriding
+  procedure Select_target_font(
+    on         : in out Wasa_GWin_Panel;
+    index      : in     Positive
   );
 
   overriding
