@@ -22,6 +22,7 @@ with Dom.Core.Attrs         ; use Dom.Core.Attrs                        ;
 with Input_Sources.File;      use Input_Sources.File ;
 
 with Wasabee;
+with Wasabee.Caches;
 with Wasabee.Net ;            use Wasabee.Net ;
 with Wasabee.Xhtml ;          use Wasabee.Xhtml ;
 with Wasabee.Url   ;             use Wasabee.Url ;
@@ -29,6 +30,7 @@ with Wasabee.Url   ;             use Wasabee.Url ;
 with Sax.Readers ;
 
 package body Wasabee.Request is
+
    procedure Open_Url (The_Url : in String ; Nl : in out Node_List) is
       U : Wasabee.Url.URL ;
       Xhtml_Content : Unbounded_String ;
@@ -36,7 +38,7 @@ package body Wasabee.Request is
       Reader : Tree_Reader ;
    begin
       Decode(To_Unbounded_String(The_Url), U) ;
-      To_String(U);
+      Display_URL_details(U);
       if U.Protocole = "http" then
          begin
             Get_Http_Content (The_Url, Html_Content) ;
@@ -71,5 +73,23 @@ package body Wasabee.Request is
                Abort_Task (Current_Task);
          end;
       end if ;
-   end ;
+   end Open_Url;
+
+   procedure Open_Url (The_Url : in String ; contents : out Unbounded_String) is
+      U : Wasabee.Url.URL ;
+      Xhtml_Content : Unbounded_String ;
+      Html_Content : Unbounded_String ;
+      Reader : Tree_Reader ;
+   begin
+      Decode(To_Unbounded_String(The_Url), U) ;
+      Display_URL_details(U);
+      if U.Protocole = "http" then
+         Get_Http_Content (The_Url, contents) ;
+      elsif U.Protocole = "file" then
+         contents:= To_Unbounded_String(Wasabee.Caches.Load(To_String(U.Ressource)));
+      else
+         raise Constraint_Error with "Unknown protocol";
+      end if ;
+   end Open_Url;
+
 end Wasabee.Request ;
