@@ -1,3 +1,4 @@
+with Wasabee.Request;                   use Wasabee.Request;
 with Wasabee.Util;                      use Wasabee.Util;
 
 with Ada.IO_Exceptions;                 use Ada.IO_Exceptions;
@@ -46,7 +47,7 @@ package body Wasabee.Caches is
   procedure Get_item_contents_from_Web(item: in out Cache_item) is
     now: constant Time:= Clock;
   begin
-    item.contents:= U("from URL..."); -- load item.contents from URL !!
+    Open_URL(S(item.URL), item.contents);
     item.uncompressed_contents:= Null_Unbounded_String;
     if Ada.Directories.Exists(S(item.file_name)) then
       Ada.Directories.Delete_File(S(item.file_name));
@@ -144,8 +145,10 @@ package body Wasabee.Caches is
   -- we save memory cache to files if not yet done.
 
   procedure Save_to_file(item: in out Cache_item) is
+    url: String:= S(item.URL);
   begin
-    if item.file_name = "" then
+    if url'Length >= 4 and then url(url'First..url'First+3) = "http" and then
+    item.file_name = "" then
       item.file_name:= U(Available_cache_item_name);
       Save(S(item.file_name), S(item.contents));
     end if;

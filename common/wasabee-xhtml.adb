@@ -3,7 +3,7 @@ with Ada.Text_IO ; use Ada.Text_IO ;
 
 with Unicode.CES.Utf8        ;
 
-with Wasabee.Css ; use Wasabee.Css ; 
+with Wasabee.Css ; use Wasabee.Css ;
 
 package body Wasabee.Xhtml is
 
@@ -67,7 +67,7 @@ package body Wasabee.Xhtml is
       --    Put_Line("************************* TARGET ****************************") ;
       --    Put_Line(To_String(Target));
       -- end if;
-   end;
+   end Extract_Html;
 
    procedure Get_Xhtml_Content (Content : String ;
                                 List : in out Node_List ;
@@ -82,8 +82,8 @@ package body Wasabee.Xhtml is
       Doc := Get_Tree(Reader);
       List  := Get_Elements_By_Tag_Name(Doc,"html");
       Get_Style(Doc) ;
-   end;
-   
+   end Get_Xhtml_Content;
+
    --
    -- Recupere le style d'un document ... roxe
    --
@@ -94,15 +94,15 @@ package body Wasabee.Xhtml is
    begin
       List := Get_Elements_By_Tag_Name(Doc,"style");
       if Length(List) = 1 then
-	 Style := Item(List,0);      
+	 Style := Item(List,0);
 	 List := Child_Nodes(Style) ;
 	 Style := Item(List,0);
 	 Put_Line("*********************** STYLE ******************************");
 	 Put_Line(Value(Style));
 	 Set_Css_Value (Value(Style)) ;
 	 Parse_Information ;
-	 Put_Line("*********************** STYLE (FIN) *************************");	 
-      end if;      
+	 Put_Line("*********************** STYLE (FIN) *************************");
+      end if;
    end ;
 
 

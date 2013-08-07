@@ -2,13 +2,13 @@ with Ada.Text_IO ; use Ada.Text_IO ;
 
 package body Wasabee.URL is
 
-   procedure To_String (U : in URL) is
+   procedure Display_URL_details (U : in URL) is
    begin
       Put_Line("protocole : " & To_String(U.Protocole));
       Put_Line("host      : " & To_String(U.Host));
       Put_Line("Port      : " & Natural'Image(U.Port));
       Put_Line("Ressource : " & To_String(U.Ressource));
-   end ;
+   end Display_URL_details;
 
    procedure Decode (Adr : in Unbounded_String ; U : in out URL) is
       No_Protocole : Boolean ;
@@ -83,7 +83,7 @@ package body Wasabee.URL is
       Put_Line("*******************************************************");
       Tmp := To_Unbounded_String(U);
       Decode(Tmp, Trg);
-      To_String(Trg);
+      Display_URL_details(Trg);
    end ;
 
    procedure General_Test is

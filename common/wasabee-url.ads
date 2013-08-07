@@ -9,7 +9,7 @@ package Wasabee.URL is
       Ressource  : Unbounded_String ;
    end record;
 
-   procedure To_String (U : in URL) ;
+   procedure Display_URL_details (U : in URL) ;
 
    procedure Decode (Adr : in Unbounded_String ; U : in out URL) ;
 

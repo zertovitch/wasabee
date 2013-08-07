@@ -28,6 +28,8 @@ package Wasabee.Caches is
 
   function Object_count(c: Cache_type) return Natural;
 
+  function Load(file_name: String) return String;
+
 private
 
   type Cache_item is record
