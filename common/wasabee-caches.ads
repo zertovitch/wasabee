@@ -4,6 +4,8 @@
 -- Then, call Get_contents to retrieve contents.
 --
 
+with Wasabee.Hypertext;                 use Wasabee.Hypertext;
+
 with Ada.Calendar;                      use Ada.Calendar;
 with Ada.Containers.Hashed_Maps;
 with Ada.Containers.Ordered_Maps;
@@ -30,8 +32,11 @@ private
 
   type Cache_item is record
     URL,
+    -- Memory cache - we memorize decoded contents when there are --
     contents,
-    uncompressed_contents,   -- e.g. bitmap of a jpeg, current frame of an anim.
+    uncompressed_contents  : Unbounded_String; -- e.g. JPEG -> BMP
+    ht                     : HTML_object;      -- with layout etc.
+    -- File cache --
     file_name              : Unbounded_String;
     first_hit,
     latest_hit             : Time;
