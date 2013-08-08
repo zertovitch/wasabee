@@ -133,7 +133,7 @@ package body Wasabee.GWin.Windows is
   procedure Refresh_title_and_URL(Window : in out Browser_window_type) is
     active_tab: HTML_area_type
       renames Window.tabs.Element(Window.active_tab).all;
-    title: constant GString:= active_tab.HTML_contents.Title;
+    title: constant GString:= S(active_tab.HTML_contents.Title);
   begin
     if title = "" then
       Window.Text(
@@ -235,6 +235,7 @@ package body Wasabee.GWin.Windows is
     Wasabee.Xhtml.Display_All_Children(Item(xhtml,0));
     active_tab.HTML_contents.Load_frame(Xhtml);
     active_tab.HTML_contents.Dump(Ada.Wide_Text_IO.Standard_Output);
+    active_tab.Wasa_Panel.Draw(active_tab.HTML_contents);
     Refresh_title_and_URL(Window);
   end New_URL;
 
