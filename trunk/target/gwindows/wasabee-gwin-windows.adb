@@ -14,6 +14,7 @@ with DOM.Core;
 with Dom.Core.Nodes;                    use Dom.Core.Nodes;
 
 -- with Ada.Text_IO;                       use Ada.Text_IO;
+with Ada.Wide_Text_IO;
 
 package body Wasabee.GWin.Windows is
 
@@ -233,6 +234,7 @@ package body Wasabee.GWin.Windows is
     -- ^ !! we will go through the cache to get the xhtml
     Wasabee.Xhtml.Display_All_Children(Item(xhtml,0));
     active_tab.HTML_contents.Load_frame(Xhtml);
+    active_tab.HTML_contents.Dump(Ada.Wide_Text_IO.Standard_Output);
     Refresh_title_and_URL(Window);
   end New_URL;
 

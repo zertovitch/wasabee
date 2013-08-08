@@ -3,6 +3,7 @@ with DOM.Core;
 with Ada.Finalization;
 with Ada.Strings.UTF_Encoding;
 with Ada.Strings.Wide_Unbounded;        use Ada.Strings.Wide_Unbounded;
+with Ada.Wide_Text_IO;
 
 package Wasabee.Hypertext is
 
@@ -15,6 +16,8 @@ package Wasabee.Hypertext is
 
   function Title(ho: HTML_object) return UTF_16_String;
 
+  procedure Dump(ho: HTML_object; file: Ada.Wide_Text_IO.File_Type);
+
 private
 
   type Body_node;
@@ -25,18 +28,21 @@ private
 
   type Body_Node(kind: Body_kind) is record
     x, y, w, h: Natural;
-    next      : p_Body_node:= null; -- Next sibling
+    next      : aliased p_Body_node:= null; -- Next sibling
     case kind is
       when text       => content: UTF_16_Unbounded_String;
       when b|i|u|
            h1|h2|h3|
-           h4|h5|h6   => part: p_Body_node:= null;
+           h4|h5|h6   => part: aliased p_Body_node:= null;
     end case;
   end record;
 
   type HTML_object is new Ada.Finalization.Controlled with record
     title   : UTF_16_Unbounded_String;
-    the_body: p_Body_node;
+    the_body: aliased p_Body_node;
   end record;
+
+  overriding
+  procedure Finalize(ho: in out HTML_object);
 
 end Wasabee.Hypertext;
