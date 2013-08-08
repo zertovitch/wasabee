@@ -145,10 +145,11 @@ package body Wasabee.Caches is
   -- we save memory cache to files if not yet done.
 
   procedure Save_to_file(item: in out Cache_item) is
-    url: String:= S(item.URL);
+    url: constant String:= S(item.URL);
   begin
     if url'Length >= 4 and then url(url'First..url'First+3) = "http" and then
-    item.file_name = "" then
+      item.file_name = ""
+    then
       item.file_name:= U(Available_cache_item_name);
       Save(S(item.file_name), S(item.contents));
     end if;
