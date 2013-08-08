@@ -4,18 +4,28 @@ with Wasabee.Hypertext;                 use Wasabee.Hypertext;
 
 -- with GWindows.Cursors;
 -- with GWindows.Drawing;                  use GWindows.Drawing;
--- with GWindows.Drawing_Objects;          use GWindows.Drawing_Objects;
+with GWindows.Drawing_Objects;          use GWindows.Drawing_Objects;
 with GWindows.Drawing_Panels;           use GWindows.Drawing_Panels;
+
+with Ada.Containers.Vectors;
 
 package Wasabee.GWin.Display is
 
   -- Here we mix the abstract Wasa graphics and the GWindows graphics
   -- (phew!)
 
+  type p_Font_Type is access Font_Type;
+
+  package GW_Font_Vectors is new Ada.Containers.Vectors(
+    Index_Type   => Positive,
+    Element_Type => p_Font_Type
+  );
+
   type Wasa_GWin_Panel is new Frame_plane with record
     -- Wasabee stuff
+
     -- GWindows stuff
-    -- !! font vector !!
+    gw_font_list   : GW_Font_Vectors.Vector; -- list with same indices as Frame_plane.font_list
     Draw_Control   : Drawing_Panel_Type;
     Drawing_Canvas : Drawing_Canvas_Type;
   end record;
@@ -27,7 +37,7 @@ package Wasabee.GWin.Display is
   procedure Create_target_font(
     on         : in out Wasa_GWin_Panel;
     descriptor : in     Font_descriptor;
-    index      : in     Positive
+    new_index  : in     Positive
   );
 
   overriding
@@ -35,6 +45,9 @@ package Wasabee.GWin.Display is
     on         : in out Wasa_GWin_Panel;
     index      : in     Positive
   );
+
+  overriding
+  procedure Destroy_target_fonts(on: in out Wasa_GWin_Panel);
 
   overriding
   procedure Text_XY (
@@ -47,7 +60,7 @@ package Wasabee.GWin.Display is
   procedure Text_size (
     on   : in out Wasa_GWin_Panel;
     text : in     UTF_16_String;
-    x,y  :    out Integer
+    x,y  :    out Natural
   );
 
 end Wasabee.GWin.Display;

@@ -37,6 +37,8 @@ package Wasabee.Display is
     descriptor : in     Font_descriptor
   );
 
+  function Get_current_font(on : in Frame_plane'Class) return Font_descriptor;
+
   --------------------------------------------------------------
   -- ** Abstract methods that are implementation-dependent ** --
   --------------------------------------------------------------
@@ -58,9 +60,11 @@ package Wasabee.Display is
   
   procedure Select_target_font(
     on         : in out Frame_plane; 
-    index      : in     Positive
+    new_index  : in     Positive -- the new index should match the new index on target
   )
   is abstract;
+
+  procedure Destroy_target_fonts(on: in out Frame_plane) is abstract; 
 
   procedure Text_XY (
     on   : in out Frame_plane; 
@@ -72,7 +76,7 @@ package Wasabee.Display is
   procedure Text_size (
     on   : in out Frame_plane; 
     text : in     UTF_16_String; 
-    x,y  :    out Integer
+    x,y  :    out Natural
   )
   is abstract;
 
@@ -83,13 +87,12 @@ private
     Element_Type => Font_descriptor
   );
 
-
   type Frame_plane is abstract new Ada.Finalization.Limited_Controlled with record
-    current_font   : Font_descriptor;
-    bold_level     : Natural; -- 0: not bold, 1: one <b>, 2: two <b> or <h1><b>, etc.
-    italic_level   : Natural;
-    undeline_level : Natural;
-    font_list      : Font_Vectors.Vector;
+    current_font     : Font_descriptor;
+    bold_level       : Natural; -- 0: not bold, 1: one <b>, 2: two <b> or <h1><b>, etc.
+    italic_level     : Natural;
+    underlined_level : Natural;
+    font_list        : Font_Vectors.Vector;
   end record;
 
 end Wasabee.Display;

@@ -8,4 +8,7 @@ package Wasabee.Util is
   function U (Source : String) return Unbounded_String renames To_Unbounded_String;
   function U (Source : Wide_String) return Unbounded_Wide_String renames To_Unbounded_Wide_String;
 
+  -- Remove multiple blanks and replace tabs, carriage returns, line feed, and so on by one blank
+  function Filter_blanks (s : Wide_String) return Wide_String;
+
 end Wasabee.Util;

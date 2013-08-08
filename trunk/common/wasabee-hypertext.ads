@@ -10,16 +10,6 @@ package Wasabee.Hypertext is
   subtype UTF_16_String is Ada.Strings.UTF_Encoding.UTF_16_Wide_String;
   subtype UTF_16_Unbounded_String is Unbounded_Wide_String;
 
-  type HTML_object is new Ada.Finalization.Controlled with private;
-
-  procedure Load_frame(ho: in out HTML_object; from: DOM.Core.Node_List);
-
-  function Title(ho: HTML_object) return UTF_16_String;
-
-  procedure Dump(ho: HTML_object; file: Ada.Wide_Text_IO.File_Type);
-
-private
-
   type Body_node;
 
   type p_Body_node is access Body_node;
@@ -41,6 +31,14 @@ private
     title   : UTF_16_Unbounded_String;
     the_body: aliased p_Body_node;
   end record;
+
+  procedure Load_frame(ho: in out HTML_object; from: DOM.Core.Node_List);
+
+  function Title(ho: HTML_object) return UTF_16_String;
+
+  procedure Dump(ho: HTML_object; file: Ada.Wide_Text_IO.File_Type);
+
+private
 
   overriding
   procedure Finalize(ho: in out HTML_object);

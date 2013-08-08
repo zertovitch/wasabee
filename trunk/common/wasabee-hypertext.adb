@@ -5,7 +5,7 @@ with Dom.Core.Nodes               ; use Dom.Core.Nodes                        ;
 
 with Ada.Strings.UTF_Encoding.Conversions;
 with Ada.Strings.Wide_Fixed;
-with Ada.Text_IO;                       use Ada.Text_IO;
+-- with Ada.Text_IO;                       use Ada.Text_IO;
 with Ada.Unchecked_Deallocation;
 
 package body Wasabee.Hypertext is
@@ -77,15 +77,13 @@ package body Wasabee.Hypertext is
               end if;
             when in_body =>
               if Name = "#text" then
-put_line("#text" & Value);--!!
                 new_node:= new Body_Node(text);
-                new_node.content:= U(To_UTF_16(Value));
+                new_node.content:= U(Filter_blanks(To_UTF_16(Value)));
                 current_body_pointer.all:= new_node;
                 current_body_pointer:= new_node.next'Access; -- ready for next sibling
               else -- try with tags
                 begin
                   kind:= Body_kind'Value(Name);
-put_line(kind'img);--!!
                   new_node:= new Body_Node(kind);
                   current_body_pointer.all:= new_node;
                   current_body_pointer:= new_node.part'Access; -- children will be se (if any)
