@@ -9,8 +9,7 @@ copy wasabee_gwindows.exe Wasabee_Debug.exe
 del wasabee_gwindows.exe
 gnatmake -P wasa_gwindows %1 -XBuild_Mode=Fast
 copy wasabee_gwindows.exe Wasabee.exe
-del wasabee_gwindows.exe
 copy Wasabee.exe "Wasabee (ver) win32.exe"
-upx --ultra-brute "Wasabee (ver) win32.exe"
+rem upx --ultra-brute "Wasabee (ver) win32.exe"
 copy "Wasabee (ver) win32.exe" Wasabee.exe
 
