@@ -14,16 +14,41 @@ package Wasabee.Hypertext is
 
   type p_Body_node is access Body_node;
 
-  type Body_kind is (text, b,i,u, h1,h2,h3,h4,h5,h6);
+  type Body_kind is (
+    text, b,i,u,strike,
+    h1, h2, h3, h4, h5, h6,
+    hr, br,
+    p, div
+  );
+
+  text_or_singleton_tag: array(Body_kind) of Boolean:=
+    (text | hr | br => True,
+     others => False);
+  -- <area>
+  -- <base>
+  -- <basefont>
+  -- <br>
+  -- <col>
+  -- <frame>
+  -- <hr>
+  -- <img>
+  -- <input>
+  -- <isindex>
+  -- <link>
+  -- <meta>
+  -- <param>
 
   type Body_Node(kind: Body_kind) is record
     x, y, w, h: Natural;
     next      : aliased p_Body_node:= null; -- Next sibling
     case kind is
       when text       => content: UTF_16_Unbounded_String;
-      when b|i|u|
+      when hr         => null; -- hr style !!
+      when br         => null;
+      when b|i|u|strike|
            h1|h2|h3|
-           h4|h5|h6   => part: aliased p_Body_node:= null;
+           h4|h5|h6|
+           p | div    => part: aliased p_Body_node:= null;
     end case;
   end record;
 

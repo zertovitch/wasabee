@@ -1,3 +1,7 @@
+------------------------------------------------------------
+-- This is the GWindows implementation of Wasabee.Display --
+------------------------------------------------------------
+
 with Wasabee;                           use Wasabee;
 with Wasabee.Display;                   use Wasabee.Display;
 with Wasabee.Hypertext;                 use Wasabee.Hypertext;
@@ -11,9 +15,6 @@ with Ada.Containers.Vectors;
 
 package Wasabee.GWin.Display is
 
-  -- Here we mix the abstract Wasa graphics and the GWindows graphics
-  -- (phew!)
-
   type p_Font_Type is access Font_Type;
 
   package GW_Font_Vectors is new Ada.Containers.Vectors(
@@ -21,13 +22,13 @@ package Wasabee.GWin.Display is
     Element_Type => p_Font_Type
   );
 
-  type Wasa_GWin_Panel is new Frame_plane with record
-    -- Wasabee stuff
+  -- Here we mix the abstract Wasa graphics and the GWindows graphics (phew!)
 
-    -- GWindows stuff
-    gw_font_list   : GW_Font_Vectors.Vector; -- list with same indices as Frame_plane.font_list
+  type Wasa_GWin_Panel is new Frame_plane with record
+    -- GWindows stuff:
     Draw_Control   : Drawing_Panel_Type;
     Drawing_Canvas : Drawing_Canvas_Type;
+    gw_font_list   : GW_Font_Vectors.Vector; -- list with same indices as Frame_plane.font_list
   end record;
 
   overriding
