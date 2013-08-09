@@ -13,11 +13,12 @@ package Wasabee.Display is
   subtype Font_face_name is Unbounded_String;
 
   type Font_descriptor is record
-    face       : Font_face_name;
-    size       : Positive;
-    bold       : Boolean;
-    italic     : Boolean;
-    underlined : Boolean;
+    face          : Font_face_name;
+    size          : Positive;
+    bold          : Boolean;
+    italic        : Boolean;
+    underlined    : Boolean;
+    strikethrough : Boolean;
   end record;
 
   ----------------------------------------------------------
@@ -49,18 +50,21 @@ package Wasabee.Display is
   -- Text --
   ----------
 
-  -- Implemetation manages a Vector of fonts, indexed by 1,2,3,...
+  -- Implementation manages a Vector of fonts, indexed by 1,2,3,...
+  -- The indices should match the indices passed in parameter
+  -- in Create_target_font and Select_target_font.
+  -- By each call of Create_target_font, new_index is increased by one.
 
   procedure Create_target_font(
     on         : in out Frame_plane; 
     descriptor : in     Font_descriptor;
-    index      : in     Positive
+    new_index  : in     Positive -- the new index should match the new index on target
   )
   is abstract;
   
   procedure Select_target_font(
     on         : in out Frame_plane; 
-    new_index  : in     Positive -- the new index should match the new index on target
+    index      : in     Positive 
   )
   is abstract;
 
@@ -88,11 +92,13 @@ private
   );
 
   type Frame_plane is abstract new Ada.Finalization.Limited_Controlled with record
-    current_font     : Font_descriptor;
-    bold_level       : Natural; -- 0: not bold, 1: one <b>, 2: two <b> or <h1><b>, etc.
-    italic_level     : Natural;
-    underlined_level : Natural;
-    font_list        : Font_Vectors.Vector;
+    current_font        : Font_descriptor;
+    font_list           : Font_Vectors.Vector; -- all defined distinct Font_descriptors
+    -- Font modifiers (actually will activate a new font in some systems)
+    bold_level          : Natural; -- 0: not bold, 1: one <b>, 2: two <b> or <h1><b>, etc.
+    italic_level        : Natural;
+    underlined_level    : Natural;
+    strikethrough_level : Natural;
   end record;
 
 end Wasabee.Display;

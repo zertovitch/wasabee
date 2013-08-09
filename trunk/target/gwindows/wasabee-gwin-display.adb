@@ -37,7 +37,7 @@ package body Wasabee.GWin.Display is
       Weight     => w(descriptor.bold),
       Italics    => descriptor.italic,
       Underline  => descriptor.underlined,
-      Strike_Out => False,
+      Strike_Out => descriptor.strikethrough,
       Angle      => 0,
       Char_Set   => ANSI_CHARSET -- !!
     );

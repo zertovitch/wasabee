@@ -86,8 +86,10 @@ package body Wasabee.Hypertext is
                   kind:= Body_kind'Value(Name);
                   new_node:= new Body_Node(kind);
                   current_body_pointer.all:= new_node;
-                  current_body_pointer:= new_node.part'Access; -- children will be se (if any)
-                  Process_children;
+                  if not text_or_singleton_tag(kind) then
+                    current_body_pointer:= new_node.part'Access; -- children will be set (if any)
+                    Process_children;
+                  end if;
                   current_body_pointer:= new_node.next'Access; -- ready for next sibling
                 exception
                   when Constraint_Error =>
@@ -121,9 +123,13 @@ package body Wasabee.Hypertext is
       case bn.kind is
         when text       =>
           Put_Line(file, "text: " & S(bn.content));
-        when b|i|u|
+        when br | hr    =>
+          Put_Line(file, '<' & Body_kind'Wide_Image(bn.kind) & '>');
+        when b|i|u|strike|
              h1|h2|h3|
-             h4|h5|h6   =>
+             h4|h5|h6|
+             p|div
+             =>
           Put_Line(file, '<' & Body_kind'Wide_Image(bn.kind) & '>');
           Dump_body(bn.part, level + 1);
       end case;
@@ -143,11 +149,12 @@ package body Wasabee.Hypertext is
         return;
       end if;
       case bn.kind is
-        when text       =>
+        when text|hr|br       =>
           null;
-        when b|i|u|
+        when b|i|u|strike|
              h1|h2|h3|
-             h4|h5|h6   =>
+             h4|h5|h6|
+             p|div=>
           Delete_body(bn.part);
       end case;
       Delete_body(bn.next);
