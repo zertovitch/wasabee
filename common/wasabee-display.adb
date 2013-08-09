@@ -47,22 +47,23 @@ package body Wasabee.Display is
     procedure Show_text(t: UTF_16_String) is
       x, y : Natural;
     begin
-      -- multi-line!!
-      if (skip_leading_blank and t'Length > 0) and then t(t'First)=' ' then
-        Show_text(t(t'First+1 .. t'Last));
-      else
-        on.Text_XY(curs_x, curs_y, t);
-        on.Text_size(t, x, y);
-        curs_x:= curs_x + x;
+      -- implement multi-line text!!
+      if t'Length > 0 then
+        if skip_leading_blank and then t(t'First)=' ' then
+          Show_text(t(t'First+1 .. t'Last));
+        else
+          on.Text_XY(curs_x, curs_y, t);
+          on.Text_size(t, x, y);
+          curs_x:= curs_x + x;
+          show_next_line_break:= True; -- there was some text
+        end if;
+        skip_leading_blank:= False;
       end if;
-      skip_leading_blank:= False;
-      show_next_line_break:= True;
     end Show_text;    
   
     procedure Apply_font_modifiers is
-      font: Font_descriptor;
+      font: Font_descriptor:= on.Get_current_font;
     begin
-      font:= on.Get_current_font;
       font.bold          := on.bold_level > 0;
       font.italic        := on.italic_level > 0;
       font.underlined    := on.underlined_level > 0;
@@ -78,13 +79,13 @@ package body Wasabee.Display is
       case bn.kind is
         when text       =>
           Show_text(S(bn.content));
-        when b =>
+        when b | strong =>
           on.bold_level:= on.bold_level + 1;
           Apply_font_modifiers;
           Draw_body(bn.part, level + 1);
           on.bold_level:= on.bold_level - 1;
           Apply_font_modifiers;
-        when i =>
+        when i | em | var | dfn =>
           on.italic_level:= on.italic_level + 1;
           Apply_font_modifiers;
           Draw_body(bn.part, level + 1);
@@ -102,6 +103,16 @@ package body Wasabee.Display is
           Draw_body(bn.part, level + 1);
           on.strikethrough_level:= on.strikethrough_level - 1;
           Apply_font_modifiers;
+        when code | samp | kbd | tt =>
+          declare
+            mem_font: constant Font_descriptor:= on.Get_current_font;
+            monospace_font: Font_descriptor:= mem_font;
+          begin
+            monospace_font.face:= U("Courier New"); -- !! hardcoded
+            on.Select_font(monospace_font);
+            Draw_body(bn.part, level + 1);
+            on.Select_font(mem_font); -- restore previous font
+          end;
         when h1 | h2 | h3 | h4 | h5 | h6   =>
           -- Select style here !!
           New_Line;

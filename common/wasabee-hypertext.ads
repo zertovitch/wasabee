@@ -15,7 +15,10 @@ package Wasabee.Hypertext is
   type p_Body_node is access Body_node;
 
   type Body_kind is (
-    text, b,i,u,strike,
+    text,
+    b,i,u,strike,
+    strong, em, dfn, var,
+    code, samp, kbd, tt,
     h1, h2, h3, h4, h5, h6,
     hr, br,
     p, div
@@ -46,6 +49,8 @@ package Wasabee.Hypertext is
       when hr         => null; -- hr style !!
       when br         => null;
       when b|i|u|strike|
+           strong| em| dfn| var|
+           code| samp| kbd| tt|
            h1|h2|h3|
            h4|h5|h6|
            p | div    => part: aliased p_Body_node:= null;

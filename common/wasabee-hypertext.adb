@@ -126,6 +126,8 @@ package body Wasabee.Hypertext is
         when br | hr    =>
           Put_Line(file, '<' & Body_kind'Wide_Image(bn.kind) & '>');
         when b|i|u|strike|
+             strong| em| dfn| var|
+             code| samp| kbd| tt|
              h1|h2|h3|
              h4|h5|h6|
              p|div
@@ -152,6 +154,7 @@ package body Wasabee.Hypertext is
         when text|hr|br       =>
           null;
         when b|i|u|strike|
+             strong| em| dfn| var| code| samp| kbd| tt|
              h1|h2|h3|
              h4|h5|h6|
              p|div=>
