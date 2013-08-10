@@ -8,10 +8,7 @@ package body Wasabee.Display is
   default_font: constant Font_descriptor:=
     (face          => U("Calibri"),
      size          => 22, -- !! pixel or pt
-     bold          => False,
-     italic        => False,
-     underlined    => False,
-     strikethrough => False
+     modifier      => (others => False)
     );
 
   procedure Draw (on: in out Frame_plane'Class; o: HTML_object) is
@@ -61,10 +58,9 @@ package body Wasabee.Display is
     procedure Apply_font_modifiers is
       font: Font_descriptor:= on.Get_current_font;
     begin
-      font.bold          := on.modifier_level(bold) > 0;
-      font.italic        := on.modifier_level(italic) > 0;
-      font.underlined    := on.modifier_level(underlined) > 0;
-      font.strikethrough := on.modifier_level(strikethrough) > 0;
+      for fm in Font_modifier loop
+        font.modifier(fm):= on.modifier_level(fm) > 0;
+      end loop;
       on.Select_font(font);
     end Apply_font_modifiers;
  
