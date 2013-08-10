@@ -1,6 +1,6 @@
 with Ada.Strings.Unbounded        ; use Ada.Strings.Unbounded ;
 
-with unicode.Ces                  ; use unicode.Ces                      ;
+-- with unicode.Ces                  ; use unicode.Ces                      ;
 with unicode.ccs.Iso_8859_1       ; use unicode.ccs.Iso_8859_1           ;
 
 with input_sources.Strings        ; use input_sources.Strings            ;
@@ -25,7 +25,7 @@ package Wasabee.Xhtml is
 
    procedure Extract_Html ( Source : in Unbounded_String ;
                             Target : in out Unbounded_String ) ;
-   
+
    procedure Get_Style (Doc : Document) ;
-   
+
 end ;

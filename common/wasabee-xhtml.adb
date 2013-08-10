@@ -90,18 +90,18 @@ package body Wasabee.Xhtml is
    procedure Get_Style (Doc : Document) is
       List : Node_List ;
       Style : Node ;
-      Style_Content : Unbounded_String ;
+      -- Style_Content : Unbounded_String ;
    begin
       List := Get_Elements_By_Tag_Name(Doc,"style");
       if Length(List) = 1 then
-	 Style := Item(List,0);
-	 List := Child_Nodes(Style) ;
-	 Style := Item(List,0);
-	 Put_Line("*********************** STYLE ******************************");
-	 Put_Line(Value(Style));
-	 Set_Css_Value (Value(Style)) ;
-	 Parse_Information ;
-	 Put_Line("*********************** STYLE (FIN) *************************");
+         Style := Item(List,0);
+         List := Child_Nodes(Style) ;
+         Style := Item(List,0);
+         Put_Line("*********************** STYLE ******************************");
+         Put_Line(Value(Style));
+         Set_Css_Value (Value(Style)) ;
+         Parse_Information ;
+         Put_Line("*********************** STYLE (FIN) *************************");
       end if;
    end ;
 
