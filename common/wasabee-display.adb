@@ -22,10 +22,7 @@ package body Wasabee.Display is
     
     procedure Reset_text is
     begin
-      on.bold_level:= 0;     
-      on.italic_level:= 0;  
-      on.underlined_level:= 0;  
-      on.strikethrough_level:= 0;
+      on.modifier_level:= (others => 0);
       curs_x:= 0;
       curs_y:= 0;
       skip_leading_blank:= True;
@@ -64,14 +61,26 @@ package body Wasabee.Display is
     procedure Apply_font_modifiers is
       font: Font_descriptor:= on.Get_current_font;
     begin
-      font.bold          := on.bold_level > 0;
-      font.italic        := on.italic_level > 0;
-      font.underlined    := on.underlined_level > 0;
-      font.strikethrough := on.strikethrough_level > 0;
+      font.bold          := on.modifier_level(bold) > 0;
+      font.italic        := on.modifier_level(italic) > 0;
+      font.underlined    := on.modifier_level(underlined) > 0;
+      font.strikethrough := on.modifier_level(strikethrough) > 0;
       on.Select_font(font);
     end Apply_font_modifiers;
-  
+ 
     procedure Draw_body(bn: p_Body_Node; level: Natural:= 0) is -- Scary name ;-) !
+      mem_font: Font_descriptor;
+      --
+      procedure Draw_children_with_font_modification(fm: Font_modifier) is
+      begin
+        mem_font:= on.Get_current_font;
+        on.modifier_level(fm):= on.modifier_level(fm) + 1;
+        Apply_font_modifiers;
+        Draw_body(bn.part, level + 1);
+        on.modifier_level(fm):= on.modifier_level(fm) - 1;
+        on.Select_font(mem_font); -- restore font at node's start
+      end Draw_children_with_font_modification;
+      --
     begin
       if bn = null then
         return;
@@ -80,39 +89,24 @@ package body Wasabee.Display is
         when text       =>
           Show_text(S(bn.content));
         when b | strong =>
-          on.bold_level:= on.bold_level + 1;
-          Apply_font_modifiers;
-          Draw_body(bn.part, level + 1);
-          on.bold_level:= on.bold_level - 1;
-          Apply_font_modifiers;
+          Draw_children_with_font_modification(bold);
         when i | em | var | dfn =>
-          on.italic_level:= on.italic_level + 1;
-          Apply_font_modifiers;
-          Draw_body(bn.part, level + 1);
-          on.italic_level:= on.italic_level - 1;
-          Apply_font_modifiers;
+          Draw_children_with_font_modification(italic);
         when u =>
-          on.underlined_level:= on.underlined_level + 1;
-          Apply_font_modifiers;
-          Draw_body(bn.part, level + 1);
-          on.underlined_level:= on.underlined_level - 1;
-          Apply_font_modifiers;
+          Draw_children_with_font_modification(underlined);
         when strike =>
-          on.strikethrough_level:= on.strikethrough_level + 1;
-          Apply_font_modifiers;
-          Draw_body(bn.part, level + 1);
-          on.strikethrough_level:= on.strikethrough_level - 1;
-          Apply_font_modifiers;
+          Draw_children_with_font_modification(strikethrough);
         when code | samp | kbd | tt =>
+          mem_font:= on.Get_current_font;
           declare
-            mem_font: constant Font_descriptor:= on.Get_current_font;
             monospace_font: Font_descriptor:= mem_font;
           begin
             monospace_font.face:= U("Courier New"); -- !! hardcoded
+            monospace_font.size:= mem_font.size - 3; -- !! hardcoded
             on.Select_font(monospace_font);
             Draw_body(bn.part, level + 1);
-            on.Select_font(mem_font); -- restore previous font
           end;
+          on.Select_font(mem_font); -- restore font at node's start
         when h1 | h2 | h3 | h4 | h5 | h6   =>
           -- Select style here !!
           New_Line;

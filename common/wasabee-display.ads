@@ -91,14 +91,15 @@ private
     Element_Type => Font_descriptor
   );
 
+  type Font_modifier is (bold, italic, underlined, strikethrough);
+  type Font_modifier_level is array(Font_modifier) of Natural;
+
   type Frame_plane is abstract new Ada.Finalization.Limited_Controlled with record
     current_font        : Font_descriptor;
     font_list           : Font_Vectors.Vector; -- all defined distinct Font_descriptors
     -- Font modifiers (actually will activate a new font in some systems)
-    bold_level          : Natural; -- 0: not bold, 1: one <b>, 2: two <b> or <h1><b>, etc.
-    italic_level        : Natural;
-    underlined_level    : Natural;
-    strikethrough_level : Natural;
+    modifier_level      : Font_modifier_level; 
+    -- ^ 0: not bold, 1: one <b>, 2: two <b> or <h1><b>, etc.
   end record;
 
 end Wasabee.Display;
