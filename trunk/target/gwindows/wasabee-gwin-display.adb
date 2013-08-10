@@ -34,10 +34,10 @@ package body Wasabee.GWin.Display is
     f.Create_Font(
       Name       => S2G(S(descriptor.face)),
       Size       => descriptor.size,
-      Weight     => w(descriptor.bold),
-      Italics    => descriptor.italic,
-      Underline  => descriptor.underlined,
-      Strike_Out => descriptor.strikethrough,
+      Weight     => w(descriptor.modifier(bold)),
+      Italics    => descriptor.modifier(italic),
+      Underline  => descriptor.modifier(underlined),
+      Strike_Out => descriptor.modifier(strikethrough),
       Angle      => 0,
       Char_Set   => ANSI_CHARSET -- !!
     );

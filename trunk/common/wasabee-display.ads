@@ -11,14 +11,13 @@ package Wasabee.Display is
   White: constant Color_Code:= 16#FF_FF_FF#;
 
   subtype Font_face_name is Unbounded_String;
+  type Font_modifier is (bold, italic, underlined, strikethrough);
+  type Font_modifier_switch is array(Font_modifier) of Boolean;
 
   type Font_descriptor is record
     face          : Font_face_name;
     size          : Positive;
-    bold          : Boolean;
-    italic        : Boolean;
-    underlined    : Boolean;
-    strikethrough : Boolean;
+    modifier      : Font_modifier_switch;
   end record;
 
   ----------------------------------------------------------
@@ -91,7 +90,6 @@ private
     Element_Type => Font_descriptor
   );
 
-  type Font_modifier is (bold, italic, underlined, strikethrough);
   type Font_modifier_level is array(Font_modifier) of Natural;
 
   type Frame_plane is abstract new Ada.Finalization.Limited_Controlled with record
