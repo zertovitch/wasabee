@@ -58,7 +58,7 @@ package body Wasabee.Display is
       end if;
     end Show_text;    
   
-    procedure New_Line is
+    procedure New_Line(with_marker: Boolean:= False) is
       x, y : Natural;
     begin
       if show_next_line_break then
@@ -69,10 +69,30 @@ package body Wasabee.Display is
           when none =>
             null;
           when numbered =>
-            Show_text(Positive'Wide_Image(numbering) & ". ");
-            numbering:= numbering + 1;
+            declare
+              marker: constant Wide_String:= Positive'Wide_Image(numbering) & ". ";
+              -- !! hardcoded
+            begin
+              if with_marker then
+                Show_text(marker);
+                numbering:= numbering + 1;
+              else
+                on.Text_size(marker, x, y);
+                curs_x:= curs_x + x;
+              end if;
+            end;
           when bullets =>
-            Show_text(Wide_Character'Val(8226) & ' '); -- !! hardcoded bullet
+            declare
+              marker: constant Wide_String:= Wide_Character'Val(8226) & ' ';
+              -- !! hardcoded
+            begin
+              if with_marker then
+                Show_text(marker);
+              else
+                on.Text_size(marker, x, y);
+                curs_x:= curs_x + x;
+              end if;
+            end;
         end case;
         skip_leading_blank:= True;
       end if;
@@ -180,7 +200,7 @@ package body Wasabee.Display is
           end;
           New_Line;
         when Li =>
-          New_Line;
+          New_Line(with_marker => True);
           Draw_body(bn.first_child, level + 1);
       end case;
       Draw_body(bn.next, level);
