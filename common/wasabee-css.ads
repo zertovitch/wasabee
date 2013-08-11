@@ -19,6 +19,7 @@ package Wasabee.Css is
    -- Les properties generale de la page
    General_Properties : access CSS_Properties.Vector ;
    type Css_Properties_Ptr is access all CSS_Properties.Vector ;
+
    type CSS_Dictionary_Entry is record
       Key   : Unbounded_String ;
       Value : CSS_Properties.Vector ;
@@ -35,15 +36,15 @@ package Wasabee.Css is
    function  Clean (Content : in Unbounded_String) return Unbounded_String ;
 
    procedure Read_CSS_File (S: String) ;
-   
+
    procedure Parse_CSS_Element (Element : Unbounded_String) ;
 
    procedure Parse_Information ;
 
-   procedure Set_CSS_Value ( Content : String) ;
+   procedure Set_CSS_Value ( Content : String ) ;
 
-
-
+   procedure Get_Css_Unit_Element (Content : String ;
+                                   Props : in out Css_Properties.Vector) ;
 
 end ;
 

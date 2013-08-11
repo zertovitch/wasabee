@@ -15,6 +15,7 @@ package body Wasabee.Xhtml is
       Attrs : Named_Node_Map ;
       Lgt   : Natural ;
       Tmp   : Node;
+      Props : Css_Properties.Vector;
    begin
       Put_Line(Node_Name(Nd) & " -> " & Value(Nd));
 
@@ -25,6 +26,7 @@ package body Wasabee.Xhtml is
          Put(" attribute #" & Integer'Image(Index) & ": ");
          Display_Node(Tmp);
       end loop;
+      Get_Style(Nd,Props) ;
 
    end;
 
@@ -104,6 +106,19 @@ package body Wasabee.Xhtml is
          Put_Line("*********************** STYLE (FIN) *************************");
       end if;
    end ;
+
+   procedure Get_Style (Nd : in Node ; Props : in out Css_Properties.Vector) is
+      A: Attr ;
+   begin
+      A := Get_Named_Item(Attributes(Nd),"style") ;
+      -- Put_Line("Displaying style : " & Value(A)) ;
+      Get_Css_Unit_Element(Value(A), Props);
+   exception
+      when others =>
+        null; -- Put_Line("no style");
+   end ;
+
+
 
 
 end ;

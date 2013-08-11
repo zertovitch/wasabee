@@ -11,6 +11,8 @@ with Dom.Core.Documents           ; use Dom.Core.Documents                    ;
 with Dom.Core.Nodes               ; use Dom.Core.Nodes                        ;
 with Dom.Core.Attrs               ; use Dom.Core.Attrs                        ;
 
+with Wasabee.Css                  ; use Wasabee.Css ;
+
 package Wasabee.Xhtml is
 
    procedure Display_Node (Nd : Node) ;
@@ -27,5 +29,7 @@ package Wasabee.Xhtml is
                             Target : in out Unbounded_String ) ;
 
    procedure Get_Style (Doc : Document) ;
+
+   procedure Get_Style (Nd : in Node ; Props : in out Css_Properties.Vector) ;
 
 end ;
