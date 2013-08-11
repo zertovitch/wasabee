@@ -15,45 +15,35 @@ package Wasabee.Hypertext is
   type p_Body_node is access Body_node;
 
   type Body_kind is (
+    -- Text or singleton tags
     text,
+    hr, br,
+    -- Normal tags
     b,i,u,strike,
     strong, em, dfn, var,
     code, samp, kbd, tt,
     h1, h2, h3, h4, h5, h6,
-    hr, br,
-    p, div
+    p, div,
+    ul, ol, li -- lists
   );
 
-  text_or_singleton_tag: array(Body_kind) of Boolean:=
-    (text | hr | br => True,
-     others => False);
-  -- <area>
-  -- <base>
-  -- <basefont>
-  -- <br>
-  -- <col>
-  -- <frame>
-  -- <hr>
-  -- <img>
-  -- <input>
-  -- <isindex>
-  -- <link>
-  -- <meta>
-  -- <param>
+  subtype HTML_tag is Body_kind range hr .. Body_kind'Last;
+  subtype Singleton_tag is HTML_tag range HTML_tag'First .. br;
+  subtype Text_or_singleton_tag is Body_kind range Body_kind'First .. Singleton_tag'Last;
+  subtype Normal_tag is HTML_tag range HTML_tag'Succ(Singleton_tag'Last) .. HTML_tag'Last;
+  -- missing:
+  -- <area> <base> <basefont> <col> <frame> <img> <input> <isindex> <link> <meta> <param>
 
   type Body_Node(kind: Body_kind) is record
     x, y, w, h: Natural;
     next      : aliased p_Body_node:= null; -- Next sibling
     case kind is
+      -- Text or singleton tags
       when text       => content: UTF_16_Unbounded_String;
       when hr         => null; -- hr style !!
       when br         => null;
-      when b|i|u|strike|
-           strong| em| dfn| var|
-           code| samp| kbd| tt|
-           h1|h2|h3|
-           h4|h5|h6|
-           p | div    => part: aliased p_Body_node:= null;
+      -- Normal tags
+      when Normal_tag => first_child: aliased p_Body_node:= null;
     end case;
   end record;
 

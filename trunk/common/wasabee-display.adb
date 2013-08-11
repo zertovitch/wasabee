@@ -16,6 +16,10 @@ package body Wasabee.Display is
     curs_x, curs_y: Natural;
     skip_leading_blank: Boolean;
     show_next_line_break: Boolean;
+    indentation: Natural;
+    type List_marker is (none, numbered, bullets);
+    current_marker: List_marker;
+    numbering: Positive;
     
     procedure Reset_text is
     begin
@@ -24,19 +28,10 @@ package body Wasabee.Display is
       curs_y:= 0;
       skip_leading_blank:= True;
       show_next_line_break:= True;
+      indentation:= 1;
+      current_marker:= none;
+      numbering:= 1;
     end Reset_text;
-  
-    procedure New_Line is
-      x, y : Natural;
-    begin
-      if show_next_line_break then
-        on.Text_size("A", x, y);
-        curs_y:= curs_y + y;
-        curs_x:= 0;
-        skip_leading_blank:= True;
-      end if;
-      show_next_line_break:= False;
-    end New_Line;
   
     procedure Show_text(t: UTF_16_String) is
       x, y : Natural;
@@ -55,6 +50,27 @@ package body Wasabee.Display is
       end if;
     end Show_text;    
   
+    procedure New_Line is
+      x, y : Natural;
+    begin
+      if show_next_line_break then
+        on.Text_size("A", x, y);
+        curs_y:= curs_y + y;
+        curs_x:= x * indentation * 2;
+        case current_marker is
+          when none =>
+            null;
+          when numbered =>
+            Show_text(Positive'Wide_Image(numbering) & ". ");
+            numbering:= numbering + 1;
+          when bullets =>
+            Show_text(Wide_Character'Val(8226) & ' '); -- !! hardcoded bullet
+        end case;
+        skip_leading_blank:= True;
+      end if;
+      show_next_line_break:= False;
+    end New_Line;
+  
     procedure Apply_font_modifiers is
       font: Font_descriptor:= on.Get_current_font;
     begin
@@ -72,7 +88,7 @@ package body Wasabee.Display is
         mem_font:= on.Get_current_font;
         on.modifier_level(fm):= on.modifier_level(fm) + 1;
         Apply_font_modifiers;
-        Draw_body(bn.part, level + 1);
+        Draw_body(bn.first_child, level + 1);
         on.modifier_level(fm):= on.modifier_level(fm) - 1;
         on.Select_font(mem_font); -- restore font at node's start
       end Draw_children_with_font_modification;
@@ -100,13 +116,13 @@ package body Wasabee.Display is
             monospace_font.face:= U("Courier New"); -- !! hardcoded
             monospace_font.size:= mem_font.size - 3; -- !! hardcoded
             on.Select_font(monospace_font);
-            Draw_body(bn.part, level + 1);
+            Draw_body(bn.first_child, level + 1);
           end;
           on.Select_font(mem_font); -- restore font at node's start
         when h1 | h2 | h3 | h4 | h5 | h6   =>
           -- Select style here !!
           New_Line;
-          Draw_body(bn.part, level + 1);
+          Draw_body(bn.first_child, level + 1);
           New_Line;
         when br   =>
           New_Line;
@@ -118,15 +134,46 @@ package body Wasabee.Display is
           -- * W3 Note: Browsers automatically add some space (margin) before and after each <p>
           --   element. The margins can be modified with CSS (with the margin properties).
           New_Line;
-          Draw_body(bn.part, level + 1);
+          Draw_body(bn.first_child, level + 1);
           New_Line;
         when div =>
           -- division style here !!
           -- * W3 Note: By default, browsers always place a line break before and after
           --   the <div> element. However, this can be changed with CSS.
           New_Line;
-          Draw_body(bn.part, level + 1);
+          Draw_body(bn.first_child, level + 1);
           New_Line;
+        when ul =>
+          declare
+            mem_marker: constant List_marker:= current_marker;
+            mem_indent: constant Natural:= indentation;
+          begin
+            current_marker:= bullets;
+            indentation:= indentation + 1;
+            Draw_body(bn.first_child, level + 1);
+            indentation:= mem_indent;
+            current_marker:= mem_marker;
+          end;
+          New_Line;
+        when ol =>
+          declare
+            mem_marker: constant List_marker:= current_marker;
+            mem_numbering: Positive:= numbering;
+            mem_indent: constant Natural:= indentation;
+          begin
+            current_marker:= numbered;
+            mem_numbering:= numbering;
+            numbering:= 1;
+            indentation:= indentation + 1;
+            Draw_body(bn.first_child, level + 1);
+            indentation:= mem_indent;
+            current_marker:= mem_marker;
+            numbering:= mem_numbering;
+          end;
+          New_Line;
+        when Li =>
+          New_Line;
+          Draw_body(bn.first_child, level + 1);
       end case;
       Draw_body(bn.next, level);
     end Draw_body;

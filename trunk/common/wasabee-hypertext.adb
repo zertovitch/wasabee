@@ -86,8 +86,8 @@ package body Wasabee.Hypertext is
                   kind:= Body_kind'Value(Name);
                   new_node:= new Body_Node(kind);
                   current_body_pointer.all:= new_node;
-                  if not text_or_singleton_tag(kind) then
-                    current_body_pointer:= new_node.part'Access; -- children will be set (if any)
+                  if kind not in Text_or_singleton_tag then
+                    current_body_pointer:= new_node.first_child'Access; -- children will be set (if any)
                     Process_children;
                   end if;
                   current_body_pointer:= new_node.next'Access; -- ready for next sibling
@@ -125,15 +125,9 @@ package body Wasabee.Hypertext is
           Put_Line(file, "text: " & S(bn.content));
         when br | hr    =>
           Put_Line(file, '<' & Body_kind'Wide_Image(bn.kind) & '>');
-        when b|i|u|strike|
-             strong| em| dfn| var|
-             code| samp| kbd| tt|
-             h1|h2|h3|
-             h4|h5|h6|
-             p|div
-             =>
+        when Normal_tag =>
           Put_Line(file, '<' & Body_kind'Wide_Image(bn.kind) & '>');
-          Dump_body(bn.part, level + 1);
+          Dump_body(bn.first_child, level + 1);
       end case;
       Dump_body(bn.next, level);
     end Dump_body;
@@ -153,12 +147,8 @@ package body Wasabee.Hypertext is
       case bn.kind is
         when text|hr|br       =>
           null;
-        when b|i|u|strike|
-             strong| em| dfn| var| code| samp| kbd| tt|
-             h1|h2|h3|
-             h4|h5|h6|
-             p|div=>
-          Delete_body(bn.part);
+        when Normal_tag =>
+          Delete_body(bn.first_child);
       end case;
       Delete_body(bn.next);
       Dispose(bn); -- Here memory is freed.
