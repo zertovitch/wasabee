@@ -21,6 +21,13 @@ package body Wasabee.Display is
     current_marker: List_marker;
     numbering: Positive;
     
+    procedure Carriage_Return is
+      x, y : Natural;
+    begin
+      on.Text_size("A", x, y);
+      curs_x:= x * indentation * 2;
+    end Carriage_Return;
+    
     procedure Reset_text is
     begin
       on.modifier_level:= (others => 0);
@@ -31,6 +38,7 @@ package body Wasabee.Display is
       indentation:= 1;
       current_marker:= none;
       numbering:= 1;
+      Carriage_Return; -- Get the default indentation (left margin)
     end Reset_text;
   
     procedure Show_text(t: UTF_16_String) is
@@ -56,7 +64,7 @@ package body Wasabee.Display is
       if show_next_line_break then
         on.Text_size("A", x, y);
         curs_y:= curs_y + y;
-        curs_x:= x * indentation * 2;
+        Carriage_Return;
         case current_marker is
           when none =>
             null;
