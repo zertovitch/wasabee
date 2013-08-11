@@ -40,6 +40,7 @@ package body Wasabee.Hypertext is
       Tmp_attr : Node;
       kind     : Body_kind;
       new_node : p_Body_node;
+      pragma Unreferenced (Attrs, Tmp_Attr);
       --
       procedure Process_children is
       begin
@@ -122,7 +123,7 @@ package body Wasabee.Hypertext is
       Put(Level * 3 * ' '); -- show indentation
       case bn.kind is
         when text       =>
-          Put_Line(file, "text: " & S(bn.content));
+          Put_Line(file, "text: [" & S(bn.content) & ']');
         when br | hr    =>
           Put_Line(file, '<' & Body_kind'Wide_Image(bn.kind) & '>');
         when Normal_tag =>

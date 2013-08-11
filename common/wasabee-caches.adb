@@ -154,6 +154,7 @@ package body Wasabee.Caches is
       Save(S(item.file_name), S(item.contents));
     end if;
   end Save_to_file;
+  pragma Unreferenced (Save_to_file);
 
   function Object_count(c: Cache_type) return Natural is
   begin

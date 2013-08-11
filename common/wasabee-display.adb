@@ -11,23 +11,25 @@ package body Wasabee.Display is
      modifier      => (others => False)
     );
 
+  default_heading_pct_size: constant array(h1..h6) of Positive:=
+    (200, 150, 113, 100, 80, 62);
+
   procedure Draw (on: in out Frame_plane'Class; o: HTML_object) is
-  
+
     curs_x, curs_y: Natural;
     skip_leading_blank: Boolean;
     show_next_line_break: Boolean;
     indentation: Natural;
+    indentation_space_width: Positive;
     type List_marker is (none, numbered, bullets);
     current_marker: List_marker;
     numbering: Positive;
-    
+
     procedure Carriage_Return is
-      x, y : Natural;
     begin
-      on.Text_size("A", x, y);
-      curs_x:= x * indentation * 2;
+      curs_x:= indentation_space_width * indentation;
     end Carriage_Return;
-    
+
     procedure Reset_text is
     begin
       on.modifier_level:= (others => 0);
@@ -40,7 +42,7 @@ package body Wasabee.Display is
       numbering:= 1;
       Carriage_Return; -- Get the default indentation (left margin)
     end Reset_text;
-  
+
     procedure Show_text(t: UTF_16_String) is
       x, y : Natural;
     begin
@@ -53,17 +55,19 @@ package body Wasabee.Display is
           on.Text_size(t, x, y);
           curs_x:= curs_x + x;
           show_next_line_break:= True; -- there was some text
+          skip_leading_blank:= False;
         end if;
-        skip_leading_blank:= False;
       end if;
-    end Show_text;    
-  
+    end Show_text;
+
     procedure New_Line(with_marker: Boolean:= False) is
       x, y : Natural;
     begin
       if show_next_line_break then
         on.Text_size("A", x, y);
         curs_y:= curs_y + y;
+      end if;
+      if show_next_line_break or with_marker then
         Carriage_Return;
         case current_marker is
           when none =>
@@ -94,11 +98,11 @@ package body Wasabee.Display is
               end if;
             end;
         end case;
-        skip_leading_blank:= True;
       end if;
+      skip_leading_blank:= True;
       show_next_line_break:= False;
     end New_Line;
-  
+
     procedure Apply_font_modifiers is
       font: Font_descriptor:= on.Get_current_font;
     begin
@@ -107,7 +111,7 @@ package body Wasabee.Display is
       end loop;
       on.Select_font(font);
     end Apply_font_modifiers;
- 
+
     procedure Draw_body(bn: p_Body_Node; level: Natural:= 0) is -- Scary name ;-) !
       mem_font: Font_descriptor;
       --
@@ -128,13 +132,16 @@ package body Wasabee.Display is
       case bn.kind is
         when text       =>
           Show_text(S(bn.content));
+        when a =>
+          -- !! do something with attributes: href, target, name, ...
+          Draw_body(bn.first_child, level + 1);
         when b | strong =>
           Draw_children_with_font_modification(bold);
-        when i | em | var | dfn =>
+        when i | em | var | dfn | cite =>
           Draw_children_with_font_modification(italic);
-        when u =>
+        when u | ins =>
           Draw_children_with_font_modification(underlined);
-        when strike =>
+        when strike | del | s =>
           Draw_children_with_font_modification(strikethrough);
         when code | samp | kbd | tt =>
           mem_font:= on.Get_current_font;
@@ -147,11 +154,33 @@ package body Wasabee.Display is
             Draw_body(bn.first_child, level + 1);
           end;
           on.Select_font(mem_font); -- restore font at node's start
-        when h1 | h2 | h3 | h4 | h5 | h6   =>
-          -- Select style here !!
+        when abbr | acronym =>
+          -- !! do something with attribute title
+          Draw_body(bn.first_child, level + 1);
+        when nav =>
           New_Line;
           Draw_body(bn.first_child, level + 1);
           New_Line;
+        when address =>
+          New_Line;
+          Draw_children_with_font_modification(italic);
+          New_Line;
+        when q =>
+          Show_text(""""); -- !! hardcoded
+          Draw_body(bn.first_child, level + 1);
+          Show_text(""""); -- !! hardcoded
+        when h1 .. h6   =>
+          New_Line;
+          mem_font:= on.Get_current_font;
+          declare
+            font: Font_descriptor:= mem_font;
+          begin
+            font.size:= (font.size * default_heading_pct_size(bn.kind)) / 100;
+            on.Select_font(font);
+            Draw_body(bn.first_child, level + 1);
+            New_Line;
+          end;
+          on.Select_font(mem_font); -- restore font at node's start
         when br   =>
           New_Line;
         when hr   =>
@@ -168,6 +197,20 @@ package body Wasabee.Display is
           -- division style here !!
           -- * W3 Note: By default, browsers always place a line break before and after
           --   the <div> element. However, this can be changed with CSS.
+          New_Line;
+          Draw_body(bn.first_child, level + 1);
+          New_Line;
+        when blockquote =>
+          declare
+            mem_indent: constant Natural:= indentation;
+          begin
+            indentation:= indentation + 2;
+            New_Line;
+            Draw_body(bn.first_child, level + 1);
+            indentation:= mem_indent;
+          end;
+          New_Line;
+        when article | aside =>
           New_Line;
           Draw_body(bn.first_child, level + 1);
           New_Line;
@@ -199,13 +242,15 @@ package body Wasabee.Display is
             numbering:= mem_numbering;
           end;
           New_Line;
-        when Li =>
+        when li =>
           New_Line(with_marker => True);
           Draw_body(bn.first_child, level + 1);
       end case;
       Draw_body(bn.next, level);
     end Draw_body;
-    
+
+  dummy: Natural;
+
   begin
     on.Clear_area;
     -- Font lists cleanup
@@ -213,14 +258,15 @@ package body Wasabee.Display is
     on.Destroy_target_fonts;
     -- Startup font
     on.Select_font(default_font);
+    on.Text_size("AA", indentation_space_width, dummy);
     --
     Reset_text;
     --
-    Draw_body(o.the_body);    
+    Draw_body(o.the_body);
   end Draw;
-  
+
   procedure Select_font(
-    on         : in out Frame_plane'Class; 
+    on         : in out Frame_plane'Class;
     descriptor : in     Font_descriptor
   )
   is
@@ -234,7 +280,7 @@ package body Wasabee.Display is
     else
       on.Select_target_font(index);
       on.current_font:= on.font_list.Element(index);
-    end if;    
+    end if;
   end Select_font;
 
   function Get_current_font(on : in Frame_plane'Class) return Font_descriptor is
