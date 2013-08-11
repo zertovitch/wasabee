@@ -38,7 +38,7 @@ procedure Wasabee_GWindows is
 
 begin
     GWindows.Base.On_Exception_Handler (Handler => Interactive_crash'Unrestricted_Access);
-    Create (Top, "Wasabee invisble main window");
+    Create (Top, "Wasabee invisible main window");
     -- Open all arguments in separate tabs
     for i in 1..Argument_Count loop
       if i > 1 then

@@ -32,13 +32,6 @@ package Wasabee.Display is
 
   procedure Draw (on: in out Frame_plane'Class; o: HTML_object);
 
-  procedure Select_font(
-    on         : in out Frame_plane'Class; 
-    descriptor : in     Font_descriptor
-  );
-
-  function Get_current_font(on : in Frame_plane'Class) return Font_descriptor;
-
   --------------------------------------------------------------
   -- ** Abstract methods that are implementation-dependent ** --
   --------------------------------------------------------------
@@ -85,6 +78,13 @@ package Wasabee.Display is
 
 private
 
+  procedure Select_font(
+    on         : in out Frame_plane'Class; 
+    descriptor : in     Font_descriptor
+  );
+
+  function Get_current_font(on : in Frame_plane'Class) return Font_descriptor;
+  
   package Font_Vectors is new Ada.Containers.Vectors(
     Index_Type   => Positive,
     Element_Type => Font_descriptor
