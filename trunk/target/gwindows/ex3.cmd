@@ -1,3 +1,3 @@
-rem Open examples tabs
+rem Open examples in tabs
 
-w file://../../tests/example1.html file://../../tests/example2.html file://../../tests/example3.html 
+w file://../../tests/example3.html 

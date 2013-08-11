@@ -19,9 +19,12 @@ package Wasabee.Hypertext is
     text,
     hr, br,
     -- Normal tags
-    b,i,u,strike,
+    a,
+    b,i,u,strike,s,
     strong, em, dfn, var,
     code, samp, kbd, tt,
+    del, ins, abbr, acronym, cite, blockquote, article, aside,
+    address, nav, q,
     h1, h2, h3, h4, h5, h6,
     p, div,
     ul, ol, li -- lists
