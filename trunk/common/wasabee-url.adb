@@ -6,7 +6,7 @@ package body Wasabee.URL is
    begin
       Put_Line("protocole : " & To_String(U.Protocole));
       Put_Line("host      : " & To_String(U.Host));
-      Put_Line("Port      : " & Natural'Image(U.Port));
+      Put_Line("Port      : " & Port_Type'Image(U.Port));
       Put_Line("Ressource : " & To_String(U.Ressource));
    end Display_URL_details;
 
@@ -64,11 +64,11 @@ package body Wasabee.URL is
          No_Port := False ;
          if Pos_First_Slash = 0 then
             U.Host := Unbounded_Slice ( Adr, Base, Pos_Port-1 ) ;
-            U.Port := Natural'Value ( To_String ( Unbounded_Slice ( Adr , Pos_Port+1 , last ) ) ) ;
+            U.Port := Port_Type'Value ( To_String ( Unbounded_Slice ( Adr , Pos_Port+1 , last ) ) ) ;
             U.Ressource := To_Unbounded_String("index.html");
          else
             U.Host := Unbounded_Slice ( Adr, Base, Pos_Port-1 ) ;
-            U.Port := Natural'Value ( To_String ( Unbounded_Slice ( Adr , Pos_Port+1 , Pos_First_Slash-1 ) ) ) ;
+            U.Port := Port_Type'Value ( To_String ( Unbounded_Slice ( Adr , Pos_Port+1 , Pos_First_Slash-1 ) ) ) ;
             U.Ressource := Unbounded_Slice ( Adr, Pos_First_Slash, Last ) ;
          end if ;
       end if ;

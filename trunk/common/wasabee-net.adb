@@ -74,9 +74,9 @@ package body Wasabee.Net is
    end ;
 
    procedure Get_Http_Content (Base_Url : in String ;
-                              Extension_Url : in String ;
-                              Port : in Port_Type ;
-                              Content : in out Unbounded_String) is
+			       Extension_Url : in String ;
+			       Port : in Port_Type ;
+			       Content : in out Unbounded_String) is
       Client       : Socket_Type ;
       Address      : Sock_Addr_Type;
       Channel      : Stream_Access ;
