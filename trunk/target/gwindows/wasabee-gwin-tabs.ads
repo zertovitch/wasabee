@@ -10,6 +10,7 @@ with GWindows.Scroll_Panels;            use GWindows.Scroll_Panels;
 -- with GWindows.Types;
 
 with Ada.Strings.Unbounded;             use Ada.Strings.Unbounded;
+with GWindows.Windows;                  use GWindows.Windows;
 
 package Wasabee.GWin.Tabs is
 
@@ -23,6 +24,32 @@ package Wasabee.GWin.Tabs is
     --
     Cursor       : GWindows.Cursors.Cursor_Type;
   end record;
+
+  overriding
+  procedure On_Character_Down(
+    Window      : in out HTML_area_type;
+    Special_Key : in     Special_Key_Type;
+    Value       : in     GCharacter
+  );
+
+  overriding
+  procedure On_Mouse_Wheel (Window  : in out HTML_area_type;
+                            X       : in     Integer;
+                            Y       : in     Integer;
+                            Keys    : in     Mouse_Key_States;
+                            Z_Delta : in     Integer);
+
+  overriding
+  procedure On_Focus (Window : in out HTML_area_type);
+
+  overriding
+  procedure On_Lost_Focus (Window : in out HTML_area_type);
+
+  overriding
+  procedure On_Menu_Select (
+        Window : in out HTML_area_type;
+        Item   : in     Integer
+  );
 
   -- After scroll_panel first resizing(with Dock)
   procedure Finish_creation (Window : in out HTML_area_type);

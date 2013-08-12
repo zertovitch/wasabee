@@ -70,9 +70,6 @@ package Wasabee.GWin.Windows is
   overriding
   procedure On_Focus (Window : in out Browser_window_type);
 
-  overriding
-  procedure On_Lost_Focus (Window : in out Browser_window_type);
-
   procedure New_Tab(Window : in out Browser_window_type);
   procedure Next_tab(Window : in out Browser_window_type);
   procedure Close_tab(Window : in out Browser_window_type);
