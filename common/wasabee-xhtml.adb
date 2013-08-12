@@ -58,12 +58,12 @@ package body Wasabee.Xhtml is
       Text_trace: constant Boolean:= True;
    begin
       -- L := Length(Source);
-      Start_Tag := Index(Source,"<html",1);
-      End_Tag := Index(Source,"</html>",1);
       if Text_trace then
          Put_Line("************************* SOURCE ****************************") ;
          Put_Line(To_String(Source));
       end if;
+      Start_Tag := Index(Source,"<html",1);
+      End_Tag := Index(Source,"</html>",1);
       Target := Unbounded_Slice(Source, Start_Tag , End_Tag+6);
       -- if Text_trace then
       --    Put_Line("************************* TARGET ****************************") ;
