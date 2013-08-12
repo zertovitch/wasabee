@@ -14,7 +14,7 @@ with DOM.Core;
 with Dom.Core.Nodes;                    use Dom.Core.Nodes;
 
 -- with Ada.Text_IO;                       use Ada.Text_IO;
-with Ada.Wide_Text_IO;
+-- with Ada.Wide_Text_IO;
 
 package body Wasabee.GWin.Windows is
 
@@ -121,14 +121,8 @@ package body Wasabee.GWin.Windows is
 
   procedure On_Focus (Window : in out Browser_window_type) is
   begin
-    Accelerator_Table (Window, "Browser_Window_Shortcuts");
+    Window.tabs.Element(Window.active_tab).Focus;
   end On_Focus;
-
-  overriding
-  procedure On_Lost_Focus (Window : in out Browser_window_type) is
-  begin
-    Accelerator_Table (Window, "nix");
-  end On_Lost_Focus;
 
   procedure Refresh_title_and_URL(Window : in out Browser_window_type) is
     active_tab: HTML_area_type
@@ -234,9 +228,11 @@ package body Wasabee.GWin.Windows is
     -- ^ !! we will go through the cache to get the xhtml
     Wasabee.Xhtml.Display_All_Children(Item(xhtml,0));
     active_tab.HTML_contents.Load_frame(Xhtml);
-    active_tab.HTML_contents.Dump(Ada.Wide_Text_IO.Standard_Output);
+    -- active_tab.HTML_contents.Dump(Ada.Wide_Text_IO.Standard_Output);
     active_tab.Wasa_Panel.Draw(active_tab.HTML_contents);
+    active_tab.Wasa_Panel.Draw_Control.Redraw;
     Refresh_title_and_URL(Window);
+    active_tab.Focus;
   end New_URL;
 
   procedure On_Menu_Select (
