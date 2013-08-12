@@ -24,10 +24,10 @@ package body Wasabee.Net is
    function To_IP_Address (Host : in String) return Inet_Addr_Type is
    begin
       if Is_An_IP_Address (Host) then
-         Put_Line("Address IP");
+         -- Put_Line("Address IP");
          return Inet_Addr(Host);
       else
-         Put_Line("PAS Address IP");
+         -- Put_Line("PAS Address IP");
          return Addresses (Get_Host_By_Name(Host)) ;
       end if;
    end To_IP_Address;
@@ -63,7 +63,7 @@ package body Wasabee.Net is
    begin
       Decode(Adr, The_Url);
       if The_Url.Protocole /= "http" then
-         Put_Line("Seul le protocole HTTP est supporté pour le moment");
+         -- Put_Line("Seul le protocole HTTP est supporté pour le moment");
          return ;
       end if;
       Port := Port_Type(The_Url.Port) ;
@@ -87,14 +87,14 @@ package body Wasabee.Net is
    begin
       GNAT.Sockets.Initialize;
       Create_Socket(Client);
-      Put_Line("Trying to get IP: " & Base_Url);
+      -- Put_Line("Trying to get IP: " & Base_Url);
       Address.Addr := To_IP_Address(Base_URL) ;
       Address.Port := Port;
-      Put_Line("Trying to open " & Base_Url & ", Port " & Port_Type'Image(Port));
+      -- Put_Line("Trying to open " & Base_Url & ", Port " & Port_Type'Image(Port));
       Connect_Socket (Client, Address);
       Channel := Stream(Client);
 
-      Put_Line("Request: " & "GET " & Extension_Url & " HTTP/1.0" & Send) ;
+      -- Put_Line("Request: " & "GET " & Extension_Url & " HTTP/1.0" & Send) ;
       String'Write (Channel, "GET " & Extension_Url & " HTTP/1.0" & Send) ;
       -- Je ramene tout cela et je stocket dans une variable ...
       loop
@@ -103,7 +103,7 @@ package body Wasabee.Net is
          for I in 1 .. Offset loop
             Append(Content, Character'Val(Data(I)));
          end loop;
-      end loop;
+      end loop;      
    end ;
 
 
