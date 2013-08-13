@@ -15,6 +15,8 @@ package body Wasabee.GWin.Main is
       Parent => Window,
       Title  => "Wasa control frame"
     );
+    Window.control_frame.Small_Icon("AAA_Main_Icon");
+    Window.control_frame.Large_Icon("AAA_Main_Icon");
     Create_contents(
       Window     => Window.control_frame,
       for_dialog => False,
@@ -41,6 +43,8 @@ package body Wasabee.GWin.Main is
         "Wasa browser, window opened as #" &
         Integer'Wide_Image(Window.windows.Find_Index(newcomer)));
     newcomer.Create;
+    newcomer.Small_Icon ("AAA_Main_Icon");
+    newcomer.Large_Icon ("AAA_Main_Icon");
     newcomer.Show;
   end New_Browser_Window;
 
