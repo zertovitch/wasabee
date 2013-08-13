@@ -72,6 +72,11 @@ package body Wasabee.Css is
          Aff_Pos := Index (Element, ":" , Base);
          exit when Aff_Pos = 0 ;
          Sep_Pos := Index (Element, ";" , Aff_Pos+1);
+	 
+	 if Sep_Pos = 0 then
+	    Sep_Pos := Length(Element);
+	 end if;
+	 
          Key := Unbounded_Slice(Element, Base, Aff_Pos - 1) ;
          Value := Unbounded_Slice(Element, Aff_Pos + 1, Sep_Pos - 1) ;
          Put_Line("Key:" & To_String(Key));
