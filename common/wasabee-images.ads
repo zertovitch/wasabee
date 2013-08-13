@@ -28,12 +28,10 @@ package Wasabee.Images is
 
   procedure Decode(image_data: Unbounded_String);
   -- Same for progressive decoding
-  
-  
+    
   function Read_Line (Channel : in Stream_Access) return String ;
   
-  procedure Get_Image (Nd : in Node ; Img : in out GID.Image_Descriptor) ;
-  
-  
+  procedure Get_Image_Header (Nd : in Node ; Img : in out GID.Image_Descriptor) ;
+    
   
 end Wasabee.Images;
