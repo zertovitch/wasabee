@@ -46,7 +46,7 @@ begin
    Display_All_Children(N);
    
    -- Ok maintenant j'ai le bon attribut
-   Get_Image(N, Img);
+   Get_Image_Header(N, Img);
    -- Getting width
    Put_Line("Width: " & Positive'Image(GID.Pixel_Width(Img)));
    -- Getting height

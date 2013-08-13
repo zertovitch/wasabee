@@ -80,22 +80,26 @@ package body Wasabee.Net is
       Client       : Socket_Type ;
       Address      : Sock_Addr_Type;
       Channel      : Stream_Access ;
-      Send         : constant String :=  (1 => ASCII.CR, 2 => ASCII.LF,
-                                          3 => ASCII.CR, 4 => ASCII.LF);
+      Send         : constant String :=  (1 => ASCII.CR, 2 => ASCII.LF);
       Offset       : Ada.Streams.Stream_Element_Count ;
       Data         : Ada.Streams.Stream_Element_Array (1 .. 1024) ;
    begin
       GNAT.Sockets.Initialize;
       Create_Socket(Client);
-      -- Put_Line("Trying to get IP: " & Base_Url);
+      Put_Line("Trying to get IP: " & Base_Url);
       Address.Addr := To_IP_Address(Base_URL) ;
       Address.Port := Port;
-      -- Put_Line("Trying to open " & Base_Url & ", Port " & Port_Type'Image(Port));
+      Put_Line("Trying to open " & Base_Url & ", Port " & Port_Type'Image(Port));
       Connect_Socket (Client, Address);
       Channel := Stream(Client);
 
-      -- Put_Line("Request: " & "GET " & Extension_Url & " HTTP/1.0" & Send) ;
-      String'Write (Channel, "GET " & Extension_Url & " HTTP/1.0" & Send) ;
+      -- Put_Line("Request: " & "GET " & Extension_Url & " HTTP/1.0" & Send & Send) ;
+      -- String'Write (Channel, "GET " & Extension_Url & " HTTP/1.0" & Send & Send) ;
+      
+      Put_Line("Request: " & "GET " & Extension_Url & " HTTP/1.1" & Send & "Host: " & Base_Url & Send & Send);
+      String'Write (Channel, "GET " & Extension_Url & " HTTP/1.1" & Send & "Host: " & Base_Url & Send & Send);
+      
+      
       -- Je ramene tout cela et je stocket dans une variable ...
       loop
          Ada.Streams.Read (Channel.all, Data, Offset) ;

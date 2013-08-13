@@ -60,15 +60,15 @@ package body Wasabee.Xhtml is
       -- L := Length(Source);
       if Text_trace then
          Put_Line("************************* SOURCE ****************************") ;
-         Put_Line(To_String(Source));
+         -- Put_Line(To_String(Source));
       end if;
       Start_Tag := Index(Source,"<html",1);
       End_Tag := Index(Source,"</html>",1);
       Target := Unbounded_Slice(Source, Start_Tag , End_Tag+6);
-      -- if Text_trace then
-      --    Put_Line("************************* TARGET ****************************") ;
-      --    Put_Line(To_String(Target));
-      -- end if;
+      if Text_trace then
+	 Put_Line("************************* TARGET ****************************") ;
+	 Put_Line(To_String(Target));
+      end if;
    end Extract_Html;
 
    procedure Get_Xhtml_Content (Content : String ;

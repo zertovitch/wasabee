@@ -23,7 +23,7 @@ package body Wasabee.Images is
    -- But du jeu, a partir d'un node, obtenir un Handler GID sur une image
    -- Easy non ?
    --
-   procedure Get_Image (Nd : in Node ; Img : in out GID.Image_Descriptor) is
+   procedure Get_Image_Header (Nd : in Node ; Img : in out GID.Image_Descriptor) is
       A            : Attr ;
       The_Url      : Wasabee.Url.URL ;      
       Client       : Socket_Type ;
