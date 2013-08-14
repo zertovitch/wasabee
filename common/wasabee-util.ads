@@ -11,4 +11,6 @@ package Wasabee.Util is
   -- Remove multiple blanks and replace tabs, carriage returns, line feed, and so on by one blank
   function Filter_blanks (s : Wide_String) return Wide_String;
 
+  function Get_hex_value(s: String) return Natural; -- NB: up to 31 bit; usually 24 bit.
+
 end Wasabee.Util;

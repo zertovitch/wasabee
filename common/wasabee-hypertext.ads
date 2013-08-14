@@ -1,6 +1,7 @@
 with DOM.Core;
 
 with Ada.Finalization;
+with Ada.Strings.Unbounded;             use Ada.Strings.Unbounded;
 with Ada.Strings.UTF_Encoding;
 with Ada.Strings.Wide_Unbounded;        use Ada.Strings.Wide_Unbounded;
 with Ada.Wide_Text_IO;
@@ -10,9 +11,13 @@ package Wasabee.Hypertext is
   subtype UTF_16_String is Ada.Strings.UTF_Encoding.UTF_16_Wide_String;
   subtype UTF_16_Unbounded_String is Unbounded_Wide_String;
 
-  type Body_node;
+  subtype Color_Code is Integer range -1 .. 2**24-1;
+  -- solid 24-bit RGB color, plus a -1 value for default color
+  Default_color: constant Color_Code:= -1;
+  Black        : constant Color_Code:= 0;
+  White        : constant Color_Code:= 16#FF_FF_FF#;
 
-  type p_Body_node is access Body_node;
+  subtype Font_face_name is Unbounded_String;
 
   type Body_kind is (
     -- Text or singleton tags
@@ -25,6 +30,7 @@ package Wasabee.Hypertext is
     code, samp, kbd, tt,
     del, ins, abbr, acronym, cite, blockquote, article, aside,
     address, nav, q,
+    font,
     h1, h2, h3, h4, h5, h6,
     p, div,
     ul, ol, li -- lists
@@ -37,6 +43,9 @@ package Wasabee.Hypertext is
   -- missing:
   -- <area> <base> <basefont> <col> <frame> <img> <input> <isindex> <link> <meta> <param>
 
+  type Body_node;
+  type p_Body_node is access Body_node;
+
   type Body_Node(kind: Body_kind) is record
     x, y, w, h: Natural;
     next      : aliased p_Body_node:= null; -- Next sibling
@@ -46,7 +55,15 @@ package Wasabee.Hypertext is
       when hr         => null; -- hr style !!
       when br         => null;
       -- Normal tags
-      when Normal_tag => first_child: aliased p_Body_node:= null;
+      when Normal_tag =>
+        first_child: aliased p_Body_node:= null;
+        case kind is
+          when font =>
+            face : Font_face_name;
+            color: Color_Code:= Default_color;
+          when others =>
+            null;
+        end case;
     end case;
   end record;
 
@@ -54,6 +71,8 @@ package Wasabee.Hypertext is
     title   : UTF_16_Unbounded_String;
     the_body: aliased p_Body_node;
   end record;
+
+  -- Load an HTML object from an XHTML tree
 
   procedure Load_frame(ho: in out HTML_object; from: DOM.Core.Node_List);
 

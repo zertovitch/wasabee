@@ -7,7 +7,10 @@ with GWindows.Types;                    use GWindows.Types;
 -- with GWindows.Message_Boxes;            use GWindows.Message_Boxes;
 
 -- with Ada.Text_IO;                       use Ada.Text_IO;
+with GWindows.Colors;                   use GWindows.Colors;
+
 with Ada.Unchecked_Deallocation;
+with Interfaces;                        use Interfaces;
 
 package body Wasabee.GWin.Display is
 
@@ -92,5 +95,18 @@ package body Wasabee.GWin.Display is
     x:= dims.Width;
     y:= dims.Height;
   end Text_size;
+
+  procedure Select_target_text_color(on: in out Wasa_GWin_Panel; code: in Color_Code) is
+    BGR: constant Unsigned_32:= Unsigned_32(code);
+  begin
+    if code /= Default_Color then
+      on.Drawing_Canvas.Text_Color(
+        Color_Type(
+          Shift_Left(BGR and 255,16) or 
+          (BGR and 16#FF00#) or 
+          Shift_Right(BGR,16))
+      );
+    end if;
+  end Select_target_text_color;
 
 end Wasabee.GWin.Display;

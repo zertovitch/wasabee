@@ -1,11 +1,10 @@
 with Wasabee.Util;                      use Wasabee.Util;
 
-with Dom.Core                     ; use Dom.Core                         ;
-with Dom.Core.Nodes               ; use Dom.Core.Nodes                        ;
+with Dom.Core.Nodes;                    use Dom.Core, Dom.Core.Nodes;
 
 with Ada.Strings.UTF_Encoding.Conversions;
 with Ada.Strings.Wide_Fixed;
--- with Ada.Text_IO;                       use Ada.Text_IO;
+with Ada.Text_IO;                       use Ada.Text_IO;
 with Ada.Unchecked_Deallocation;
 
 package body Wasabee.Hypertext is
@@ -26,12 +25,6 @@ package body Wasabee.Hypertext is
 
     current_body_pointer: p_p_Body_node:= ho.the_body'Access;
 
-      -- -- Process the attributes
-      -- for Index in 1 .. Length(Attrs) loop
-      --   Tmp_attr := Item(Attrs, Index-1);
-      --   -- here...
-      -- end loop;
-
     procedure Process (Nd : Node; Level: Natural:= 0) is
       Children : constant Node_List := Child_Nodes(Nd);
       Attrs    : constant Named_Node_Map := Attributes (Nd);
@@ -40,7 +33,6 @@ package body Wasabee.Hypertext is
       Tmp_attr : Node;
       kind     : Body_kind;
       new_node : p_Body_node;
-      pragma Unreferenced (Attrs, Tmp_Attr);
       --
       procedure Process_children is
       begin
@@ -48,6 +40,40 @@ package body Wasabee.Hypertext is
           Process(Item(Children, Index-1), Level + 1);
         end loop;
       end Process_children;
+      --
+      procedure Process_tag is
+      begin
+        kind:= Body_kind'Value(Name);
+        new_node:= new Body_Node(kind);
+        current_body_pointer.all:= new_node;
+        --
+        -- Process some attributes
+        --
+        case kind is
+          when font =>
+            for Index in 1 .. Length(Attrs) loop
+              Tmp_attr := Item(Attrs, Index-1);
+              if Node_Name(Tmp_Attr) = "face" then
+                new_node.face:= U(Node_Value(Tmp_Attr));
+              elsif Node_Name(Tmp_Attr) = "color" then
+                new_node.color:= Get_hex_value(Node_Value(Tmp_Attr));
+              end if;
+            end loop;
+          when others => null;
+        end case;
+        --
+        -- Process children - if any
+        --
+        if kind not in Text_or_singleton_tag then
+          current_body_pointer:= new_node.first_child'Access;
+          Process_children;
+        end if;
+        current_body_pointer:= new_node.next'Access; -- ready for next sibling
+      exception
+        when Constraint_Error =>
+          null; -- unknown tag
+      end Process_tag;
+      --
     begin
       -- Process the node itself
       case Level is
@@ -83,19 +109,7 @@ package body Wasabee.Hypertext is
                 current_body_pointer.all:= new_node;
                 current_body_pointer:= new_node.next'Access; -- ready for next sibling
               else -- try with tags
-                begin
-                  kind:= Body_kind'Value(Name);
-                  new_node:= new Body_Node(kind);
-                  current_body_pointer.all:= new_node;
-                  if kind not in Text_or_singleton_tag then
-                    current_body_pointer:= new_node.first_child'Access; -- children will be set (if any)
-                    Process_children;
-                  end if;
-                  current_body_pointer:= new_node.next'Access; -- ready for next sibling
-                exception
-                  when Constraint_Error =>
-                    null; -- unknown tag
-                end;
+                Process_tag;
               end if;
             when nowhere =>
               null;

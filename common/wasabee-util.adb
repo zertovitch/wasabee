@@ -24,4 +24,12 @@ package body Wasabee.Util is
     return t(t'First .. j);
   end Filter_blanks;
 
+  function Get_hex_value(s: String) return Natural is -- NB: up to 31 bit; usually 24 bit.
+  begin
+    return Integer'Value("16" & s & '#');
+  exception
+    when others =>
+      return 0;
+  end Get_hex_value;
+
 end Wasabee.Util;

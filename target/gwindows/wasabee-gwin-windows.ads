@@ -74,8 +74,8 @@ package Wasabee.GWin.Windows is
   procedure Next_tab(Window : in out Browser_window_type);
   procedure Close_tab(Window : in out Browser_window_type);
 
-  -- New URL was given (perhaps typed) in the URL box and should be started
-  procedure New_URL(Window : in out Browser_window_type);
+  -- A URL was given (perhaps typed) in the URL box and should be started
+  procedure Go_on_URL(Window : in out Browser_window_type);
 
   -- NB: the menu is not created; only commands and shortcuts are used
 

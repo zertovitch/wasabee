@@ -64,4 +64,7 @@ package Wasabee.GWin.Display is
     x,y  :    out Natural
   );
 
+  overriding
+  procedure Select_target_text_color(on: in out Wasa_GWin_Panel; code: in Color_Code);
+
 end Wasabee.GWin.Display;
