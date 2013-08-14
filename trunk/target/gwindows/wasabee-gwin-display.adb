@@ -97,9 +97,10 @@ package body Wasabee.GWin.Display is
   end Text_size;
 
   procedure Select_target_text_color(on: in out Wasa_GWin_Panel; code: in Color_Code) is
-    BGR: constant Unsigned_32:= Unsigned_32(code);
+    BGR: Unsigned_32;
   begin
     if code /= Default_Color then
+      BGR:= Unsigned_32(code);
       on.Drawing_Canvas.Text_Color(
         Color_Type(
           Shift_Left(BGR and 255,16) or 
