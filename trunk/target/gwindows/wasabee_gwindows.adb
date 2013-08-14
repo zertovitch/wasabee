@@ -1,14 +1,15 @@
-with GWindows.Application;        use GWindows.Application;
-with GWindows.Base;               use GWindows.Base;
-with GWindows.GStrings;           use GWindows.GStrings;
-with GWindows.Message_Boxes;      use GWindows.Message_Boxes;
+with GWindows.Application;              use GWindows.Application;
+with GWindows.Base;                     use GWindows.Base;
+with GWindows.GStrings;                 use GWindows.GStrings;
+with GWindows.Message_Boxes;            use GWindows.Message_Boxes;
 
-with Wasabee.GWin.Main;           use Wasabee.GWin.Main;
+with Wasabee.GWin.Main;                 use Wasabee.GWin.Main;
 
-with Ada.Exceptions;
-with Ada.Command_Line;            use Ada.Command_Line;
+with Ada.Exceptions;                    use Ada.Exceptions;
+with Ada.Command_Line;                  use Ada.Command_Line;
 with Ada.Strings.UTF_Encoding.Conversions;
 use Ada.Strings.UTF_Encoding.Conversions;
+with Ada.Text_IO;                       use Ada.Text_IO;
 
 with GNAT.Traceback.Symbolic;
 
@@ -47,7 +48,17 @@ begin
       Top.windows.Element(1).control_box.url_box.Text(
         Convert(Argument(i))
       );
-      Top.windows.Element(1).New_URL;
+      Top.windows.Element(1).Go_on_URL;
     end loop;
     Message_Loop;
+exception
+  when E: others =>
+    New_Line;
+    Put_Line("----[ Unhandled exception before Windows message loop ]----");
+    Put_Line(" > Name of exception . . . . .: " &
+             Ada.Exceptions.Exception_Name(E) );
+    Put_Line(" > Message for exception . . .: " &
+             Ada.Exceptions.Exception_Message(E) );
+    Put_Line(" > Trace-back of call stack: " );
+    Put_Line( GNAT.Traceback.Symbolic.Symbolic_Traceback(E) );
 end Wasabee_GWindows;

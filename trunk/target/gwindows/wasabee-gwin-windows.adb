@@ -31,18 +31,22 @@ package body Wasabee.GWin.Windows is
   is
     use Interfaces.C, GWindows.Types;
     WM_CHAR: constant := 258;
+    the_browser: Browser_window_type renames Browser_window_type(Window.Parent.Parent.Parent.all);
   begin
-    if message = WM_CHAR and then wParam = 13 then -- Return was pressed -> Go!
-      declare
-        the_browser: Browser_window_type
-          renames Browser_window_type(Window.Parent.Parent.Parent.all);
-      begin
-        the_browser.Focus;
-        the_browser.New_URL;
-      end;
-    else
-      Edit_Box_Type(Window).On_Message(message, wparam, lParam, return_Value);
+    if message = WM_CHAR then
+      case wParam is
+        when 13 => -- Return was pressed -> Go!
+          the_browser.Focus;
+          the_browser.Go_on_URL;
+          return;
+        when 27 => -- Esc -> like Ctrl-L again.
+          the_browser.On_Menu_Select(ID_New_Address);
+          return;
+        when others =>
+          null;
+      end case;
     end if;
+    Edit_Box_Type(Window).On_Message(message, wparam, lParam, return_Value);
   end On_Message;
 
   beginner_URL_blurb: constant GString:=
@@ -218,7 +222,7 @@ package body Wasabee.GWin.Windows is
     main_window.Update_control_frame;
   end Close_tab;
 
-  procedure New_URL(Window : in out Browser_window_type) is
+  procedure Go_on_URL(Window : in out Browser_window_type) is
     active_tab: HTML_area_type
       renames Window.tabs.Element(Window.active_tab).all;
     Xhtml : DOM.Core.Node_List ;
@@ -233,7 +237,7 @@ package body Wasabee.GWin.Windows is
     active_tab.Wasa_Panel.Draw_Control.Redraw;
     Refresh_title_and_URL(Window);
     active_tab.Focus;
-  end New_URL;
+  end Go_on_URL;
 
   procedure On_Menu_Select (
         Window : in out Browser_window_type;

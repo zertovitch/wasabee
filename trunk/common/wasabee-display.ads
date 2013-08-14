@@ -2,15 +2,9 @@ with Wasabee.Hypertext;                 use Wasabee.Hypertext;
 
 with Ada.Containers.Vectors;
 with Ada.Finalization;
-with Ada.Strings.Unbounded;             use Ada.Strings.Unbounded;
 
 package Wasabee.Display is
 
-  subtype Color_Code is Natural; -- 24-bit RGB
-  Black: constant Color_Code:= 0;
-  White: constant Color_Code:= 16#FF_FF_FF#;
-
-  subtype Font_face_name is Unbounded_String;
   type Font_modifier is (bold, italic, underlined, strikethrough);
   type Font_modifier_switch is array(Font_modifier) of Boolean;
 
@@ -76,6 +70,8 @@ package Wasabee.Display is
   )
   is abstract;
 
+  procedure Select_target_text_color(on: in out Frame_plane; code: in Color_Code) is abstract;
+  
 private
 
   procedure Select_font(
@@ -85,6 +81,8 @@ private
 
   function Get_current_font(on : in Frame_plane'Class) return Font_descriptor;
   
+  procedure Select_text_color(on: in out Frame_plane'Class; code: in Color_Code);
+
   package Font_Vectors is new Ada.Containers.Vectors(
     Index_Type   => Positive,
     Element_Type => Font_descriptor
@@ -93,7 +91,9 @@ private
   type Font_modifier_level is array(Font_modifier) of Natural;
 
   type Frame_plane is abstract new Ada.Finalization.Limited_Controlled with record
-    current_font        : Font_descriptor;
+    -- We will replace (*) by current_style !!
+    current_font        : Font_descriptor; -- (*)
+    current_color       : Color_Code;      -- (*)
     font_list           : Font_Vectors.Vector; -- all defined distinct Font_descriptors
     -- Font modifiers (actually will activate a new font in some systems)
     modifier_level      : Font_modifier_level; 

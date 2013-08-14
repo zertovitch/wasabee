@@ -1,5 +1,6 @@
 with Wasabee.Util;                      use Wasabee.Util;
 
+with Ada.Strings.Unbounded;             use Ada.Strings.Unbounded;
 -- with Ada.Text_IO;                       use Ada.Text_IO;
 -- with Ada.Wide_Text_IO;                  use Ada.Wide_Text_IO;
 
@@ -157,6 +158,21 @@ package body Wasabee.Display is
         when abbr | acronym =>
           -- !! do something with attribute title
           Draw_body(bn.first_child, level + 1);
+        when font =>
+          mem_font:= on.Get_current_font;
+          declare
+            modified_font: Font_descriptor:= mem_font;
+            mem_color: constant Color_code:= on.current_color;
+          begin
+            if bn.face /= "" then
+              modified_font.face:= bn.face;
+            end if;
+            on.Select_font(modified_font);
+            on.Select_text_color(bn.color);
+            Draw_body(bn.first_child, level + 1);
+            on.Select_text_color(mem_color);
+          end;
+          on.Select_font(mem_font); -- restore font at node's start
         when nav =>
           New_Line;
           Draw_body(bn.first_child, level + 1);
@@ -258,6 +274,7 @@ package body Wasabee.Display is
     on.Destroy_target_fonts;
     -- Startup font
     on.Select_font(default_font);
+    on.Select_text_color(Black);
     on.Text_size("AA", indentation_space_width, dummy);
     --
     Reset_text;
@@ -287,5 +304,12 @@ package body Wasabee.Display is
   begin
     return on.current_font;
   end Get_current_font;
+
+  procedure Select_text_color(on: in out Frame_plane'Class; code: in Color_Code) is
+  begin
+    on.Select_target_text_color(code);
+    on.current_color:= code;
+  end Select_text_color;
+
 
 end Wasabee.Display;
