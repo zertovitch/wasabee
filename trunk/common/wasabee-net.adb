@@ -97,9 +97,9 @@ package body Wasabee.Net is
       -- String'Write (Channel, "GET " & Extension_Url & " HTTP/1.0" & Send & Send) ;
       
       Put_Line("Request: " & "GET " & Extension_Url & " HTTP/1.1" & 
-		 Send & "Host: " & Base_Url & Send & "User-Agent : Wasabee/0.0.1" & Send & Send);
+		 Send & "Host: " & Base_Url & Send & "User-Agent: Wasabee/0.0.1" & Send & Send);
       String'Write (Channel, "GET " & Extension_Url & " HTTP/1.1" & 
-		      Send & "Host: " & Base_Url & Send & "User-Agent : Wasabee/0.0.1" & Send & Send);
+		      Send & "Host: " & Base_Url & Send & "User-Agent: Wasabee/0.0.1" & Send & Send);
       
       
       -- Je ramene tout cela et je stocket dans une variable ...
