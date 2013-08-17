@@ -67,22 +67,30 @@ package Wasabee.Hypertext is
     end case;
   end record;
 
-  type HTML_object is new Ada.Finalization.Controlled with record
+  --------------------------------------------------------------
+  -- This is the HyperText object. It contains all the useful --
+  -- informations for displaying a web page or frame.         --
+  -- Its structure is close to the HTML language.             --
+  --------------------------------------------------------------
+
+  type HT_object is new Ada.Finalization.Controlled with record
     title   : UTF_16_Unbounded_String;
     the_body: aliased p_Body_node;
   end record;
 
-  -- Load an HTML object from an XHTML tree
+  -- Load an HT object from an X(HT)ML tree
+  procedure Load_frame(ho: in out HT_object; from: DOM.Core.Node_List);
 
-  procedure Load_frame(ho: in out HTML_object; from: DOM.Core.Node_List);
+-- Load an HT object from any stream
+  -- procedure Load_frame(ho: in out HT_object; from: Root_Stream_Type'Class);
 
-  function Title(ho: HTML_object) return UTF_16_String;
+  function Title(ho: HT_object) return UTF_16_String;
 
-  procedure Dump(ho: HTML_object; file: Ada.Wide_Text_IO.File_Type);
+  procedure Dump(ho: HT_object; file: Ada.Wide_Text_IO.File_Type);
 
 private
 
   overriding
-  procedure Finalize(ho: in out HTML_object);
+  procedure Finalize(ho: in out HT_object);
 
 end Wasabee.Hypertext;
