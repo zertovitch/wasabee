@@ -24,7 +24,7 @@ package Wasabee.Display is
   -- ** Class-wide methods ** --
   ------------------------------
 
-  procedure Draw (on: in out Frame_plane'Class; o: HTML_object);
+  procedure Draw (on: in out Frame_plane'Class; o: HT_object);
 
   --------------------------------------------------------------
   -- ** Abstract methods that are implementation-dependent ** --

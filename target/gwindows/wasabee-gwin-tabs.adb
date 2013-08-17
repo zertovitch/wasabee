@@ -10,7 +10,7 @@ with GWindows.Drawing_Panels;           use GWindows.Drawing_Panels;
 package body Wasabee.GWin.Tabs is
 
   procedure On_Character_Down(
-    Window      : in out HTML_area_type;
+    Window      : in out HT_area_type;
     Special_Key : in     Special_Key_Type;
     Value       : in     GCharacter
   )
@@ -47,7 +47,7 @@ package body Wasabee.GWin.Tabs is
     end case;
   end On_Character_Down;
 
-  procedure On_Mouse_Wheel (Window  : in out HTML_area_type;
+  procedure On_Mouse_Wheel (Window  : in out HT_area_type;
                             X       : in     Integer;
                             Y       : in     Integer;
                             Keys    : in     Mouse_Key_States;
@@ -72,18 +72,18 @@ package body Wasabee.GWin.Tabs is
     end if;
   end On_Mouse_Wheel;
 
-  procedure On_Focus (Window : in out HTML_area_type) is
+  procedure On_Focus (Window : in out HT_area_type) is
   begin
     Accelerator_Table (Window, "Browser_Window_Shortcuts");
   end On_Focus;
 
-  procedure On_Lost_Focus (Window : in out HTML_area_type) is
+  procedure On_Lost_Focus (Window : in out HT_area_type) is
   begin
     Accelerator_Table (Window, "nix");
   end On_Lost_Focus;
 
   procedure On_Menu_Select (
-        Window : in out HTML_area_type;
+        Window : in out HT_area_type;
         Item   : in     Integer
   )
   is
@@ -93,7 +93,7 @@ package body Wasabee.GWin.Tabs is
     Browser_window_type(Window.Parent.all).On_Menu_Select(Item);
   end On_Menu_Select;
 
-  procedure Finish_creation (Window : in out HTML_area_type) is
+  procedure Finish_creation (Window : in out HT_area_type) is
   begin
     -- Preparing the panel that is moved through scrolling (= Window.Panel)
     Panel_Size (Window, 1234, 765); -- !! tentative; will depend on HTML page

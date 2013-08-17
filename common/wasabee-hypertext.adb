@@ -4,12 +4,12 @@ with Dom.Core.Nodes;                    use Dom.Core, Dom.Core.Nodes;
 
 with Ada.Strings.UTF_Encoding.Conversions;
 with Ada.Strings.Wide_Fixed;
-with Ada.Text_IO;                       use Ada.Text_IO;
+-- with Ada.Text_IO;                       use Ada.Text_IO;
 with Ada.Unchecked_Deallocation;
 
 package body Wasabee.Hypertext is
 
-  procedure Load_frame(ho: in out HTML_object; from: DOM.Core.Node_List) is
+  procedure Load_frame(ho: in out HT_object; from: DOM.Core.Node_List) is
 
     type Location_type is (nowhere, in_head, in_body);
 
@@ -121,12 +121,12 @@ package body Wasabee.Hypertext is
     Process(Item(from,0));
   end Load_frame;
 
-  function Title(ho: HTML_object) return UTF_16_String is
+  function Title(ho: HT_object) return UTF_16_String is
   begin
     return To_Wide_String(ho.title);
   end Title;
 
-  procedure Dump(ho: HTML_object; file: Ada.Wide_Text_IO.File_Type) is
+  procedure Dump(ho: HT_object; file: Ada.Wide_Text_IO.File_Type) is
     use Ada.Strings.Wide_Fixed, Ada.Wide_Text_IO;
     --
     procedure Dump_body(bn: p_Body_Node; level: Natural:= 0) is -- Scary name ;-) !
@@ -151,7 +151,7 @@ package body Wasabee.Hypertext is
     Dump_body(ho.the_body);
   end Dump;
 
-  procedure Delete_body_tree(ho: in out HTML_object) is
+  procedure Delete_body_tree(ho: in out HT_object) is
    --
     procedure Delete_body(bn: in out p_Body_Node) is
       procedure Dispose is new Ada.Unchecked_Deallocation(Body_Node, p_Body_Node);
@@ -172,7 +172,7 @@ package body Wasabee.Hypertext is
     Delete_body(ho.the_body);
   end Delete_body_tree;
 
-  procedure Finalize(ho: in out HTML_object) is
+  procedure Finalize(ho: in out HT_object) is
   begin
     Delete_body_tree(ho);
     Ada.Finalization.Controlled(ho).Finalize;

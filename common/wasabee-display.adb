@@ -15,7 +15,7 @@ package body Wasabee.Display is
   default_heading_pct_size: constant array(h1..h6) of Positive:=
     (200, 150, 113, 100, 80, 62);
 
-  procedure Draw (on: in out Frame_plane'Class; o: HTML_object) is
+  procedure Draw (on: in out Frame_plane'Class; o: HT_object) is
 
     curs_x, curs_y: Natural;
     skip_leading_blank: Boolean;

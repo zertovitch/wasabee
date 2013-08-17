@@ -13,7 +13,7 @@ with Interfaces.C;
 
 package Wasabee.GWin.Windows is
 
-  type Tab_access is access Wasabee.GWin.Tabs.HTML_area_type;
+  type Tab_access is access Wasabee.GWin.Tabs.HT_area_type;
 
   package Tabs_Vectors is new Ada.Containers.Vectors(
     Index_Type   => Positive,

@@ -129,9 +129,9 @@ package body Wasabee.GWin.Windows is
   end On_Focus;
 
   procedure Refresh_title_and_URL(Window : in out Browser_window_type) is
-    active_tab: HTML_area_type
+    active_tab: HT_area_type
       renames Window.tabs.Element(Window.active_tab).all;
-    title: constant GString:= S(active_tab.HTML_contents.Title);
+    title: constant GString:= S(active_tab.HT_contents.Title);
   begin
     if title = "" then
       Window.Text(
@@ -164,7 +164,7 @@ package body Wasabee.GWin.Windows is
   end Set_active_tab;
 
   procedure New_tab(Window : in out Browser_window_type) is
-    newcomer: constant Tab_access:= new HTML_area_type;
+    newcomer: constant Tab_access:= new HT_area_type;
     main_window: Main_Wasa_Window_Type
       renames Main_Wasa_Window_Type(Window.main.all);
   begin
@@ -178,7 +178,7 @@ package body Wasabee.GWin.Windows is
     newcomer.Dock(Fill);
     Window.Dock_Children;
     newcomer.Finish_creation;
-    newcomer.Wasa_Panel.Draw(newcomer.HTML_contents);
+    newcomer.Wasa_Panel.Draw(newcomer.HT_contents);
     newcomer.Redraw(Redraw_Now => True);
     Window.tabs.Append(newcomer);
     Set_active_tab(Window, Window.tabs.Find_Index(newcomer));
@@ -223,17 +223,17 @@ package body Wasabee.GWin.Windows is
   end Close_tab;
 
   procedure Go_on_URL(Window : in out Browser_window_type) is
-    active_tab: HTML_area_type
+    active_tab: HT_area_type
       renames Window.tabs.Element(Window.active_tab).all;
-    Xhtml : DOM.Core.Node_List ;
+    Xhtml : DOM.Core.Node_List ; -- !! own parser in a future version
   begin
     active_tab.URL:= U(G2S(Window.control_box.url_box.Text));
     Wasabee.Request.Open_Url (S(active_tab.URL), Xhtml) ;
     -- ^ !! we will go through the cache to get the xhtml
     Wasabee.Xhtml.Display_All_Children(Item(xhtml,0));
-    active_tab.HTML_contents.Load_frame(Xhtml);
+    active_tab.HT_contents.Load_frame(Xhtml);
     -- active_tab.HTML_contents.Dump(Ada.Wide_Text_IO.Standard_Output);
-    active_tab.Wasa_Panel.Draw(active_tab.HTML_contents);
+    active_tab.Wasa_Panel.Draw(active_tab.HT_contents);
     active_tab.Wasa_Panel.Draw_Control.Redraw;
     Refresh_title_and_URL(Window);
     active_tab.Focus;

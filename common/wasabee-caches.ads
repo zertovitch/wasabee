@@ -37,7 +37,7 @@ private
     -- Memory cache - we memorize decoded contents when there are --
     contents,
     uncompressed_contents  : Unbounded_String; -- e.g. JPEG -> BMP
-    ht                     : HTML_object;      -- with layout etc.
+    ht                     : HT_object;        -- with layout etc.
     -- File cache --
     file_name              : Unbounded_String;
     first_hit,

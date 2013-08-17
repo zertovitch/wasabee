@@ -46,6 +46,10 @@ procedure Wasabee_text is
     text : in     UTF_16_String;
     x,y  :    out Natural
   );
+  overriding procedure Select_target_text_color(
+    on: in out Text_plane;
+    code: in Color_Code
+  ) is null;
 
   ---------------------------
   -- Body - implementation --
@@ -101,7 +105,7 @@ procedure Wasabee_text is
 
   txt: Text_plane;
   Xhtml : DOM.Core.Node_List;
-  o: HTML_object;
+  o: HT_object;
 
 begin
   if Argument_Count = 0 then

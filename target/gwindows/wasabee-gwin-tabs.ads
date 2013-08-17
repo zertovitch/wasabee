@@ -14,9 +14,9 @@ with GWindows.Windows;                  use GWindows.Windows;
 
 package Wasabee.GWin.Tabs is
 
-  type HTML_area_type is new Scroll_Panel_Type with record
+  type HT_area_type is new Scroll_Panel_Type with record
     URL          : Unbounded_String;
-    HTML_contents: Wasabee.Hypertext.HTML_object;
+    HT_contents  : Wasabee.Hypertext.HT_object;
     --
     --  Windows graphics
     --
@@ -27,31 +27,31 @@ package Wasabee.GWin.Tabs is
 
   overriding
   procedure On_Character_Down(
-    Window      : in out HTML_area_type;
+    Window      : in out HT_area_type;
     Special_Key : in     Special_Key_Type;
     Value       : in     GCharacter
   );
 
   overriding
-  procedure On_Mouse_Wheel (Window  : in out HTML_area_type;
+  procedure On_Mouse_Wheel (Window  : in out HT_area_type;
                             X       : in     Integer;
                             Y       : in     Integer;
                             Keys    : in     Mouse_Key_States;
                             Z_Delta : in     Integer);
 
   overriding
-  procedure On_Focus (Window : in out HTML_area_type);
+  procedure On_Focus (Window : in out HT_area_type);
 
   overriding
-  procedure On_Lost_Focus (Window : in out HTML_area_type);
+  procedure On_Lost_Focus (Window : in out HT_area_type);
 
   overriding
   procedure On_Menu_Select (
-        Window : in out HTML_area_type;
+        Window : in out HT_area_type;
         Item   : in     Integer
   );
 
   -- After scroll_panel first resizing(with Dock)
-  procedure Finish_creation (Window : in out HTML_area_type);
+  procedure Finish_creation (Window : in out HT_area_type);
 
 end Wasabee.GWin.Tabs;
