@@ -35,6 +35,12 @@ package Wasabee.GWin.Display is
   procedure Clear_area (on: in out Wasa_GWin_Panel);
 
   overriding
+  procedure Area_size (on: Wasa_GWin_Panel; w,h: out Natural);
+
+  overriding
+  procedure Extend_area_height (on: in out Wasa_GWin_Panel; to: Natural);
+
+  overriding
   procedure Create_target_font(
     on         : in out Wasa_GWin_Panel;
     descriptor : in     Font_descriptor;

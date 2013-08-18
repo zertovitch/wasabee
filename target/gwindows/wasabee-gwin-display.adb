@@ -6,7 +6,7 @@ with GWindows.Types;                    use GWindows.Types;
 -- with GWindows.Colors;                   use GWindows.Colors;
 -- with GWindows.Message_Boxes;            use GWindows.Message_Boxes;
 
--- with Ada.Text_IO;                       use Ada.Text_IO;
+with Ada.Text_IO;                       use Ada.Text_IO;
 with GWindows.Colors;                   use GWindows.Colors;
 
 with Ada.Unchecked_Deallocation;
@@ -24,6 +24,20 @@ package body Wasabee.GWin.Display is
       -- O_o: GWindows bug ? Integer (signed) vs Color_Type (unsigned!) !!
     );
   end Clear_area;
+
+  procedure Area_size (on: Wasa_GWin_Panel; w,h: out Natural) is
+    sz: GWindows.Types.Size_Type;
+  begin
+    sz:= on.Draw_Control.Client_Area_Size;
+    w:= Natural(sz.Width);
+    h:= Natural(sz.Height);
+    Put_Line("Wasa_GWin_Panel Area_size=" & w'Img & h'Img);
+  end Area_size;
+
+  procedure Extend_area_height (on: in out Wasa_GWin_Panel; to: Natural) is
+  begin
+    null; -- !! 
+  end Extend_area_height;
 
   procedure Create_target_font(
     on         : in out Wasa_GWin_Panel; 

@@ -96,7 +96,7 @@ package body Wasabee.GWin.Tabs is
   procedure Finish_creation (Window : in out HT_area_type) is
   begin
     -- Preparing the panel that is moved through scrolling (= Window.Panel)
-    Panel_Size (Window, 1234, 765); -- !! tentative; will depend on HTML page
+    Panel_Size (Window, 1234, 765); -- !! use maximized window size
     -- Draw control covering all of Window.Panel
     Create_As_Control (Window.Wasa_Panel.Draw_Control, Window.Panel, "", 0,0,0,0);
     Dock (Window.Wasa_Panel.Draw_Control, Fill);
