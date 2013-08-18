@@ -32,7 +32,7 @@ package Wasabee.Hypertext is
     address, nav, q,
     font,
     h1, h2, h3, h4, h5, h6,
-    p, div,
+    p, div, span,
     ul, ol, li -- lists
   );
 

@@ -170,6 +170,8 @@ package body Wasabee.Display is
       if bn = null then
         return;
       end if;
+      -- !! tag default style here
+      -- !! tag's style attribute - style modifier here e.g. style="color:blue"
       case bn.kind is
         when text       =>
           Show_text(S(bn.content));
@@ -243,19 +245,20 @@ package body Wasabee.Display is
           -- Draw a nice rule here !!
           New_Line;
         when p =>
-          -- paragraph style here !!
           -- * W3 Note: Browsers automatically add some space (margin) before and after each <p>
           --   element. The margins can be modified with CSS (with the margin properties).
           New_Line;
           Draw_body(bn.first_child, level + 1);
           New_Line;
         when div =>
-          -- division style here !!
           -- * W3 Note: By default, browsers always place a line break before and after
           --   the <div> element. However, this can be changed with CSS.
           New_Line;
           Draw_body(bn.first_child, level + 1);
           New_Line;
+        when span =>
+          -- * W3 Note: The <span> tag provides no visual change by itself.
+          Draw_body(bn.first_child, level + 1);
         when blockquote =>
           declare
             mem_indent: constant Natural:= indentation;
