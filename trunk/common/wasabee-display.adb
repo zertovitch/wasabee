@@ -16,7 +16,6 @@ package body Wasabee.Display is
     (200, 150, 113, 100, 80, 62);
 
   procedure Draw (on: in out Frame_plane'Class; o: HT_object) is
-
     curs_x, curs_y: Natural;
     skip_leading_blank: Boolean;
     show_next_line_break: Boolean;
@@ -25,6 +24,7 @@ package body Wasabee.Display is
     type List_marker is (none, numbered, bullets);
     current_marker: List_marker;
     numbering: Positive;
+    area_width, area_height: Natural;
 
     procedure Carriage_Return is
     begin
@@ -44,19 +44,59 @@ package body Wasabee.Display is
       Carriage_Return; -- Get the default indentation (left margin)
     end Reset_text;
 
+    procedure New_Line(with_marker: Boolean:= False);
+
     procedure Show_text(t: UTF_16_String) is
-      x, y : Natural;
+      w, h, j : Natural;
+      blank_first: Boolean;
     begin
       -- implement multi-line text!!
       if t'Length > 0 then
-        if skip_leading_blank and then t(t'First)=' ' then
+        blank_first:= t(t'First)=' ';
+        if skip_leading_blank and then blank_first then
           Show_text(t(t'First+1 .. t'Last));
         else
-          on.Text_XY(curs_x, curs_y, t);
-          on.Text_size(t, x, y);
-          curs_x:= curs_x + x;
-          show_next_line_break:= True; -- there was some text
           skip_leading_blank:= False;
+          show_next_line_break:= True; -- there is some text
+          -- Message to be displayed is a chunk of blanks and non blanks
+          -- NB: several blanks only on pre-formatted text (PRE tag).
+          j:= t'First;
+          if blank_first then
+            for i in t'First+1..t'Last loop
+              if t(i)=' ' then
+                j:= i;
+              else
+                exit;
+              end if;
+            end loop;
+            -- t'First .. j is now the largest blank
+            on.Text_size(t(t'First .. j), w, h);
+            curs_x:= curs_x + w;
+            if curs_x > area_width then -- !! not in PRE
+              New_Line;
+            end if;
+          else -- non-blank
+            for i in t'First+1..t'Last loop
+              if t(i)/=' ' then
+                j:= i;
+              else
+                exit;
+              end if;
+            end loop;
+            -- t'First .. j is now the largest non-blank
+            on.Text_size(t(t'First .. j), w, h);
+            if curs_x > 0 and then
+              -- ^ we give up auto line break if word is larger than the frame
+            curs_x + w > area_width
+            then
+              New_Line;
+              skip_leading_blank:= False;
+              -- ^ avoid next two words displayed without blank inbetween
+            end if;
+            on.Text_XY(curs_x, curs_y, t(t'First .. j));
+            curs_x:= curs_x + w;
+          end if;
+          Show_Text(t(j+1..t'Last)); -- show the rest
         end if;
       end if;
     end Show_text;
@@ -181,7 +221,7 @@ package body Wasabee.Display is
           New_Line;
           Draw_children_with_font_modification(italic);
           New_Line;
-        when q =>
+        when q => -- quote
           Show_text(""""); -- !! hardcoded
           Draw_body(bn.first_child, level + 1);
           Show_text(""""); -- !! hardcoded
@@ -269,6 +309,8 @@ package body Wasabee.Display is
 
   begin
     on.Clear_area;
+    -- Get dimensions
+    on.Area_size(area_width, area_height);
     -- Font lists cleanup
     on.font_list.Clear;
     on.Destroy_target_fonts;

@@ -27,14 +27,25 @@ package Wasabee.Display is
   procedure Draw (on: in out Frame_plane'Class; o: HT_object);
 
   --------------------------------------------------------------
-  -- ** Abstract methods that are implementation-dependent ** --
+  -- ** Abstract methods that are target-dependent.        ** --
+  -- ** They are like generic parameters.                  ** --
+  -- ** NB: actual size of screen coordinates are          ** --
+  -- ** implementation-defined: pixels if possible,        ** --
+  -- ** characters on a console, ... (0,0) is top left.    ** --
   --------------------------------------------------------------
 
+  -- Erase frame with current background style
   procedure Clear_area (on: in out Frame_plane) is abstract;
   
-  ----------
-  -- Text --
-  ----------
+  procedure Area_size (on: Frame_plane; w,h: out Natural) is abstract;
+  -- The hypertext page extends vertically. Some implementations
+  -- extend the area automatically, some not or not enough.
+  -- The following method ask for enough space for a proper display.
+  procedure Extend_area_height (on: in out Frame_plane; to: Natural) is abstract;
+  
+  ------------------
+  -- Text display --
+  ------------------
 
   -- Implementation manages a Vector of fonts, indexed by 1,2,3,...
   -- The indices should match the indices passed in parameter
@@ -66,7 +77,7 @@ package Wasabee.Display is
   procedure Text_size (
     on   : in out Frame_plane; 
     text : in     UTF_16_String; 
-    x,y  :    out Natural
+    w,h  :    out Natural
   )
   is abstract;
 
