@@ -23,6 +23,7 @@ package body Wasabee.Display is
     indentation_space_width: Positive;
     type List_marker is (none, numbered, bullets);
     current_marker: List_marker;
+    tag_to_marker: constant array(ul..ol) of List_marker:= (ol => numbered, ul => bullets);
     numbering: Positive;
     area_width, area_height: Natural;
 
@@ -177,7 +178,7 @@ package body Wasabee.Display is
           Show_text(S(bn.content));
         when a =>
           -- !! do something with attributes: href, target, name, ...
-          Draw_body(bn.first_child, level + 1);
+          Draw_children_with_font_modification(underlined);
         when b | strong =>
           Draw_children_with_font_modification(bold);
         when i | em | var | dfn | cite =>
@@ -215,10 +216,6 @@ package body Wasabee.Display is
             on.Select_text_color(mem_color);
           end;
           on.Select_font(mem_font); -- restore font at node's start
-        when nav =>
-          New_Line;
-          Draw_body(bn.first_child, level + 1);
-          New_Line;
         when address =>
           New_Line;
           Draw_children_with_font_modification(italic);
@@ -244,55 +241,36 @@ package body Wasabee.Display is
         when hr   =>
           -- Draw a nice rule here !!
           New_Line;
-        when p =>
+        when p | div | article | aside | dt | nav =>
           -- * W3 Note: Browsers automatically add some space (margin) before and after each <p>
           --   element. The margins can be modified with CSS (with the margin properties).
-          New_Line;
-          Draw_body(bn.first_child, level + 1);
-          New_Line;
-        when div =>
           -- * W3 Note: By default, browsers always place a line break before and after
           --   the <div> element. However, this can be changed with CSS.
           New_Line;
           Draw_body(bn.first_child, level + 1);
           New_Line;
-        when span =>
+        when span | dl =>
           -- * W3 Note: The <span> tag provides no visual change by itself.
           Draw_body(bn.first_child, level + 1);
-        when blockquote =>
+        when blockquote | dd =>
           declare
             mem_indent: constant Natural:= indentation;
           begin
             indentation:= indentation + 2;
             New_Line;
+            Carriage_Return;
+            -- ^ force new indentation in case New_Line was skipped (e.g. DD after DT)
             Draw_body(bn.first_child, level + 1);
             indentation:= mem_indent;
           end;
           New_Line;
-        when article | aside =>
-          New_Line;
-          Draw_body(bn.first_child, level + 1);
-          New_Line;
-        when ul =>
+        when ul | ol =>
           declare
-            mem_marker: constant List_marker:= current_marker;
-            mem_indent: constant Natural:= indentation;
+            mem_marker   : constant List_marker:= current_marker;
+            mem_numbering: constant Positive:= numbering;
+            mem_indent   : constant Natural:= indentation;
           begin
-            current_marker:= bullets;
-            indentation:= indentation + 1;
-            Draw_body(bn.first_child, level + 1);
-            indentation:= mem_indent;
-            current_marker:= mem_marker;
-          end;
-          New_Line;
-        when ol =>
-          declare
-            mem_marker: constant List_marker:= current_marker;
-            mem_numbering: Positive:= numbering;
-            mem_indent: constant Natural:= indentation;
-          begin
-            current_marker:= numbered;
-            mem_numbering:= numbering;
+            current_marker:= tag_to_marker(bn.kind);
             numbering:= 1;
             indentation:= indentation + 1;
             Draw_body(bn.first_child, level + 1);
@@ -308,7 +286,7 @@ package body Wasabee.Display is
       Draw_body(bn.next, level);
     end Draw_body;
 
-  dummy: Natural;
+    dummy: Natural;
 
   begin
     on.Clear_area;
