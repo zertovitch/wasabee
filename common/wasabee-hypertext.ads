@@ -29,7 +29,7 @@ package Wasabee.Hypertext is
     strong, em, dfn, var,
     code, samp, kbd, tt,
     del, ins, abbr, acronym, cite, blockquote, article, aside,
-    address, nav, q,
+    address, nav, q, dl, dt, dd,
     font,
     h1, h2, h3, h4, h5, h6,
     p, div, span,
