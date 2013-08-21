@@ -3,7 +3,7 @@ with Wasabee.Hypertext;                 use Wasabee.Hypertext;
 with Ada.Containers.Vectors;
 with Ada.Finalization;
 
-package Wasabee.Display is
+package Wasabee.Hypertext.Display is
 
   type Font_modifier is (bold, italic, underlined, strikethrough);
   type Font_modifier_switch is array(Font_modifier) of Boolean;
@@ -111,4 +111,4 @@ private
     -- ^ 0: not bold, 1: one <b>, 2: two <b> or <h1><b>, etc.
   end record;
 
-end Wasabee.Display;
+end Wasabee.Hypertext.Display;

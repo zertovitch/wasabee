@@ -3,8 +3,8 @@
 
 with Wasabee;                           use Wasabee;
 -- with Wasabee.Util;                      use Wasabee.Util;
-with Wasabee.Display;                   use Wasabee.Display;
 with Wasabee.Hypertext;                 use Wasabee.Hypertext;
+with Wasabee.Hypertext.Display;         use Wasabee.Hypertext.Display;
 with Wasabee.Request;                   use Wasabee.Request;
 
 with DOM.Core;
@@ -25,11 +25,14 @@ procedure Wasabee_text is
 
   mode: constant Text_mode:= pure_Text;
 
-  type Text_plane is new Wasabee.Display.Frame_plane with record
+  type Text_plane is new Frame_plane with record
     x, y: Positive;
   end record;
 
   overriding procedure Clear_area(on: in out Text_plane);
+  overriding procedure Area_size (on: Text_plane; w,h: out Natural);
+  overriding procedure Extend_area_height (on: in out Text_plane; to: Natural) is null;
+
   overriding procedure Create_target_font(
     on         : in out Text_plane;
     descriptor : in     Font_descriptor;
@@ -55,6 +58,31 @@ procedure Wasabee_text is
   -- Body - implementation --
   ---------------------------
 
+  procedure Clear_area(on: in out Text_plane) is
+  begin
+    on.x:= 1;
+    on.y:= 1;
+    case mode is
+      when pure_text =>
+        null;
+      when terminal =>
+        null; -- !!
+    end case;
+  end Clear_area;
+
+  procedure Area_size (on: Text_plane; w,h: out Natural) is
+  pragma Unreferenced (on);
+  begin
+    case mode is
+      when pure_text =>
+        w:= 80;
+        h:= Integer'Last;
+      when terminal =>
+        w:= 80;
+        h:= 50;
+    end case;
+  end Area_size;
+
   procedure Set_XY(on: in out Text_plane; x,y: Positive) is
     use Ada.Strings.Wide_Fixed;
   begin
@@ -73,22 +101,11 @@ procedure Wasabee_text is
     on.y:= y;
   end Set_XY;
 
-  procedure Clear_area(on: in out Text_plane) is
-  begin
-    on.x:= 1;
-    on.y:= 1;
-    case mode is
-      when pure_text =>
-        null;
-      when terminal =>
-        null; -- !!
-    end case;
-  end Clear_area;
-
   procedure Text_XY(on: in out Text_plane; x,y: Integer; text: UTF_16_String) is
   begin
     Set_XY(on,x+1,y+1); -- We are 1-based.
     Put(text);
+    on.x:= on.x + text'Length;
   end Text_XY;
 
   procedure Text_size (

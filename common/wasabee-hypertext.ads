@@ -19,6 +19,26 @@ package Wasabee.Hypertext is
 
   subtype Font_face_name is Unbounded_String;
 
+  --------------------------------------------------------------
+  -- This is the HyperText object. It contains all the useful --
+  -- informations for displaying a web page or frame.         --
+  -- Its structure is close to the HTML language.             --
+  --------------------------------------------------------------
+
+  type HT_object is new Ada.Finalization.Controlled with private;
+
+  -- Load an HT object from an XML tree (for the XHTML prototype)
+  procedure Load_frame(ho: in out HT_object; from: DOM.Core.Node_List);
+
+  -- Load an HT object from any stream
+    -- procedure Load_frame(ho: in out HT_object; from: Root_Stream_Type'Class);
+
+  function Title(ho: HT_object) return UTF_16_String;
+
+  procedure Dump(ho: HT_object; file: Ada.Wide_Text_IO.File_Type);
+
+private
+
   type Body_kind is (
     -- Text or singleton tags
     text,
@@ -38,17 +58,22 @@ package Wasabee.Hypertext is
 
   subtype HTML_tag is Body_kind range hr .. Body_kind'Last;
   subtype Singleton_tag is HTML_tag range HTML_tag'First .. br;
+  -- missing singletons so far:
+  -- <area> <base> <basefont> <col> <frame> <img> <input> <isindex> <link> <meta> <param>
+
   subtype Text_or_singleton_tag is Body_kind range Body_kind'First .. Singleton_tag'Last;
   subtype Normal_tag is HTML_tag range HTML_tag'Succ(Singleton_tag'Last) .. HTML_tag'Last;
-  -- missing:
-  -- <area> <base> <basefont> <col> <frame> <img> <input> <isindex> <link> <meta> <param>
+
+  type Box is record
+    x1,y1,x2,y2: Natural;
+  end record;
 
   type Body_node;
   type p_Body_node is access Body_node;
 
   type Body_Node(kind: Body_kind) is record
-    x, y, w, h: Natural;
-    next      : aliased p_Body_node:= null; -- Next sibling
+    bounding_box: Box;
+    next        : aliased p_Body_node:= null; -- Next sibling
     case kind is
       -- Text or singleton tags
       when text       => content: UTF_16_Unbounded_String;
@@ -67,28 +92,10 @@ package Wasabee.Hypertext is
     end case;
   end record;
 
-  --------------------------------------------------------------
-  -- This is the HyperText object. It contains all the useful --
-  -- informations for displaying a web page or frame.         --
-  -- Its structure is close to the HTML language.             --
-  --------------------------------------------------------------
-
   type HT_object is new Ada.Finalization.Controlled with record
-    title   : UTF_16_Unbounded_String;
-    the_body: aliased p_Body_node;
+    title    : UTF_16_Unbounded_String;
+    the_body : aliased p_Body_node;
   end record;
-
-  -- Load an HT object from an X(HT)ML tree
-  procedure Load_frame(ho: in out HT_object; from: DOM.Core.Node_List);
-
--- Load an HT object from any stream
-  -- procedure Load_frame(ho: in out HT_object; from: Root_Stream_Type'Class);
-
-  function Title(ho: HT_object) return UTF_16_String;
-
-  procedure Dump(ho: HT_object; file: Ada.Wide_Text_IO.File_Type);
-
-private
 
   overriding
   procedure Finalize(ho: in out HT_object);
