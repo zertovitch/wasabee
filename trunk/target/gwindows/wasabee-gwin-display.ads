@@ -3,8 +3,8 @@
 ------------------------------------------------------------
 
 with Wasabee;                           use Wasabee;
-with Wasabee.Display;                   use Wasabee.Display;
 with Wasabee.Hypertext;                 use Wasabee.Hypertext;
+with Wasabee.Hypertext.Display;         use Wasabee.Hypertext.Display;
 
 -- with GWindows.Cursors;
 -- with GWindows.Drawing;                  use GWindows.Drawing;

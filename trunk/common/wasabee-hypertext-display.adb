@@ -4,7 +4,7 @@ with Ada.Strings.Unbounded;             use Ada.Strings.Unbounded;
 -- with Ada.Text_IO;                       use Ada.Text_IO;
 -- with Ada.Wide_Text_IO;                  use Ada.Wide_Text_IO;
 
-package body Wasabee.Display is
+package body Wasabee.Hypertext.Display is
 
   default_font: constant Font_descriptor:=
     (face          => U("Calibri"),
@@ -334,5 +334,4 @@ package body Wasabee.Display is
     on.current_color:= code;
   end Select_text_color;
 
-
-end Wasabee.Display;
+end Wasabee.Hypertext.Display;
