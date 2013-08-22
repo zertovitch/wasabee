@@ -29,8 +29,8 @@ package body Wasabee.Images is
       Client       : Socket_Type ;
       Address      : Sock_Addr_Type;
       Channel      : Stream_Access ;
-      Send         : constant String :=  (1 => ASCII.CR, 2 => ASCII.LF,
-                                          3 => ASCII.CR, 4 => ASCII.LF);  
+      Send         : constant String :=  (1 => ASCII.CR, 2 => ASCII.LF) ;
+      
       -- next_frame, current_frame: Ada.Calendar.Day_Duration:= 0.0;
       Content      : Unbounded_String;      
       S : Unbounded_String ;
@@ -50,7 +50,11 @@ package body Wasabee.Images is
       Channel := Stream(Client);
       -- Put_Line("Trying to get Header ...");
       -- Put_Line("Request: " & "GET " & To_String(The_Url.Ressource) & " HTTP/1.0" & Send) ;
-      String'Write (Channel, "GET " & To_String(The_Url.Ressource) & " HTTP/1.0" & Send) ;
+      -- String'Write (Channel, "GET " & To_String(The_Url.Ressource) & " HTTP/1.0" & Send) ;
+      
+      Put_Line("Request: " & "GET " & To_String(The_Url.Ressource) & " HTTP/1.1" & Send & "Host: " & To_String(The_Url.Host) & Send & Send);
+      String'Write (Channel, "GET " & To_String(The_Url.Ressource) & " HTTP/1.1" & Send & "Host: " & To_String(The_Url.Host) & Send & Send);
+      
       -- Put_Line("RESPONSE:");
       loop
 	 S := To_Unbounded_String(Read_Line(Channel)) ;

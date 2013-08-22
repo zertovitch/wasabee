@@ -15,7 +15,7 @@ package body Wasabee.Xhtml is
       Attrs : Named_Node_Map ;
       Lgt   : Natural ;
       Tmp   : Node;
-      Props : Css_Properties.Vector;
+      -- Props : Css_Properties.Vector;
    begin
       Put_Line(Node_Name(Nd) & " -> " & Value(Nd));
 
@@ -26,7 +26,7 @@ package body Wasabee.Xhtml is
          Put(" attribute #" & Integer'Image(Index) & ": ");
          Display_Node(Tmp);
       end loop;
-      Get_Style(Nd,Props) ;
+      -- Get_Style(Nd,Props) ;
 
    end;
 
@@ -83,13 +83,13 @@ package body Wasabee.Xhtml is
       Close(Input);
       Doc := Get_Tree(Reader);
       List  := Get_Elements_By_Tag_Name(Doc,"html");
-      Get_Style(Doc) ;
+      Get_Document_Style(Doc) ;
    end Get_Xhtml_Content;
 
    --
    -- Recupere le style d'un document ... roxe
    --
-   procedure Get_Style (Doc : Document) is
+   procedure Get_Document_Style (Doc : Document) is
       List : Node_List ;
       Style : Node ;
       -- Style_Content : Unbounded_String ;
@@ -106,19 +106,12 @@ package body Wasabee.Xhtml is
          Put_Line("*********************** STYLE (FIN) *************************");
       end if;
    end ;
-
-   procedure Get_Style (Nd : in Node ; Props : in out Css_Properties.Vector) is
-      A: Attr ;
+   
+   procedure Get_Node_Style (Nd : in Node) is
+      
    begin
-      A := Get_Named_Item(Attributes(Nd),"style") ;
-      -- Put_Line("Displaying style : " & Value(A)) ;
-      Get_Css_Unit_Element(Value(A), Props);
-   exception
-      when others =>
-        null; -- Put_Line("no style");
+      null;
    end ;
-
-
-
-
+   
+   
 end ;
