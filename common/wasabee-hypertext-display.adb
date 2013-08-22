@@ -117,7 +117,7 @@ package body Wasabee.Hypertext.Display is
           when numbered =>
             declare
               marker: constant Wide_String:= Positive'Wide_Image(numbering) & ". ";
-              -- !! hardcoded
+              -- !! marker is hardcoded
             begin
               if with_marker then
                 Show_text(marker);
@@ -130,7 +130,7 @@ package body Wasabee.Hypertext.Display is
           when bullets =>
             declare
               marker: constant Wide_String:= Wide_Character'Val(8226) & ' ';
-              -- !! hardcoded
+              -- !! marker is hardcoded
             begin
               if with_marker then
                 Show_text(marker);
@@ -177,7 +177,6 @@ package body Wasabee.Hypertext.Display is
         when text       =>
           Show_text(S(bn.content));
         when a =>
-          -- !! do something with attributes: href, target, name, ...
           Draw_children_with_font_modification(underlined);
         when b | strong =>
           Draw_children_with_font_modification(bold);

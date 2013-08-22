@@ -50,6 +50,13 @@ package body Wasabee.Hypertext is
         -- Process some attributes
         --
         case kind is
+          when a =>
+            for Index in 1 .. Length(Attrs) loop
+              Tmp_attr := Item(Attrs, Index-1);
+              if Node_Name(Tmp_Attr) = "href" then
+                new_node.URL:= U(Node_Value(Tmp_Attr));
+              end if;
+            end loop;
           when font =>
             for Index in 1 .. Length(Attrs) loop
               Tmp_attr := Item(Attrs, Index-1);

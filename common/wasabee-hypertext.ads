@@ -63,6 +63,7 @@ private
 
   subtype Text_or_singleton_tag is Body_kind range Body_kind'First .. Singleton_tag'Last;
   subtype Normal_tag is HTML_tag range HTML_tag'Succ(Singleton_tag'Last) .. HTML_tag'Last;
+  subtype Normal_tag_no_a is HTML_tag range b .. HTML_tag'Last;
 
   type Box is record
     x1,y1,x2,y2: Natural;
@@ -83,9 +84,11 @@ private
       when Normal_tag =>
         first_child: aliased p_Body_node:= null;
         case kind is
+          when a =>
+            URL   : Unbounded_String;
           when font =>
-            face : Font_face_name;
-            color: Color_Code:= Default_color;
+            face  : Font_face_name;
+            color : Color_Code:= Default_color;
           when others =>
             null;
         end case;
