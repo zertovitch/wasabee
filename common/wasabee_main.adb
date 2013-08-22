@@ -25,7 +25,8 @@ with Wasabee.Net ;            use Wasabee.Net ;
 with Wasabee.Xhtml ;          use Wasabee.Xhtml ;
 with Wasabee.Url   ;          use Wasabee.Url ;
 with Wasabee.Request   ;      use Wasabee.Request ;
-with Wasabee.Hypertext;                 use Wasabee.Hypertext;
+with Wasabee.Hypertext;       use Wasabee.Hypertext;
+with Wasabee.CSS ;            use Wasabee.CSS ;
 
 with Sax.Readers ;
 
@@ -45,7 +46,7 @@ procedure Wasabee_Main is
    Reader : Tree_Reader ;
    N : Node;
 
-   ho: HTML_object;
+   -- ho: HTML_object;
 begin
    --
    -- Programme de test
@@ -64,6 +65,10 @@ begin
    --
    -- Fin du programme de test
    --
+   
+   Put_Line("Body color : " & Get_CSS ("body","color")) ;
+   Put_Line("Body background : " & Get_CSS ("body","background")) ;
+   
    Free(Reader);
 
 end ;

@@ -3,32 +3,42 @@ with Ada.Command_Line ; use Ada.Command_Line ;
 with Ada.Strings.Unbounded ; use Ada.Strings.Unbounded ;
 
 with Ada.Containers.Vectors ;
+with Ada.Strings.Unbounded.Hash ; 
+with Ada.Containers.Hashed_Maps ;
 
 package Wasabee.Css is
-
+   
+   --
+   -- Definissions quelques types bien utiles
+   --
+   
+   package CSS_Properties is new Ada.Containers.Hashed_Maps (Unbounded_String,
+							     Unbounded_String,
+							     Hash,
+							     "=");
+   
+   use CSS_Properties ;
+   
+   type CSS_Properties_Map_Ptr is access all CSS_Properties.Map ;
+   
+   
+   package CSS_Dictionary is new Ada.Containers.Hashed_Maps (Unbounded_String,
+							     CSS_Properties_Map_Ptr,
+							     Hash, "=") ;
+   
+   Css_Page_Dictionary : CSS_Dictionary.Map ;
+   
+   procedure Add_Or_Replace_CSS (Element : String ; Key : String ; Value : String) ;
+   
+   function  Get_CSS (Element : String ; Key : String) return String ;
+   
    --
    Css : Unbounded_String ;
    --
 
-   type CSS_Property is record
-      Key   : Unbounded_String ;
-      Value : Unbounded_String ;
-   end record ;
-   package CSS_Properties is new Ada.Containers.Vectors (Element_Type => CSS_Property,
-                                                         Index_Type => Positive) ;
    -- Les properties generale de la page
-   General_Properties : access CSS_Properties.Vector ;
-   type Css_Properties_Ptr is access all CSS_Properties.Vector ;
-
-   type CSS_Dictionary_Entry is record
-      Key   : Unbounded_String ;
-      Value : CSS_Properties.Vector ;
-   end record ;
-   type CDE_Ptr is access all CSS_Dictionary_Entry ;
-   package Css_Dictionary is new Ada.Containers.Vectors (Element_Type => CSS_Dictionary_Entry,
-                                                         Index_Type => Positive) ;
-   function Get_CSS_Value (Object : String ; Key : String) return String ;
-
+   General_Properties : access CSS_Properties.Map ;
+   
    --
    -- Vecteur de propriétés
    --
@@ -37,14 +47,11 @@ package Wasabee.Css is
 
    procedure Read_CSS_File (S: String) ;
 
-   procedure Parse_CSS_Element (Element : Unbounded_String) ;
+   procedure Parse_CSS_Element (TKey : String ; Element : Unbounded_String) ;
 
    procedure Parse_Information ;
 
    procedure Set_CSS_Value ( Content : String ) ;
-
-   procedure Get_Css_Unit_Element (Content : String ;
-                                   Props : in out Css_Properties.Vector) ;
 
 end ;
 

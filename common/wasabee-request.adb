@@ -64,13 +64,13 @@ package body Wasabee.Request is
             Close(Input);
             -- Put_Line("getting elements");
             Doc := Get_Tree(Reader);
-            Get_Style(Doc);
+            Get_Document_Style(Doc);
 	    Nl  := Get_Elements_By_Tag_Name(Doc,"html");
             -- Free(Reader) ;
-         exception
-            when Error : Sax.Readers.XML_FATAL_ERROR =>
-               Put_Line("This document is not an XHTML document");
-               Abort_Task (Current_Task);
+         -- exception
+            -- when Error : Sax.Readers.XML_FATAL_ERROR =>
+               -- Put_Line("This document is not an XHTML document");
+               -- Abort_Task (Current_Task);
          end;
       end if ;
    end Open_Url;
