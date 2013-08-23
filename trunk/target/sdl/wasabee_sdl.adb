@@ -146,8 +146,6 @@ procedure Wasabee_Sdl is
 			       ) is
       Font : System.Address ;
       Style : Uint16 ;
-      Factor : Float ;
-      
    begin      
       Ada.Text_IO.Put_Line("Creating font " & Positive'Image(New_Index) & " with size " & Integer'Image(Descriptor.Size));
       Font := Ttf_OpenFont(New_String("arial.ttf"),Int(Descriptor.Size) / 2);      
@@ -204,11 +202,19 @@ procedure Wasabee_Sdl is
    procedure Scroll_Up (F : Integer) is
    begin
       Window.Ypos := Window.YPos + F ;
+      if Window.Ypos > 0 then
+	 Window.Ypos := 0 ;
+      end if ;
+      Ada.Text_IO.Put_Line(Integer'Image(Window.YPos)) ;
    end ;
    
    procedure Scroll_Down (F : Integer) is
    begin
       Window.Ypos := Window.YPos - F ;
+      if Window.Ypos > 0 then
+	 Window.Ypos := 0 ;
+      end if ;
+      Ada.Text_IO.Put_Line(Integer'Image(Window.YPos)) ;
    end ;
    
    procedure Init is
