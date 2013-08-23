@@ -9,6 +9,14 @@ with Ada.Unchecked_Deallocation;
 
 package body Wasabee.Hypertext is
 
+  function Max(b1, b2: Box) return Box is
+  begin
+    return
+      (p1 => (Integer'Min(b1.p1.x, b2.p1.x), Integer'Min(b1.p1.y, b2.p1.y)),
+       p2 => (Integer'Max(b1.p2.x, b2.p2.x), Integer'Max(b1.p2.y, b2.p2.y))
+      );
+  end Max;
+
   procedure Load_frame(ho: in out HT_object; from: DOM.Core.Node_List) is
 
     type Location_type is (nowhere, in_head, in_body);
