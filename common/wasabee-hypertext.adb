@@ -107,7 +107,7 @@ package body Wasabee.Hypertext is
                 Length (Children) > 0 and then
                 Node_Name(Item(Children, 0)) = "#text"
               then
-                ho.title:= U("WASABEE v0.0.1 - ") & U(To_UTF_16(Node_Value(Item(Children, 0))));
+                ho.title:= U(To_UTF_16(Node_Value(Item(Children, 0))));
               end if;
             when in_body =>
               if Name = "#text" then

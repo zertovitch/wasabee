@@ -1,6 +1,7 @@
 
 with Ada.Text_IO                      ; use Ada.Text_IO                      ;
 with Ada.Command_Line                 ; use Ada.Command_Line                 ;
+with Wasabee.Util;                      use Wasabee.Util;
 with Ada.Streams                      ; use Ada.Streams                      ;
 
 package body Wasabee.Net is
@@ -83,6 +84,10 @@ package body Wasabee.Net is
       Send         : constant String :=  (1 => ASCII.CR, 2 => ASCII.LF);
       Offset       : Ada.Streams.Stream_Element_Count ;
       Data         : Ada.Streams.Stream_Element_Array (1 .. 1024) ;
+      request      : String:= 
+                       "GET " & Extension_Url & " HTTP/1.1" & 
+                       Send & "Host: " & Base_Url & Send & "User-Agent: Wasabee/" & Version_number &
+                       Send & Send;
    begin
       GNAT.Sockets.Initialize;
       Create_Socket(Client);
@@ -96,11 +101,8 @@ package body Wasabee.Net is
       -- Put_Line("Request: " & "GET " & Extension_Url & " HTTP/1.0" & Send & Send) ;
       -- String'Write (Channel, "GET " & Extension_Url & " HTTP/1.0" & Send & Send) ;
       
-      Put_Line("Request: " & "GET " & Extension_Url & " HTTP/1.1" & 
-		 Send & "Host: " & Base_Url & Send & "User-Agent: Wasabee/0.0.1" & Send & Send);
-      String'Write (Channel, "GET " & Extension_Url & " HTTP/1.1" & 
-		      Send & "Host: " & Base_Url & Send & "User-Agent: Wasabee/0.0.1" & Send & Send);
-      
+      Put_Line("Request: " & request);
+      String'Write (Channel, request);      
       
       -- Je ramene tout cela et je stocket dans une variable ...
       loop
