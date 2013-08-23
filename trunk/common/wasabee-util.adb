@@ -1,5 +1,15 @@
 package body Wasabee.Util is
 
+  function Version return String is
+  begin
+    return "WASABEE v" & Version_number;
+  end Version;
+
+  function Version_number return String is
+  begin
+    return "0.0.1";
+  end Version_number;
+
   function Filter_blanks (s : Wide_String) return Wide_String is
     t: Wide_String(s'Range);
     j: Integer:= t'First-1;

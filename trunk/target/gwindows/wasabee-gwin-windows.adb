@@ -138,7 +138,7 @@ package body Wasabee.GWin.Windows is
              Integer'Wide_Image(Window.active_tab)
         );
     else
-      Window.Text(title);
+      Window.Text(S2G(Version) & " - " & title);
     end if;
     Window.control_box.url_box.Text(S2G(S(active_tab.URL)));
   end Refresh_title_and_URL;

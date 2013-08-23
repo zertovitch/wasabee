@@ -3,6 +3,9 @@ with Ada.Strings.Wide_Unbounded;        use Ada.Strings.Wide_Unbounded;
 
 package Wasabee.Util is
 
+  function Version return String;
+  function Version_number return String;
+
   function S (Source : Unbounded_String) return String renames To_String;
   function S (Source : Unbounded_Wide_String) return Wide_String renames To_Wide_String;
   function U (Source : String) return Unbounded_String renames To_Unbounded_String;
