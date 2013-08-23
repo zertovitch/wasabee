@@ -162,9 +162,13 @@ package body Wasabee.Hypertext is
    --
     procedure Delete_body(bn: in out p_Body_Node) is
       procedure Dispose is new Ada.Unchecked_Deallocation(Body_Node, p_Body_Node);
+      procedure Dispose is new Ada.Unchecked_Deallocation(Style, p_Style);
     begin
       if bn = null then
         return;
+      end if;
+      if bn.optional_style /= null then
+        Dispose(bn.optional_style);
       end if;
       case bn.kind is
         when text|hr|br       =>

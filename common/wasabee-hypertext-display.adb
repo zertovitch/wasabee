@@ -204,7 +204,7 @@ package body Wasabee.Hypertext.Display is
           mem_font:= on.Get_current_font;
           declare
             modified_font: Font_descriptor:= mem_font;
-            mem_color: constant Color_code:= on.current_color;
+            mem_color: constant Color_code:= on.current_style.text_color;
           begin
             if bn.face /= "" then
               modified_font.face:= bn.face;
@@ -315,10 +315,10 @@ package body Wasabee.Hypertext.Display is
       on.font_list.Append(descriptor);
       on.Create_target_font(descriptor, on.font_list.Last_Index);
       on.Select_target_font(on.font_list.Last_Index);
-      on.current_font:= on.font_list.Last_Element;
+      on.current_style.font:= on.font_list.Last_Element;
     else
       on.Select_target_font(index);
-      on.current_font:= on.font_list.Element(index);
+      on.current_style.font:= on.font_list.Element(index);
     end if;
   end Select_font;
 

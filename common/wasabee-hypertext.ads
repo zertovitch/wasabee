@@ -19,6 +19,24 @@ package Wasabee.Hypertext is
 
   subtype Font_face_name is Unbounded_String;
 
+  type Font_modifier is (bold, italic, underlined, strikethrough);
+  type Font_modifier_switch is array(Font_modifier) of Boolean;
+
+  type Font_descriptor is record
+    face          : Font_face_name;
+    size          : Positive;
+    modifier      : Font_modifier_switch;
+  end record;
+
+  type Style is record
+    text_color : Color_Code;
+    font       : Font_Descriptor;
+    bg_color   : Color_Code;
+    -- more to come...
+  end record;
+
+  type p_Style is access Style;
+
   --------------------------------------------------------------
   -- This is the HyperText object. It contains all the useful --
   -- informations for displaying a web page or frame.         --
@@ -73,8 +91,9 @@ private
   type p_Body_node is access Body_node;
 
   type Body_Node(kind: Body_kind) is record
-    bounding_box: Box;
-    next        : aliased p_Body_node:= null; -- Next sibling
+    bounding_box   : Box;
+    optional_style : p_Style; -- if null, the parent style prevails
+    next           : aliased p_Body_node:= null; -- Next sibling
     case kind is
       -- Text or singleton tags
       when text       => content: UTF_16_Unbounded_String;
