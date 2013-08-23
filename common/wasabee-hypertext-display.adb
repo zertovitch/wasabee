@@ -291,7 +291,7 @@ package body Wasabee.Hypertext.Display is
           New_Line(with_marker => True);
           Draw_children;
       end case;
-      on.Rectangle(bn.bounding_box); -- Show the bounding box
+      on.Rectangle(bn.bounding_box); -- Show the bounding box (for debugging purposes)
       Draw_body(bn.next, level);
     end Draw_body;
 
