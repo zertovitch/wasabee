@@ -153,7 +153,7 @@ procedure Wasabee_Sdl is
       Style : Uint16 ;
    begin      
       Ada.Text_IO.Put_Line("Creating font " & Positive'Image(New_Index) & " with size " & Integer'Image(Descriptor.Size));
-      Font := Ttf_OpenFont(New_String("arial.ttf"),Int(Descriptor.Size));      
+      Font := Ttf_OpenFont(New_String("arial.ttf"),Int(Descriptor.Size) / 2 );      
       Style := TTF_STYLE_NORMAL;
       if Descriptor.Modifier(Bold) = True then
 	 Style := Style or TTF_STYLE_BOLD ;
@@ -213,6 +213,9 @@ procedure Wasabee_Sdl is
       Ret := TTF_Init ;
       Window.Screen := SDL_SetVideoMode (1024,768,32,SDL_HWSURFACE or SDL_DOUBLEBUF); 
       Window.Draw(o);
+      
+      SDL_WM_SetCaption(New_String("Wasabee version 0.0.1 - Gautier de MONTMOLLIN , Frederic BOYER"),New_String(""));
+      
       Ret := SDL_Flip(Window.Screen);
       loop
 	 Ret := SDL_PollEvent(Event'Access) ;
