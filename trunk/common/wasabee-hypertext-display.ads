@@ -5,15 +5,6 @@ with Ada.Finalization;
 
 package Wasabee.Hypertext.Display is
 
-  type Font_modifier is (bold, italic, underlined, strikethrough);
-  type Font_modifier_switch is array(Font_modifier) of Boolean;
-
-  type Font_descriptor is record
-    face          : Font_face_name;
-    size          : Positive;
-    modifier      : Font_modifier_switch;
-  end record;
-
   ----------------------------------------------------------
   -- **** The main object type here: the frame plane **** --
   ----------------------------------------------------------
@@ -102,9 +93,7 @@ private
   type Font_modifier_level is array(Font_modifier) of Natural;
 
   type Frame_plane is abstract new Ada.Finalization.Limited_Controlled with record
-    -- We will replace (*) by current_style !!
-    current_font        : Font_descriptor; -- (*)
-    current_color       : Color_Code;      -- (*)
+    current_style       : Style;
     font_list           : Font_Vectors.Vector; -- all defined distinct Font_descriptors
     -- Font modifiers (actually will activate a new font in some systems)
     modifier_level      : Font_modifier_level; 
