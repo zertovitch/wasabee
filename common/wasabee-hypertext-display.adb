@@ -324,13 +324,13 @@ package body Wasabee.Hypertext.Display is
 
   function Get_current_font(on : in Frame_plane'Class) return Font_descriptor is
   begin
-    return on.current_font;
+    return on.current_style.font;
   end Get_current_font;
 
   procedure Select_text_color(on: in out Frame_plane'Class; code: in Color_Code) is
   begin
     on.Select_target_text_color(code);
-    on.current_color:= code;
+    on.current_style.text_color:= code;
   end Select_text_color;
 
 end Wasabee.Hypertext.Display;
