@@ -55,6 +55,12 @@ package Wasabee.Hypertext is
 
   procedure Dump(ho: HT_object; file: Ada.Wide_Text_IO.File_Type);
 
+  -- Misc.
+
+  type Point is record x, y: Natural; end record;
+  type Box is record p1, p2: Point; end record; -- p1.x <= p2.x, p1.y <= p2.y for non-empty boxes
+  function Max(b1, b2: Box) return Box; -- return the smallest rectangle containing b1 and b2
+
 private
 
   type Body_kind is (
@@ -82,10 +88,6 @@ private
   subtype Text_or_singleton_tag is Body_kind range Body_kind'First .. Singleton_tag'Last;
   subtype Normal_tag is HTML_tag range HTML_tag'Succ(Singleton_tag'Last) .. HTML_tag'Last;
   subtype Normal_tag_no_a is HTML_tag range b .. HTML_tag'Last;
-
-  type Box is record
-    x1,y1,x2,y2: Natural;
-  end record;
 
   type Body_node;
   type p_Body_node is access Body_node;

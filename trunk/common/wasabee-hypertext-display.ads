@@ -73,7 +73,9 @@ package Wasabee.Hypertext.Display is
   is abstract;
 
   procedure Select_target_text_color(on: in out Frame_plane; code: in Color_Code) is abstract;
-  
+
+  procedure Rectangle (on: in out Frame_plane; coords: Box) is abstract;
+
 private
 
   procedure Select_font(

@@ -1,6 +1,6 @@
 with Wasabee.Util;                      use Wasabee.Util;
 
-with Ada.Strings.Unbounded;             use Ada.Strings.Unbounded;
+-- with Ada.Strings.Unbounded;             use Ada.Strings.Unbounded;
 -- with Ada.Text_IO;                       use Ada.Text_IO;
 -- with Ada.Wide_Text_IO;                  use Ada.Wide_Text_IO;
 
@@ -12,11 +12,10 @@ package body Wasabee.Hypertext.Display is
      modifier      => (others => False)
     );
 
-  default_heading_pct_size: constant array(h1..h6) of Positive:=
-    (200, 150, 113, 100, 80, 62);
+  default_heading_pct_size: constant array(h1..h6) of Positive:= (200, 150, 113, 100, 80, 62);
 
   procedure Draw (on: in out Frame_plane'Class; o: HT_object) is
-    curs_x, curs_y: Natural;
+    curs: Point;
     skip_leading_blank: Boolean;
     show_next_line_break: Boolean;
     indentation: Natural;
@@ -29,14 +28,13 @@ package body Wasabee.Hypertext.Display is
 
     procedure Carriage_Return is
     begin
-      curs_x:= indentation_space_width * indentation;
+      curs.x:= indentation_space_width * indentation;
     end Carriage_Return;
 
     procedure Reset_text is
     begin
       on.modifier_level:= (others => 0);
-      curs_x:= 0;
-      curs_y:= 0;
+      curs:= (0, 0);
       skip_leading_blank:= True;
       show_next_line_break:= True;
       indentation:= 1;
@@ -51,7 +49,6 @@ package body Wasabee.Hypertext.Display is
       w, h, j : Natural;
       blank_first: Boolean;
     begin
-      -- implement multi-line text!!
       if t'Length > 0 then
         blank_first:= t(t'First)=' ';
         if skip_leading_blank and then blank_first then
@@ -72,8 +69,8 @@ package body Wasabee.Hypertext.Display is
             end loop;
             -- t'First .. j is now the largest blank
             on.Text_size(t(t'First .. j), w, h);
-            curs_x:= curs_x + w;
-            if curs_x > area_width then -- !! not in PRE
+            curs.x:= curs.x + w;
+            if curs.x > area_width then -- !! not in PRE
               New_Line;
             end if;
           else -- non-blank
@@ -86,16 +83,14 @@ package body Wasabee.Hypertext.Display is
             end loop;
             -- t'First .. j is now the largest non-blank
             on.Text_size(t(t'First .. j), w, h);
-            if curs_x > 0 and then
+            if curs.x > 0 and then curs.x + w > area_width then
               -- ^ we give up auto line break if word is larger than the frame
-            curs_x + w > area_width
-            then
               New_Line;
               skip_leading_blank:= False;
               -- ^ avoid next two words displayed without blank inbetween
             end if;
-            on.Text_XY(curs_x, curs_y, t(t'First .. j));
-            curs_x:= curs_x + w;
+            on.Text_XY(curs.x, curs.y, t(t'First .. j));
+            curs.x:= curs.x + w;
           end if;
           Show_Text(t(j+1..t'Last)); -- show the rest
         end if;
@@ -103,11 +98,11 @@ package body Wasabee.Hypertext.Display is
     end Show_text;
 
     procedure New_Line(with_marker: Boolean:= False) is
-      x, y : Natural;
+      w, h : Natural;
     begin
       if show_next_line_break then
-        on.Text_size("A", x, y);
-        curs_y:= curs_y + y;
+        on.Text_size("A", w, h);
+        curs.y:= curs.y + h;
       end if;
       if show_next_line_break or with_marker then
         Carriage_Return;
@@ -123,8 +118,8 @@ package body Wasabee.Hypertext.Display is
                 Show_text(marker);
                 numbering:= numbering + 1;
               else
-                on.Text_size(marker, x, y);
-                curs_x:= curs_x + x;
+                on.Text_size(marker, w, h);
+                curs.x:= curs.x + w;
               end if;
             end;
           when bullets =>
@@ -135,8 +130,8 @@ package body Wasabee.Hypertext.Display is
               if with_marker then
                 Show_text(marker);
               else
-                on.Text_size(marker, x, y);
-                curs_x:= curs_x + x;
+                on.Text_size(marker, w, h);
+                curs.x:= curs.x + w;
               end if;
             end;
         end case;
@@ -157,12 +152,23 @@ package body Wasabee.Hypertext.Display is
     procedure Draw_body(bn: p_Body_Node; level: Natural:= 0) is -- Scary name ;-) !
       mem_font: Font_descriptor;
       --
+      procedure Draw_children is
+        p: p_Body_node;
+      begin
+        Draw_body(bn.first_child, level + 1);
+        p:= bn.first_child;
+        while p /= null loop -- Extend the bounding box with all children
+          bn.bounding_box:= Max(bn.bounding_box, p.bounding_box);
+          p:= p.next;
+        end loop;
+      end Draw_children;
+      --
       procedure Draw_children_with_font_modification(fm: Font_modifier) is
       begin
         mem_font:= on.Get_current_font;
         on.modifier_level(fm):= on.modifier_level(fm) + 1;
         Apply_font_modifiers;
-        Draw_body(bn.first_child, level + 1);
+        Draw_children;
         on.modifier_level(fm):= on.modifier_level(fm) - 1;
         on.Select_font(mem_font); -- restore font at node's start
       end Draw_children_with_font_modification;
@@ -173,9 +179,12 @@ package body Wasabee.Hypertext.Display is
       end if;
       -- !! tag default style here
       -- !! tag's style attribute - style modifier here e.g. style="color:blue"
+      bn.bounding_box:= (curs, curs); -- a priori, a pixel... will be extended hereafter.
       case bn.kind is
         when text       =>
+          bn.bounding_box.p1:= curs;
           Show_text(S(bn.content));
+          bn.bounding_box.p2:= curs; -- we'll need a multi-rectangle animal within text, too !!
         when a =>
           Draw_children_with_font_modification(underlined);
         when b | strong =>
@@ -194,12 +203,12 @@ package body Wasabee.Hypertext.Display is
             monospace_font.face:= U("Courier New"); -- !! hardcoded
             monospace_font.size:= mem_font.size - 3; -- !! hardcoded
             on.Select_font(monospace_font);
-            Draw_body(bn.first_child, level + 1);
+            Draw_children;
           end;
           on.Select_font(mem_font); -- restore font at node's start
         when abbr | acronym =>
           -- !! do something with attribute title
-          Draw_body(bn.first_child, level + 1);
+          Draw_children;
         when font =>
           mem_font:= on.Get_current_font;
           declare
@@ -211,7 +220,7 @@ package body Wasabee.Hypertext.Display is
             end if;
             on.Select_font(modified_font);
             on.Select_text_color(bn.color);
-            Draw_body(bn.first_child, level + 1);
+            Draw_children;
             on.Select_text_color(mem_color);
           end;
           on.Select_font(mem_font); -- restore font at node's start
@@ -221,7 +230,7 @@ package body Wasabee.Hypertext.Display is
           New_Line;
         when q => -- quote
           Show_text(""""); -- !! hardcoded
-          Draw_body(bn.first_child, level + 1);
+          Draw_children;
           Show_text(""""); -- !! hardcoded
         when h1 .. h6   =>
           New_Line;
@@ -231,7 +240,7 @@ package body Wasabee.Hypertext.Display is
           begin
             font.size:= (font.size * default_heading_pct_size(bn.kind)) / 100;
             on.Select_font(font);
-            Draw_body(bn.first_child, level + 1);
+            Draw_children;
             New_Line;
           end;
           on.Select_font(mem_font); -- restore font at node's start
@@ -246,11 +255,11 @@ package body Wasabee.Hypertext.Display is
           -- * W3 Note: By default, browsers always place a line break before and after
           --   the <div> element. However, this can be changed with CSS.
           New_Line;
-          Draw_body(bn.first_child, level + 1);
+          Draw_children;
           New_Line;
         when span | dl =>
           -- * W3 Note: The <span> tag provides no visual change by itself.
-          Draw_body(bn.first_child, level + 1);
+          Draw_children;
         when blockquote | dd =>
           declare
             mem_indent: constant Natural:= indentation;
@@ -259,7 +268,7 @@ package body Wasabee.Hypertext.Display is
             New_Line;
             Carriage_Return;
             -- ^ force new indentation in case New_Line was skipped (e.g. DD after DT)
-            Draw_body(bn.first_child, level + 1);
+            Draw_children;
             indentation:= mem_indent;
           end;
           New_Line;
@@ -272,7 +281,7 @@ package body Wasabee.Hypertext.Display is
             current_marker:= tag_to_marker(bn.kind);
             numbering:= 1;
             indentation:= indentation + 1;
-            Draw_body(bn.first_child, level + 1);
+            Draw_children;
             indentation:= mem_indent;
             current_marker:= mem_marker;
             numbering:= mem_numbering;
@@ -280,8 +289,9 @@ package body Wasabee.Hypertext.Display is
           New_Line;
         when li =>
           New_Line(with_marker => True);
-          Draw_body(bn.first_child, level + 1);
+          Draw_children;
       end case;
+      on.Rectangle(bn.bounding_box); -- Show the bounding box
       Draw_body(bn.next, level);
     end Draw_body;
 

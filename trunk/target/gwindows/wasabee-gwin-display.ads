@@ -59,7 +59,7 @@ package Wasabee.GWin.Display is
   overriding
   procedure Text_XY (
     on   : in out Wasa_GWin_Panel;
-    x,y  : in     Integer;
+    x, y : in     Integer;
     text : in     UTF_16_String
   );
 
@@ -67,10 +67,13 @@ package Wasabee.GWin.Display is
   procedure Text_size (
     on   : in out Wasa_GWin_Panel;
     text : in     UTF_16_String;
-    x,y  :    out Natural
+    w, h :    out Natural
   );
 
   overriding
   procedure Select_target_text_color(on: in out Wasa_GWin_Panel; code: in Color_Code);
+
+  overriding
+  procedure Rectangle (on: in out Wasa_GWin_Panel; coords: Box);
 
 end Wasabee.GWin.Display;

@@ -100,14 +100,13 @@ package body Wasabee.GWin.Display is
   procedure Text_size (
     on   : in out Wasa_GWin_Panel; 
     text : in     UTF_16_String; 
-    x,y  :    out Natural
+    w, h :    out Natural
   )
   is
-    dims: constant GWindows.Types.Size_Type:=
-      on.Drawing_Canvas.Text_Output_Size(text);
+    dims: constant GWindows.Types.Size_Type:= on.Drawing_Canvas.Text_Output_Size(text);
   begin
-    x:= dims.Width;
-    y:= dims.Height;
+    w:= dims.Width;
+    h:= dims.Height;
   end Text_size;
 
   procedure Select_target_text_color(on: in out Wasa_GWin_Panel; code: in Color_Code) is
@@ -123,5 +122,12 @@ package body Wasabee.GWin.Display is
       );
     end if;
   end Select_target_text_color;
+
+  procedure Rectangle (on: in out Wasa_GWin_Panel; coords: Box) is
+    b: Brush_Type;
+  begin
+    Create_Stock_Brush(b, Light_Gray_Brush);
+    on.Drawing_Canvas.Frame_Rectangle((coords.p1.x, coords.p1.y, coords.p2.x, coords.p2.y), b);
+  end Rectangle;
 
 end Wasabee.GWin.Display;
