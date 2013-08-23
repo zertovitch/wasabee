@@ -187,8 +187,7 @@ procedure Wasabee_Sdl is
    end ;
    
    
-   procedure Select_target_text_color(
-				      on: in out SDL_plane;
+   procedure Select_target_text_color(on: in out SDL_plane;
 				      code: in Color_Code
 				     ) is 
    begin
@@ -211,7 +210,7 @@ procedure Wasabee_Sdl is
    begin
       Ret := SDL_Init(SDL_INIT_EVERYTHING) ;
       Ret := TTF_Init ;
-      Window.Screen := SDL_SetVideoMode (1024,768,32,SDL_HWSURFACE or SDL_DOUBLEBUF); 
+      Window.Screen := SDL_SetVideoMode (1280,800,32,SDL_HWSURFACE or SDL_DOUBLEBUF); 
       Window.Draw(o);
       
       SDL_WM_SetCaption(New_String("Wasabee version 0.0.1 - Gautier de MONTMOLLIN , Frederic BOYER"),New_String(""));
