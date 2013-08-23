@@ -18,6 +18,7 @@ with DOM.Core;
 with SDL_SDL_H ; use SDL_SDL_H ; 
 with SDL_SDL_Video_H ; use SDL_SDL_Video_H ; 
 with SDL_SDL_Events_H ; use SDL_SDL_Events_H ; 
+with SDL_SDL_Keyboard_H ; use SDL_SDL_Keyboard_H ; 
 with SDL_SDL_Ttf_H; use SDL_SDL_Ttf_H;
 with SDL_SDL_Stdinc_H ; use SDL_SDL_Stdinc_H ;
   
@@ -55,9 +56,10 @@ procedure Wasabee_Sdl is
    --
    
    type SDL_Plane is new Frame_Plane with record
-      
+      Surface : access SDL_Surface ;
       Screen : access SDL_Surface ;
-      
+      XPos : Integer ;
+      YPos : Integer ;      
    end record ;
    
    overriding procedure Clear_area(on: in out SDL_plane);
@@ -88,9 +90,7 @@ procedure Wasabee_Sdl is
    
    --
    -- Implementation
-   --
-   
-   
+   --   
    Window : SDL_Plane ;
    
    use SDL_Fonts_Vector ;   
@@ -98,13 +98,13 @@ procedure Wasabee_Sdl is
    procedure Clear_area(on: in out SDL_plane) is
       Ret : Int ;
    begin
-      Ret := SDL_FillRect (Window.Screen, Window.Screen.Clip_Rect'Access, 16#FFFFFF#) ; 
+      Ret := SDL_FillRect (Window.Surface, Window.Surface.Clip_Rect'Access, 16#FFFFFF#) ; 
    end;      
       
    procedure Area_size (on: SDL_plane; w,h: out Natural) is
    begin      
-      W := Natural(Window.Screen.W) ;
-      H := Natural(Window.Screen.H) ;      
+      W := Natural(Window.Surface.W) ;
+      H := Natural(Window.Surface.H) ;      
    end;
    
    procedure Text_XY(on: in out SDL_plane; x,y: Integer; text: UTF_16_String) is
@@ -121,7 +121,7 @@ procedure Wasabee_Sdl is
       Rect.Y := Sint16(Y) ;
       Rect.W := Uint16(Ts.W) ;
       Rect.H := Uint16(Ts.H) ;      
-      Ret := SDL_UpperBlit(Ts,null,Window.Screen,Rect'Access);
+      Ret := SDL_UpperBlit(Ts,null,Window.Surface,Rect'Access);
    end;
    
    procedure Text_size (on   : in out SDL_plane;
@@ -145,11 +145,12 @@ procedure Wasabee_Sdl is
 				new_index  : in     Positive
 			       ) is
       Font : System.Address ;
-      
       Style : Uint16 ;
+      Factor : Float ;
+      
    begin      
       Ada.Text_IO.Put_Line("Creating font " & Positive'Image(New_Index) & " with size " & Integer'Image(Descriptor.Size));
-      Font := Ttf_OpenFont(New_String("arial.ttf"),Int(Descriptor.Size));      
+      Font := Ttf_OpenFont(New_String("arial.ttf"),Int(Descriptor.Size) / 2);      
       Style := TTF_STYLE_NORMAL;
       if Descriptor.Modifier(Bold) = True then
 	 Style := Style or TTF_STYLE_BOLD ;
@@ -200,22 +201,101 @@ procedure Wasabee_Sdl is
    -- C'est parti pour un peu de SDL
    --
    
+   procedure Scroll_Up (F : Integer) is
+   begin
+      Window.Ypos := Window.YPos + F ;
+   end ;
+   
+   procedure Scroll_Down (F : Integer) is
+   begin
+      Window.Ypos := Window.YPos - F ;
+   end ;
+   
    procedure Init is
       Event : aliased SDL_Event ;
+      
+      Rect : aliased SDL_Rect := (0,0,1024,768);
+      
    begin
       Ret := SDL_Init(SDL_INIT_EVERYTHING) ;
       Ret := TTF_Init ;
-      Window.Screen := SDL_SetVideoMode (1280,800,32,SDL_HWSURFACE or SDL_DOUBLEBUF); 
-      Window.Draw(o);
+      Put_Line("Creating window");
+      Window.Screen := SDL_SetVideoMode (1280, 800, 32, SDL_HWSURFACE or SDL_DOUBLEBUF); 
+      Put_Line("Creating surface");
+      Window.Surface := SDL_CreateRGBSurface (SDL_HWSURFACE, 1280,8000, 32, 0,0,0,0);
       
+      Window.XPos := 0 ;
+      Window.YPos := 0 ;
+            
+      if Window.Surface = null then
+	 Put_Line("error");
+      end if ;
+      
+      Window.Draw(o);      
       SDL_WM_SetCaption(New_String("Wasabee version 0.0.1 - " & Argument(1)) , New_String("")) ;
-      
+      Ret := SDL_UpperBlit(Window.Surface, null, Window.Screen, Rect'access) ;
       Ret := SDL_Flip(Window.Screen);
       loop
 	 Ret := SDL_PollEvent(Event'Access) ;
+	 
+	 if SDL_EventType(Event.C_Type) = SDL_KEYUP then
+	    declare
+	       Ke : SDL_KeyboardEvent ;
+	       Ks : SDL_Keysym ;
+	    begin
+	       Ke := Event.Key ;
+	       Ks := Ke.Keysym;
+	       -- Ada.Text_IO.Put_Line(Integer'Image(Integer(Ks.Scancode)));
+	       
+	       if Ks.Scancode = 72 then
+		  Scroll_Up(10) ;
+	       end if ;
+	       if Ks.Scancode = 73 then
+		  Scroll_Up(Integer(Window.Screen.H) - 100) ;
+	       end if ;
+	       
+	       if Ks.Scancode = 80 then
+		  Scroll_Down(10) ;
+	       end if ;
+	       
+	       if Ks.Scancode = 81 then
+		  Scroll_Down(Integer(Window.Screen.H) - 100) ;
+	       end if ;
+	       
+	       Rect.X := Short(Window.XPos) ;
+	       Rect.Y := Short(Window.YPos) ;
+	       Ret := SDL_UpperBlit(Window.Surface, null, Window.Screen, Rect'access) ;
+	       Ret := SDL_Flip(Window.Screen);
+     
+	    end ;
+	 end if ;	 
+	 
+	 if SDL_EventType(Event.C_Type) = SDL_MOUSEBUTTONUP then
+	    declare
+	       Me : SDL_MouseButtonEvent ;
+	    begin
+	       Me := Event.Button ;
+	       -- Ada.Text_IO.Put_Line("Button: " & Integer'Image(Integer(Me.Button))) ;
+	       
+	       if Me.Button = 4 then
+		  Scroll_Up(25) ;
+	       end if ;
+	       if Me.Button = 5 then
+		  Scroll_Down(25) ;
+	       end if ;
+	       
+	       Rect.X := Short(Window.XPos) ;
+	       Rect.Y := Short(Window.YPos) ;
+	       Ret := SDL_UpperBlit(Window.Surface, null, Window.Screen, Rect'access) ;
+	       Ret := SDL_Flip(Window.Screen);
+	       
+	    end;
+	 end if ;
+	 
 	 if SDL_EventType(Event.C_Type) = SDL_SDL_Events_H.SDL_QUIT then
 	    exit ;
 	 end if ;
+	 Event.C_Type := Unsigned_Char(SDL_NOEVENT) ;
       end loop ;      
    end ;
    
