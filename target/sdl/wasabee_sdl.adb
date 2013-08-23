@@ -11,7 +11,6 @@ with Ada.Wide_Text_IO;                  use Ada.Wide_Text_IO;
 with Ada.Characters.Handling ; use Ada.Characters.Handling ;
 with Ada.Containers.Vectors ;
 
-
 with Ada.Text_IO;                       
 
 with DOM.Core;
@@ -28,8 +27,20 @@ with Interfaces.C.Strings ; use Interfaces.C.Strings ;
 
 with System ; use System ; 
 
+with Ada.Unchecked_Conversion ;
 procedure Wasabee_Sdl is
    
+   
+   function To_SDL_Color (C : Color_Code) return SDL_Color is
+      Color : SDL_Color := (125,125,125,0);
+      Sr : constant String := Integer'Image(C) ;
+   begin
+      Ada.Text_IO.Put_Line("Selecting colors ..." & Integer'Image(C));
+      Color.R := Unsigned_Char (C / 65536) ;
+      Color.G := Unsigned_Char ((C / 256) mod 256) ;
+      Color.B := Unsigned_Char (C mod 256) ;
+      return Color ;
+   end ;
    
    package SDL_Fonts_Vector is new Ada.Containers.Vectors(Positive,System.Address,"=") ;
 
@@ -37,7 +48,7 @@ procedure Wasabee_Sdl is
    
    Current_Font : System.Address ;
    
-   Current_Color : Color_Code ;
+   Current_Color : SDL_Color ;   
    
    --
    -- Declaration
@@ -87,8 +98,6 @@ procedure Wasabee_Sdl is
    procedure Clear_area(on: in out SDL_plane) is
       Ret : Int ;
    begin
-      --Put_Line("********************************************************");
-      -- Ada.Text_IO.Put_Line("__Clear_aera__") ;       
       Ret := SDL_FillRect (Window.Screen, Window.Screen.Clip_Rect'Access, 16#FFFFFF#) ; 
    end;      
       
@@ -106,13 +115,8 @@ procedure Wasabee_Sdl is
       Rect : aliased SDL_Rect ;
       Ret : Int ;
    begin
-      --Put_Line("********************************************************");
-      --Put_Line("__Text_Size__") ;       
       Font := Current_Font ; -- Ttf_OpenFont(New_String("arial.ttf"),12);
-      Ts := TTF_RenderText_Solid (Font,New_String(To_String(Text)),Color) ;       
-      --Ada.Text_IO.Put_Line("X " & Natural'Image(x));
-      --Ada.Text_IO.Put_Line("Y " & Natural'Image(y));
-      -- Put_Line(Text);
+      Ts := TTF_RenderText_Solid (Font,New_String(To_String(Text)),Current_Color) ;       
       Rect.X := Sint16(X) ;
       Rect.Y := Sint16(Y) ;
       Rect.W := Uint16(Ts.W) ;
@@ -127,20 +131,12 @@ procedure Wasabee_Sdl is
       Ts : access SDL_Surface ;
       Font : System.Address ;
       Color : SDL_Color := (0,0,0,0);
-      F : SDL_PixelFormat ;      
+      -- F : SDL_PixelFormat ;      
    begin
-      --Put_Line("********************************************************");
-      --Put_Line("__Text_Size__") ; 
-      
-      
-      
       Font := Current_Font ; --Ttf_OpenFont(New_String("arial.ttf"),12);
-      Ts := TTF_RenderText_Solid (Font,New_String(To_String(Text)),Color) ;       
+      Ts := TTF_RenderText_Solid (Font,New_String(To_String(Text)),Current_Color) ;       
       X := Natural(Ts.W) ;
       Y := Natural(Ts.H) ;      
-      --Ada.Text_IO.Put_Line("X " & Natural'Image(x));
-      --Ada.Text_IO.Put_Line("Y " & Natural'Image(y));
-      Put_Line(Text);
    end;
    
    procedure Create_target_font(
@@ -153,7 +149,7 @@ procedure Wasabee_Sdl is
       Style : Uint16 ;
    begin      
       Ada.Text_IO.Put_Line("Creating font " & Positive'Image(New_Index) & " with size " & Integer'Image(Descriptor.Size));
-      Font := Ttf_OpenFont(New_String("arial.ttf"),Int(Descriptor.Size) / 2 );      
+      Font := Ttf_OpenFont(New_String("arial.ttf"),Int(Descriptor.Size));      
       Style := TTF_STYLE_NORMAL;
       if Descriptor.Modifier(Bold) = True then
 	 Style := Style or TTF_STYLE_BOLD ;
@@ -191,8 +187,7 @@ procedure Wasabee_Sdl is
 				      code: in Color_Code
 				     ) is 
    begin
-      Put_Line("Selecting colors ...");
-      Current_Color := Code ;      
+      Current_Color := To_SDL_Color(Code) ;      
    end ;
    
    Xhtml : DOM.Core.Node_List;
@@ -213,7 +208,7 @@ procedure Wasabee_Sdl is
       Window.Screen := SDL_SetVideoMode (1280,800,32,SDL_HWSURFACE or SDL_DOUBLEBUF); 
       Window.Draw(o);
       
-      SDL_WM_SetCaption(New_String("Wasabee version 0.0.1 - Gautier de MONTMOLLIN , Frederic BOYER"),New_String(""));
+      SDL_WM_SetCaption(New_String("Wasabee version 0.0.1 - " & Argument(1)) , New_String("")) ;
       
       Ret := SDL_Flip(Window.Screen);
       loop
@@ -234,8 +229,7 @@ begin
    
    --
    -- Ouvrir une fenetre
-   --
-   
+   --   
 
    if Argument_Count = 0 then
       Put_Line(Standard_Error, "Provide an URL as command-line argument");
