@@ -1,0 +1,3 @@
+gnatclean wasabee_sdl
+
+
