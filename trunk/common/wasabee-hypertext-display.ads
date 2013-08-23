@@ -58,6 +58,7 @@ package Wasabee.Hypertext.Display is
 
   procedure Destroy_target_fonts(on: in out Frame_plane) is abstract; 
 
+  -- Display text in the current font and color
   procedure Text_XY (
     on   : in out Frame_plane; 
     x,y  : in     Integer; 
@@ -74,6 +75,7 @@ package Wasabee.Hypertext.Display is
 
   procedure Select_target_text_color(on: in out Frame_plane; code: in Color_Code) is abstract;
 
+  -- Display text in the current color (and line style, depending on the target system)
   procedure Rectangle (on: in out Frame_plane; coords: Box) is abstract;
 
 private

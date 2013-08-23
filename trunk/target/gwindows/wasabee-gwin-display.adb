@@ -124,7 +124,7 @@ package body Wasabee.GWin.Display is
   end Select_target_text_color;
 
   procedure Rectangle (on: in out Wasa_GWin_Panel; coords: Box) is
-    b: Brush_Type;
+    b: Brush_Type; -- !! Provisory (GDI object leak there) !!
   begin
     Create_Stock_Brush(b, Light_Gray_Brush);
     on.Drawing_Canvas.Frame_Rectangle((coords.p1.x, coords.p1.y, coords.p2.x, coords.p2.y), b);
