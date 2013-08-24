@@ -26,10 +26,31 @@ package Wasabee.GWin.Display is
 
   type Wasa_drawing_panel is new Drawing_Panel_Type with private;
 
+  overriding
   procedure On_Mouse_Move (Window : in out Wasa_drawing_panel;
                            X      : in     Integer;
                            Y      : in     Integer;
                            Keys   : in     Mouse_Key_States);
+
+  procedure On_Click
+    (Window : in out Wasa_drawing_panel;
+     X      : in     Integer;
+     Y      : in     Integer;
+     Keys   : in     Mouse_Key_States); -- Keys contains only the mouse button that clicked
+
+  overriding
+  procedure On_Left_Mouse_Button_Up
+    (Window : in out Wasa_drawing_panel;
+     X      : in     Integer;
+     Y      : in     Integer;
+     Keys   : in     Mouse_Key_States);
+
+  overriding
+  procedure On_Middle_Mouse_Button_Up
+    (Window : in out Wasa_drawing_panel;
+     X      : in     Integer;
+     Y      : in     Integer;
+     Keys   : in     Mouse_Key_States);
 
   -- Here we mix the abstract Wasa graphics and the GWindows graphics (phew!)
 
