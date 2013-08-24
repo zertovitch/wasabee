@@ -5,6 +5,8 @@ package Wasabee.Hypertext.Locations is
 
   type Mouse_cursor_style is (arrow, finger, I_beam);
 
-  function Mouse_over(ho: HT_object; x,y: Natural) return Mouse_cursor_style;
+  -- Upon a normal mouse move (no selection), this function returns
+  -- the appropriate mouse cursor.
+  function Mouse_move(ho: HT_object; x,y: Natural) return Mouse_cursor_style;
 
 end Wasabee.Hypertext.Locations;
