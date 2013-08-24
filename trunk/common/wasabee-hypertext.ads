@@ -72,7 +72,7 @@ private
     b,i,u,strike,s,
     strong, em, dfn, var,
     code, samp, kbd, tt,
-    del, ins, abbr, acronym, cite, blockquote, article, aside,
+    del, ins, abbr, acronym, cite, blockquote, article, aside, figure, figcaption,
     address, nav, q, dl, dt, dd,
     font,
     h1, h2, h3, h4, h5, h6,
@@ -99,7 +99,8 @@ private
     case kind is
       -- Text or singleton tags
       when text       => content: UTF_16_Unbounded_String;
-      when hr         => null; -- hr style !!
+      when hr         =>
+        hr_height : Natural:= 2;
       when br         => null;
       -- Normal tags
       when Normal_tag =>
