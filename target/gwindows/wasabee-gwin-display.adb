@@ -1,5 +1,6 @@
 with Wasabee.Util;                      use Wasabee.Util;
 with Wasabee.GWin.Tabs;                 use Wasabee.GWin.Tabs;
+with Wasabee.GWin.Windows;              use Wasabee.GWin.Windows;
 
 -- with GWindows.Application;
 -- with GWindows.Message_Boxes;            use GWindows.Message_Boxes;
@@ -39,7 +40,49 @@ package body Wasabee.GWin.Display is
       Mouse_cursor(HT_area_type(Window.Parent.Parent.all).HT_contents, X, Y))
     );
   end On_Mouse_Move;
-  
+
+  procedure On_Click
+    (Window : in out Wasa_drawing_panel;
+     X      : in     Integer;
+     Y      : in     Integer;
+     Keys   : in     Mouse_Key_States) -- Keys contains only the mouse button that clicked
+  is
+    URL: constant String:= Mouse_partial_URL(HT_area_type(Window.Parent.Parent.all).HT_contents, X, Y);
+    bw: Browser_window_type renames Browser_window_type(Window.Parent.Parent.Parent.all);
+  begin
+    if URL /= "" then
+      -- !! complete URL if http:// or file:// or whatever is missing.
+      if Keys(Middle_Button) then
+        bw.New_Tab;
+      end if;
+      bw.control_box.url_box.Text(S2G(URL));
+      bw.Go_on_URL;
+    end if;
+  end On_Click;
+
+  procedure On_Left_Mouse_Button_Up
+    (Window : in out Wasa_drawing_panel;
+     X      : in     Integer;
+     Y      : in     Integer;
+     Keys   : in     Mouse_Key_States)
+  is
+  pragma Unreferenced (Keys);
+  begin
+    -- !! measure time between down and up (click or no click ;-) )
+    Window.On_Click(X,Y,(Left_Button => True, others => False));
+  end On_Left_Mouse_Button_Up;
+
+  procedure On_Middle_Mouse_Button_Up
+    (Window : in out Wasa_drawing_panel;
+     X      : in     Integer;
+     Y      : in     Integer;
+     Keys   : in     Mouse_Key_States)
+  is
+  pragma Unreferenced (Keys);
+  begin
+    Window.On_Click(X,Y,(Middle_Button => True, others => False));
+  end On_Middle_Mouse_Button_Up;
+
   procedure Clear_area (on: in out Wasa_GWin_Panel) is
   begin
     Fill_Rectangle (
