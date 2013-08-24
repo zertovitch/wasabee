@@ -5,11 +5,13 @@
 with Wasabee;                           use Wasabee;
 with Wasabee.Hypertext;                 use Wasabee.Hypertext;
 with Wasabee.Hypertext.Display;         use Wasabee.Hypertext.Display;
+with Wasabee.Hypertext.Locations;       use Wasabee.Hypertext.Locations;
 
--- with GWindows.Cursors;
+with GWindows.Cursors;                  use GWindows.Cursors;
 -- with GWindows.Drawing;                  use GWindows.Drawing;
 with GWindows.Drawing_Objects;          use GWindows.Drawing_Objects;
 with GWindows.Drawing_Panels;           use GWindows.Drawing_Panels;
+with GWindows.Windows;                  use GWindows.Windows;
 
 with Ada.Containers.Vectors;
 
@@ -22,11 +24,18 @@ package Wasabee.GWin.Display is
     Element_Type => p_Font_Type
   );
 
+  type Wasa_drawing_panel is new Drawing_Panel_Type with private;
+
+  procedure On_Mouse_Move (Window : in out Wasa_drawing_panel;
+                           X      : in     Integer;
+                           Y      : in     Integer;
+                           Keys   : in     Mouse_Key_States);
+
   -- Here we mix the abstract Wasa graphics and the GWindows graphics (phew!)
 
   type Wasa_GWin_Panel is new Frame_plane with record
     -- GWindows stuff:
-    Draw_Control   : Drawing_Panel_Type;
+    Draw_Control   : Wasa_drawing_panel;
     Drawing_Canvas : Drawing_Canvas_Type;
     gw_font_list   : GW_Font_Vectors.Vector; -- list with same indices as Frame_plane.font_list
   end record;
@@ -75,5 +84,15 @@ package Wasabee.GWin.Display is
 
   overriding
   procedure Rectangle (on: in out Wasa_GWin_Panel; coords: Box);
+
+private
+
+  type Wasa_to_gwin_mouse_cursor_type is
+    array(Mouse_cursor_style) of Cursor_Type;
+
+  type Wasa_drawing_panel is new Drawing_Panel_Type with record
+    wasa_to_gwin_mouse_cursor : Wasa_to_gwin_mouse_cursor_type;
+    gwin_cursors_initialized  : Boolean:= False;
+  end record;
 
 end Wasabee.GWin.Display;

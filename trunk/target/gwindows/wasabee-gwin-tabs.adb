@@ -2,8 +2,7 @@ with Wasabee.GWin.Windows;              use Wasabee.GWin.Windows;
 -- with Wasabee_Resource_GUI;              use Wasabee_Resource_GUI;
 
 with GWindows.Base;                     use GWindows.Base;
-with GWindows.Drawing_Panels;           use GWindows.Drawing_Panels;
-
+-- with GWindows.Drawing_Panels;           use GWindows.Drawing_Panels;
 -- with GWindows.Message_Boxes;            use GWindows.Message_Boxes;
 -- with GWindows.Application;
 

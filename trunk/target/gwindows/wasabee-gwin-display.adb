@@ -1,19 +1,45 @@
 with Wasabee.Util;                      use Wasabee.Util;
+with Wasabee.GWin.Tabs;                 use Wasabee.GWin.Tabs;
 
 -- with GWindows.Application;
 -- with GWindows.Message_Boxes;            use GWindows.Message_Boxes;
 with GWindows.Types;                    use GWindows.Types;
--- with GWindows.Colors;                   use GWindows.Colors;
+with GWindows.Colors;                   use GWindows.Colors;
 -- with GWindows.Message_Boxes;            use GWindows.Message_Boxes;
 
 with Ada.Text_IO;                       use Ada.Text_IO;
-with GWindows.Colors;                   use GWindows.Colors;
 
 with Ada.Unchecked_Deallocation;
 with Interfaces;                        use Interfaces;
 
 package body Wasabee.GWin.Display is
 
+  procedure On_Mouse_Move (Window : in out Wasa_drawing_panel;
+                           X      : in     Integer;
+                           Y      : in     Integer;
+                           Keys   : in     Mouse_Key_States) is
+  pragma Unreferenced (Keys);
+  --
+    procedure Init_cursors is
+      wasa_to_gwin_mouse_cursor_id: constant array(Mouse_cursor_style) of Integer:=
+        (arrow => IDC_ARROW, finger => IDC_HAND, I_beam => IDC_IBEAM);
+    begin
+      for c in Mouse_cursor_style loop
+        Window.wasa_to_gwin_mouse_cursor(c):= Load_System_Cursor(wasa_to_gwin_mouse_cursor_id(c));
+      end loop;
+      Window.gwin_cursors_initialized:= True;
+    end Init_cursors;
+    --
+  begin
+    if not Window.gwin_cursors_initialized then
+      Init_cursors;
+    end if;
+    -- put_line(x'Img & y'Img);
+    Set_Cursor(Window.wasa_to_gwin_mouse_cursor(
+      Mouse_cursor(HT_area_type(Window.Parent.Parent.all).HT_contents, X, Y))
+    );
+  end On_Mouse_Move;
+  
   procedure Clear_area (on: in out Wasa_GWin_Panel) is
   begin
     Fill_Rectangle (

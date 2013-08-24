@@ -70,9 +70,13 @@ package body Wasabee.Hypertext.Display is
             end loop;
             -- t'First .. j is now the largest blank
             on.Text_size(t(t'First .. j), w, h);
-            curs.x:= curs.x + w;
-            if curs.x > area_width then -- !! not in PRE
+            if curs.x + w > area_width then -- !! not in PRE
               New_Line;
+            else
+              if on.Get_current_font.modifier(underlined) then
+                on.Text_XY(curs.x, curs.y, t(t'First .. j));
+              end if;
+              curs.x:= curs.x + w;
             end if;
           else -- non-blank
             for i in t'First+1..t'Last loop
