@@ -5,10 +5,10 @@ package body Wasabee.Hypertext.Locations is
   function In_Box(x,y: Natural; b: Box) return Boolean is
   pragma Inline(In_Box);
   begin
-    return x in b.p1.x .. b.p2.y and y in b.p1.y .. b.p2.y;
+    return x in b.p1.x .. b.p2.x and y in b.p1.y .. b.p2.y;
   end In_Box;
 
-  function URL_Click (ho: HT_object; x,y: Natural) return String is
+  function Mouse_URL (ho: HT_object; x, y: Natural) return String is
     rough_result, result: Unbounded_String;
     done: exception;
     --
@@ -42,9 +42,9 @@ package body Wasabee.Hypertext.Locations is
         null; -- found the right node and cancelled search
     end;
     return S(result);
-  end URL_Click;
+  end Mouse_URL;
 
-  function Mouse_move(ho: HT_object; x,y: Natural) return Mouse_cursor_style is
+  function Mouse_cursor(ho: HT_object; x,y: Natural) return Mouse_cursor_style is
     rough_result, result: Mouse_cursor_style:= arrow;
     done: exception;
     --
@@ -82,6 +82,6 @@ package body Wasabee.Hypertext.Locations is
         null; -- found the right node and cancelled search
     end;
     return result;
-  end Mouse_move;
+  end Mouse_cursor;
 
 end Wasabee.Hypertext.Locations;

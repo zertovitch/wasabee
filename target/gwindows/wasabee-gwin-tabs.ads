@@ -1,16 +1,14 @@
-with Wasabee.Hypertext;                 use Wasabee.Hypertext;
-
+with Wasabee.Hypertext;
 with Wasabee.GWin.Display;              use Wasabee.GWin.Display;
 
-with GWindows.Cursors;
 -- with GWindows.Drawing;                  use GWindows.Drawing;
 -- with GWindows.Drawing_Objects;          use GWindows.Drawing_Objects;
 -- with GWindows.Drawing_Panels;           use GWindows.Drawing_Panels;
 with GWindows.Scroll_Panels;            use GWindows.Scroll_Panels;
 -- with GWindows.Types;
+with GWindows.Windows;                  use GWindows.Windows;
 
 with Ada.Strings.Unbounded;             use Ada.Strings.Unbounded;
-with GWindows.Windows;                  use GWindows.Windows;
 
 package Wasabee.GWin.Tabs is
 
@@ -18,11 +16,7 @@ package Wasabee.GWin.Tabs is
     URL          : Unbounded_String;
     HT_contents  : Wasabee.Hypertext.HT_object;
     --
-    --  Windows graphics
-    --
-    Wasa_Panel   : Wasa_GWin_Panel;
-    --
-    Cursor       : GWindows.Cursors.Cursor_Type;
+    wasa_panel   : Wasa_GWin_Panel; -- panel sliding within the scroll panel
   end record;
 
   overriding
