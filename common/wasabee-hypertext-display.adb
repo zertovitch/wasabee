@@ -103,12 +103,19 @@ package body Wasabee.Hypertext.Display is
       end if;
     end Show_text;
 
+    procedure Advance_vertically(units: Natural) is
+    pragma Inline(Advance_vertically);
+    begin
+      curs.y:= curs.y + units;
+      -- !! extend canvas here if needed
+    end Advance_vertically;
+
     procedure New_Line(with_marker: Boolean:= False) is
       w, h : Natural;
     begin
       if show_next_line_break then
         on.Text_size("A", w, h);
-        curs.y:= curs.y + h;
+        Advance_vertically(h);
       end if;
       if show_next_line_break or with_marker then
         Carriage_Return;
@@ -255,9 +262,10 @@ package body Wasabee.Hypertext.Display is
         when br   =>
           New_Line;
         when hr   =>
-          -- Draw a nice rule here !!
           New_Line;
-        when p | div | article | aside | dt | nav =>
+          on.Rectangle((curs, (area_width, curs.y + bn.hr_height)));
+          Advance_vertically(bn.hr_height);
+        when p | div | article | aside | dt | nav | figcaption =>
           -- * W3 Note: Browsers automatically add some space (margin) before and after each <p>
           --   element. The margins can be modified with CSS (with the margin properties).
           -- * W3 Note: By default, browsers always place a line break before and after
@@ -268,7 +276,7 @@ package body Wasabee.Hypertext.Display is
         when span | dl =>
           -- * W3 Note: The <span> tag provides no visual change by itself.
           Draw_children;
-        when blockquote | dd =>
+        when blockquote | dd | figure =>
           declare
             mem_indent: constant Natural:= indentation;
           begin
