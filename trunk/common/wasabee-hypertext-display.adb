@@ -25,6 +25,7 @@ package body Wasabee.Hypertext.Display is
     tag_to_marker: constant array(ul..ol) of List_marker:= (ol => numbered, ul => bullets);
     numbering: Positive;
     area_width, area_height: Natural;
+    latest_text_height: Natural;
 
     procedure Carriage_Return is
     begin
@@ -92,6 +93,7 @@ package body Wasabee.Hypertext.Display is
             on.Text_XY(curs.x, curs.y, t(t'First .. j));
             curs.x:= curs.x + w;
           end if;
+          latest_text_height:= h;
           Show_Text(t(j+1..t'Last)); -- show the rest
         end if;
       end if;
@@ -182,9 +184,11 @@ package body Wasabee.Hypertext.Display is
       bn.bounding_box:= (curs, curs); -- a priori, a pixel... will be extended hereafter.
       case bn.kind is
         when text       =>
+          latest_text_height:= 0;
           bn.bounding_box.p1:= curs;
           Show_text(S(bn.content));
-          bn.bounding_box.p2:= curs; -- we'll need a multi-rectangle animal within text, too !!
+          bn.bounding_box.p2:= (curs.x, curs.y + latest_text_height);
+          -- ^ we'll need a multi-rectangle animal within text, too !!
         when a =>
           Draw_children_with_font_modification(underlined);
         when b | strong =>
