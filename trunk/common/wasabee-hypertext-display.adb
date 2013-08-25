@@ -171,15 +171,6 @@ package body Wasabee.Hypertext.Display is
       show_next_line_break:= False;
     end New_Line;
 
-    procedure Apply_font_modifiers is
-      font: Font_descriptor:= on.Get_current_font;
-    begin
-      for fm in Font_modifier loop
-        font.modifier(fm):= on.modifier_level(fm) > 0;
-      end loop;
-      on.Select_font(font);
-    end Apply_font_modifiers;
-
     procedure Draw_body(bn: p_Body_Node; level: Natural:= 0) is -- Scary name ;-) !
       mem_font: Font_descriptor;
       --
@@ -194,13 +185,28 @@ package body Wasabee.Hypertext.Display is
         end loop;
       end Draw_children;
       --
-      procedure Draw_children_with_font_modification(fm: Font_modifier) is
+      procedure Draw_children_with_font_modification(
+        change_form   : Boolean;
+        fm            : Font_modifier := bold;
+        scale_percents: Positive      := 100
+      )
+      is
+        new_font: Font_descriptor:= on.Get_current_font;
+        -- ^ we clone the current font before modifying it...
       begin
-        mem_font:= on.Get_current_font;
-        on.modifier_level(fm):= on.modifier_level(fm) + 1;
-        Apply_font_modifiers;
+        mem_font:= new_font; -- remember before modification
+        if change_form then
+          on.modifier_level(fm):= on.modifier_level(fm) + 1;
+          for any_fm in Font_modifier loop
+            new_font.modifier(any_fm):= on.modifier_level(any_fm) > 0;
+          end loop;
+        end if;
+        new_font.size:= (new_font.size * scale_percents) / 100;
+        on.Select_font(new_font);
         Draw_children;
-        on.modifier_level(fm):= on.modifier_level(fm) - 1;
+        if change_form then
+          on.modifier_level(fm):= on.modifier_level(fm) - 1;
+        end if;
         on.Select_font(mem_font); -- restore font at node's start
       end Draw_children_with_font_modification;
       --
@@ -218,16 +224,18 @@ package body Wasabee.Hypertext.Display is
           Show_text(S(bn.content));
           bn.bounding_box.p2:= (curs.x, curs.y + latest_text_height);
           -- ^ we'll need a multi-rectangle animal within text, too !!
-        when a =>
-          Draw_children_with_font_modification(underlined);
+        when a | u | ins =>
+          Draw_children_with_font_modification(True, underlined);
         when b | strong =>
-          Draw_children_with_font_modification(bold);
+          Draw_children_with_font_modification(True, bold);
         when i | em | var | dfn | cite =>
-          Draw_children_with_font_modification(italic);
-        when u | ins =>
-          Draw_children_with_font_modification(underlined);
+          Draw_children_with_font_modification(True, italic);
+        when big =>
+          Draw_children_with_font_modification(False, scale_percents => 120);
+        when small | sup | sub => -- !! missing alignment
+          Draw_children_with_font_modification(False, scale_percents => 80);
         when strike | del | s =>
-          Draw_children_with_font_modification(strikethrough);
+          Draw_children_with_font_modification(True, strikethrough);
         when code | samp | kbd | tt =>
           mem_font:= on.Get_current_font;
           declare
@@ -259,7 +267,7 @@ package body Wasabee.Hypertext.Display is
           on.Select_font(mem_font); -- restore font at node's start
         when address =>
           New_Line;
-          Draw_children_with_font_modification(italic);
+          Draw_children_with_font_modification(True, italic);
           New_Line;
         when q => -- quote
           Show_text(""""); -- !! hardcoded
