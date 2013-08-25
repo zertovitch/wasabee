@@ -110,6 +110,8 @@ package body Wasabee.GWin.Display is
   begin
     sz:= on.Draw_Control.Client_Area_Size;
     Panel_Size (scroll_panel, sz.Width, Integer'Max(sz.Height,to));
+    -- The canvas handle has changed! Arghhh!...
+    Get_Canvas (on.Draw_Control, on.Drawing_Canvas);
   end Extend_area_height;
 
   procedure Create_target_font(

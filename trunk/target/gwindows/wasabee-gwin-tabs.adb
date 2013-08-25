@@ -108,12 +108,12 @@ package body Wasabee.GWin.Tabs is
   procedure Draw_with_resize (Window : in out HT_area_type) is
   begin
     -- !! should work with invisible to get dimensions
-    Window.Wasa_Panel.Draw(Window.HT_contents, full); -- invisible);
+    Window.Wasa_Panel.Draw(Window.HT_contents, invisible);
     Window.Wasa_Panel.Extend_area_height(Window.HT_contents.Bounding_box.p2.y);
     Window.Wasa_Panel.Clear_area;
     Window.Wasa_Panel.Draw(Window.HT_contents, full);
     -- !! ^ will be a bit more complicated with images...
-    Window.Redraw(Redraw_Now => True);
+    Window.Parent.Redraw(Redraw_Now => True);
   end Draw_with_resize;
 
 end Wasabee.GWin.Tabs;
