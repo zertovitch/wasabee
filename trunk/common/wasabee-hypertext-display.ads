@@ -15,7 +15,18 @@ package Wasabee.Hypertext.Display is
   -- ** Class-wide methods ** --
   ------------------------------
 
-  procedure Draw (on: in out Frame_plane'Class; o: HT_object);
+  type Draw_mode is (
+    invisible,      -- purpose: find the main bounding box
+    all_but_images, 
+    images_only,
+    full
+  );
+
+  procedure Draw (
+    on   : in out Frame_plane'Class; 
+    o    : in out HT_object;
+    mode :        Draw_mode
+  );
 
   --------------------------------------------------------------
   -- ** Abstract methods that are target-dependent.        ** --

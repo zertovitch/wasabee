@@ -48,4 +48,6 @@ package Wasabee.GWin.Tabs is
   -- After scroll_panel first resizing(with Dock)
   procedure Finish_creation (Window : in out HT_area_type);
 
+  procedure Draw_with_resize (Window : in out HT_area_type);
+
 end Wasabee.GWin.Tabs;

@@ -1,3 +1,4 @@
+-- with Wasabee.Hypertext.Display;         use Wasabee.Hypertext.Display;
 with Wasabee.Util;                      use Wasabee.Util;
 with Wasabee.Request;
 -- with Wasabee.Xhtml;
@@ -176,8 +177,7 @@ package body Wasabee.GWin.Windows is
     newcomer.Dock(Fill);
     Window.Dock_Children;
     newcomer.Finish_creation;
-    newcomer.Wasa_Panel.Draw(newcomer.HT_contents);
-    newcomer.Redraw(Redraw_Now => True);
+    newcomer.Draw_with_resize;
     Window.tabs.Append(newcomer);
     Set_active_tab(Window, Window.tabs.Find_Index(newcomer));
     Window.control_box.url_box.Text(beginner_URL_blurb);
@@ -229,8 +229,7 @@ package body Wasabee.GWin.Windows is
     -- Wasabee.Xhtml.Display_All_Children(Item(xhtml,0)); -- dump XML tree
     active_tab.HT_contents.Load_frame(Xhtml);
     -- active_tab.HTML_contents.Dump(Ada.Wide_Text_IO.Standard_Output); -- dump hypertext
-    active_tab.Wasa_Panel.Draw(active_tab.HT_contents);
-    active_tab.Wasa_Panel.Draw_Control.Redraw;
+    active_tab.Draw_with_resize;
     Refresh_title_and_URL(Window);
     active_tab.Focus;
   end Go_on_URL;

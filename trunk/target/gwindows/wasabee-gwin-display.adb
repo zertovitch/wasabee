@@ -104,8 +104,12 @@ package body Wasabee.GWin.Display is
   end Area_size;
 
   procedure Extend_area_height (on: in out Wasa_GWin_Panel; to: Natural) is
+    scroll_panel: HT_area_type
+      renames HT_area_type(on.Draw_Control.Parent.Parent.all);
+    sz: GWindows.Types.Size_Type;
   begin
-    null; -- !! 
+    sz:= on.Draw_Control.Client_Area_Size;
+    Panel_Size (scroll_panel, sz.Width, Integer'Max(sz.Height,to));
   end Extend_area_height;
 
   procedure Create_target_font(
