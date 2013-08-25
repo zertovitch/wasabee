@@ -8,6 +8,7 @@ with Wasabee.Hypertext.Locations ;      use Wasabee.Hypertext.Locations ;
 
 with Ada.Command_Line;            use Ada.Command_Line;
 with Ada.Strings.Wide_Fixed;
+with Ada.Strings.Unbounded ;            use Ada.Strings.Unbounded ;
 with Ada.Wide_Text_IO;                  use Ada.Wide_Text_IO;
 
 
@@ -329,6 +330,7 @@ procedure Wasabee_Sdl is
          if SDL_EventType(Event.C_Type) = SDL_MOUSEBUTTONUP then
             declare
                Me : SDL_MouseButtonEvent ;
+               Url : Unbounded_String ;
             begin
                Me := Event.Button ;
                -- Ada.Text_IO.Put_Line("Button: " & Integer'Image(Integer(Me.Button))) ;
@@ -337,6 +339,14 @@ procedure Wasabee_Sdl is
                   Ada.Text_IO.Put_Line(Mouse_Partial_Url(O,
                                                          Window.XPos + Integer(Me.X),
                                                          (Window.YPos * (-1)) + Integer(Me.Y))) ;
+                  Url := To_Unbounded_String(Mouse_Partial_Url(O,
+                                                               Window.XPos + Integer(Me.X),
+                                                               (Window.YPos * (-1)) + Integer(Me.Y)));
+
+                  Wasabee.Request.Open_Url (To_String(Url) , Xhtml);
+                  Load_frame(o, Xhtml);
+                  Clear_Area(Window);
+                  Window.Draw(O,full);
                end if ;
                if Me.Button = 4 then
                   Scroll_Up(25) ;
@@ -379,7 +389,7 @@ procedure Wasabee_Sdl is
 
    procedure Rectangle (on: in out SDL_Plane ; coords: Box) is
       X,Y,W,H : Int ;
-      Display_Rect : constant Boolean := True ;
+      Display_Rect : constant Boolean := False ;
    begin
       X := Int(coords.P1.X) ;
       Y := Int(coords.P1.Y) ;
