@@ -37,6 +37,10 @@ package Wasabee.Hypertext is
 
   type p_Style is access Style;
 
+  type Point is record x, y: Natural; end record;
+  type Box is record p1, p2: Point; end record; -- p1.x <= p2.x, p1.y <= p2.y for non-empty boxes
+  function Max(b1, b2: Box) return Box; -- return the smallest rectangle containing b1 and b2
+
   --------------------------------------------------------------
   -- This is the HyperText object. It contains all the useful --
   -- informations for displaying a web page or frame.         --
@@ -53,13 +57,9 @@ package Wasabee.Hypertext is
 
   function Title(ho: HT_object) return UTF_16_String;
 
+  function Bounding_box(ho: HT_object) return Box;
+
   procedure Dump(ho: HT_object; file: Ada.Wide_Text_IO.File_Type);
-
-  -- Misc.
-
-  type Point is record x, y: Natural; end record;
-  type Box is record p1, p2: Point; end record; -- p1.x <= p2.x, p1.y <= p2.y for non-empty boxes
-  function Max(b1, b2: Box) return Box; -- return the smallest rectangle containing b1 and b2
 
 private
 
@@ -118,8 +118,9 @@ private
   end record;
 
   type HT_object is new Ada.Finalization.Controlled with record
-    title    : UTF_16_Unbounded_String;
-    the_body : aliased p_Body_node;
+    title             : UTF_16_Unbounded_String;
+    main_bounding_box : Box;
+    the_body          : aliased p_Body_node;
   end record;
 
   overriding

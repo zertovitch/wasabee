@@ -141,6 +141,11 @@ package body Wasabee.Hypertext is
     return To_Wide_String(ho.title);
   end Title;
 
+  function Bounding_box(ho: HT_object) return Box is
+  begin
+    return ho.main_bounding_box;
+  end Bounding_box;
+
   procedure Dump(ho: HT_object; file: Ada.Wide_Text_IO.File_Type) is
     use Ada.Strings.Wide_Fixed, Ada.Wide_Text_IO;
     --

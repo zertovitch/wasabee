@@ -14,7 +14,13 @@ package body Wasabee.Hypertext.Display is
 
   default_heading_pct_size: constant array(h1..h6) of Positive:= (200, 150, 113, 100, 80, 62);
 
-  procedure Draw (on: in out Frame_plane'Class; o: HT_object) is
+
+  procedure Draw (
+    on   : in out Frame_plane'Class;
+    o    : in out HT_object;
+    mode :        Draw_mode
+  )
+  is
     curs: Point;
     skip_leading_blank: Boolean;
     show_next_line_break: Boolean;
@@ -47,6 +53,18 @@ package body Wasabee.Hypertext.Display is
     procedure New_Line(with_marker: Boolean:= False);
 
     procedure Show_text(t: UTF_16_String) is
+      --
+      procedure Text_at_cursor(t: UTF_16_String) is
+      pragma Inline(Text_at_cursor);
+      begin
+        case mode is
+          when all_but_images | full =>
+            on.Text_XY(curs.x, curs.y, t);
+          when invisible | images_only =>
+            null;
+        end case;
+      end Text_at_cursor;
+      --
       w, h, j : Natural;
       blank_first: Boolean;
     begin
@@ -74,7 +92,7 @@ package body Wasabee.Hypertext.Display is
               New_Line;
             else
               if on.Get_current_font.modifier(underlined) then
-                on.Text_XY(curs.x, curs.y, t(t'First .. j));
+                Text_at_cursor(t(t'First .. j));
               end if;
               curs.x:= curs.x + w;
             end if;
@@ -94,7 +112,7 @@ package body Wasabee.Hypertext.Display is
               skip_leading_blank:= False;
               -- ^ avoid next two words displayed without blank inbetween
             end if;
-            on.Text_XY(curs.x, curs.y, t(t'First .. j));
+            Text_at_cursor(t(t'First .. j));
             curs.x:= curs.x + w;
           end if;
           latest_text_height:= h;
@@ -263,7 +281,9 @@ package body Wasabee.Hypertext.Display is
           New_Line;
         when hr   =>
           New_Line;
-          on.Rectangle((curs, (area_width, curs.y + bn.hr_height)));
+          if mode /= invisible then
+            on.Rectangle((curs, (area_width, curs.y + bn.hr_height)));
+          end if;
           Advance_vertically(bn.hr_height);
         when p | div | article | aside | dt | nav | figcaption =>
           -- * W3 Note: Browsers automatically add some space (margin) before and after each <p>
@@ -307,14 +327,15 @@ package body Wasabee.Hypertext.Display is
           New_Line(with_marker => True);
           Draw_children;
       end case;
-      on.Rectangle(bn.bounding_box); -- Show the bounding box (for debugging purposes)
+      if mode /= invisible then
+        on.Rectangle(bn.bounding_box); -- Show the bounding box (for debugging purposes)
+      end if;
       Draw_body(bn.next, level);
     end Draw_body;
 
     dummy: Natural;
-
+    p: p_Body_node;
   begin
-    on.Clear_area;
     -- Get dimensions
     on.Area_size(area_width, area_height);
     -- Font lists cleanup
@@ -326,8 +347,15 @@ package body Wasabee.Hypertext.Display is
     on.Text_size("AA", indentation_space_width, dummy);
     --
     Reset_text;
+    o.main_bounding_box:= (curs, curs); -- one-pixel-page so far...
     --
     Draw_body(o.the_body);
+    --
+    p:= o.the_body;
+    while p /= null loop -- Extend the bounding box with all children
+      o.main_bounding_box:= Max(o.main_bounding_box, p.bounding_box);
+      p:= p.next;
+    end loop;
   end Draw;
 
   procedure Select_font(
