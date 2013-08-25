@@ -195,7 +195,7 @@ procedure Wasabee_Sdl is
       Style : Uint16 ;
    begin
       -- Ada.Text_IO.Put_Line("Creating font " & Positive'Image(New_Index) & " with size " & Integer'Image(Descriptor.Size));
-      Font := Ttf_OpenFont(New_String("arial.ttf"),Int(Descriptor.Size));
+      Font := Ttf_OpenFont(New_String("arial.ttf"),Int(Descriptor.Size)/2);
       Style := TTF_STYLE_NORMAL;
       if Descriptor.Modifier(Bold) = True then
          Style := Style or TTF_STYLE_BOLD ;
@@ -379,7 +379,7 @@ procedure Wasabee_Sdl is
 
    procedure Rectangle (on: in out SDL_Plane ; coords: Box) is
       X,Y,W,H : Int ;
-      Display_Rect : constant Boolean := false ;
+      Display_Rect : constant Boolean := True ;
    begin
       X := Int(coords.P1.X) ;
       Y := Int(coords.P1.Y) ;
