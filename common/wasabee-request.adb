@@ -64,7 +64,7 @@ package body Wasabee.Request is
             Close(Input);
             -- Put_Line("getting elements");
             Doc := Get_Tree(Reader);
-            Get_Document_Style(Doc);
+            -- Get_Document_Style(Doc);
 	    Nl  := Get_Elements_By_Tag_Name(Doc,"html");
             -- Free(Reader) ;
          -- exception

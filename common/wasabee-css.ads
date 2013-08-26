@@ -35,13 +35,6 @@ package Wasabee.Css is
                       Key : String) return String ;
 
    --
-   -- Css : Unbounded_String ;
-   --
-
-   -- Les properties generale de la page
-   General_Properties : access CSS_Properties.Map ;
-
-   --
    -- Vecteur de propriétés
    --
 
