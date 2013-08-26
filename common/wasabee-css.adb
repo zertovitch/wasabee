@@ -163,6 +163,9 @@ package body Wasabee.Css is
 			     To_Unbounded_String(Key),
 			     To_Unbounded_String(Value) ) ;
       
+   exception
+      when others =>
+	 null ;
    end ;
    
    function  Get_CSS (Element : String ; Key : String) return String is
