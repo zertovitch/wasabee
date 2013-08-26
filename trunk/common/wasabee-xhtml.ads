@@ -28,7 +28,8 @@ package Wasabee.Xhtml is
    procedure Extract_Html ( Source : in Unbounded_String ;
                             Target : in out Unbounded_String ) ;
 
-   procedure Get_Document_Style (Doc : Document) ;
+   procedure Get_Document_Style (Doc : Document ;
+                                 Map : in out CSS_Dictionary.Map ) ;
 
    procedure Get_Node_Style (Nd : in Node) ;
 

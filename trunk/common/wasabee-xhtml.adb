@@ -55,7 +55,7 @@ package body Wasabee.Xhtml is
                             Target : in out Unbounded_String ) is
       -- L : Natural ;
       Start_Tag, End_Tag : Natural ;
-      Text_trace: constant Boolean:= True;
+      Text_trace: constant Boolean:= False;
    begin
       -- L := Length(Source);
       if Text_trace then
@@ -83,13 +83,14 @@ package body Wasabee.Xhtml is
       Close(Input);
       Doc := Get_Tree(Reader);
       List  := Get_Elements_By_Tag_Name(Doc,"html");
-      Get_Document_Style(Doc) ;
+      -- Get_Document_Style(Doc) ;
    end Get_Xhtml_Content;
 
    --
    -- Recupere le style d'un document ... roxe
    --
-   procedure Get_Document_Style (Doc : Document) is
+   procedure Get_Document_Style (Doc : Document ;
+                                 Map : in out CSS_Dictionary.Map) is
       List : Node_List ;
       Style : Node ;
       -- Style_Content : Unbounded_String ;
@@ -101,17 +102,16 @@ package body Wasabee.Xhtml is
          Style := Item(List,0);
          Put_Line("*********************** STYLE ******************************");
          Put_Line(Value(Style));
-         Set_Css_Value (Value(Style)) ;
-         Parse_Information ;
+         Parse_Information(Map, To_Unbounded_String(Value(Style))) ;
          Put_Line("*********************** STYLE (FIN) *************************");
       end if;
    end ;
-   
+
    procedure Get_Node_Style (Nd : in Node) is
-      
+
    begin
       null;
    end ;
-   
-   
+
+
 end ;
