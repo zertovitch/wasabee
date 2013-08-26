@@ -335,9 +335,10 @@ package body Wasabee.Hypertext.Display is
           New_Line(with_marker => True);
           Draw_children;
       end case;
-      if mode /= invisible then
-        on.Rectangle(bn.bounding_box); -- Show the bounding box (for debugging purposes)
-      end if;
+      -- if mode /= invisible then
+      --   on.Rectangle(bn.bounding_box);
+      --   -- Show the bounding box (for debugging purposes)
+      -- end if;
       Draw_body(bn.next, level);
     end Draw_body;
 

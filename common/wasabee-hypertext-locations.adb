@@ -22,14 +22,14 @@ package body Wasabee.Hypertext.Locations is
           when text => -- !! img too
             result:= rough_result;
             raise done; -- leaf object found
+          when hr | br =>
+            null;
           when a =>
             rough_result:= bn.URL;
             Traverse(bn.first_child);
             rough_result:= Null_Unbounded_String;
           when Normal_tag_no_a =>
             Traverse(bn.first_child);
-          when others =>
-            null;
         end case;
       end if;
       Traverse(bn.next);
@@ -62,14 +62,14 @@ package body Wasabee.Hypertext.Locations is
               result:= I_beam;
             end if;
             raise done; -- leaf object found
+          when hr | br =>
+            null;
           when a =>
             rough_result:= finger;
             Traverse(bn.first_child);
             rough_result:= arrow;
           when Normal_tag_no_a =>
             Traverse(bn.first_child);
-          when others =>
-            null;
         end case;
       end if;
       Traverse(bn.next);
