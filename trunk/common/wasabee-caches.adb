@@ -91,13 +91,14 @@ package body Wasabee.Caches is
     idx: Positive;
     new_item: Cache_item;
   begin
+    -- First, a Cache_item is searched with its URL, or a new one is created.
     begin
       idx:= cache.URL_cat.Element(URL);
     exception
       when Constraint_Error =>
         new_item:= Create_new_item(URL);
         cache.data.Append(new_item);
-        idx:= cache.URL_cat.Element(URL);
+        idx:= cache.data.Last_Index;
         -- Update catalogues
         cache.URL_cat.Insert(URL, idx);
         cache.hit_cat.Insert(new_item.latest_hit, idx);

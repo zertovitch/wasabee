@@ -1,3 +1,5 @@
+with Wasabee.CSS;
+
 with DOM.Core;
 
 with Ada.Finalization;
@@ -77,6 +79,7 @@ private
     del, ins, abbr, acronym, cite, blockquote,
     article, aside, figure, figcaption,
     address, nav, q, dl, dt, dd,
+    details, summary,
     font,
     h1, h2, h3, h4, h5, h6,
     p, div, span,
@@ -123,6 +126,7 @@ private
   type HT_object is new Ada.Finalization.Controlled with record
     title             : UTF_16_Unbounded_String;
     main_bounding_box : Box;
+    style_map         : Wasabee.CSS.CSS_Dictionary.Map;
     the_body          : aliased p_Body_node;
   end record;
 
