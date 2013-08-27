@@ -248,7 +248,8 @@ package body Wasabee.Hypertext.Display is
           end;
           on.Select_font(mem_font); -- restore font at node's start
         when abbr | acronym =>
-          -- !! do something with attribute title
+          Draw_children; -- !! show label with attribute title
+        when details | summary =>
           Draw_children;
         when font =>
           mem_font:= on.Get_current_font;

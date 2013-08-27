@@ -1,3 +1,4 @@
+with Wasabee.CSS;                       use Wasabee.CSS;
 with Wasabee.Util;                      use Wasabee.Util;
 
 with Dom.Core.Nodes;                    use Dom.Core, Dom.Core.Nodes;
@@ -49,7 +50,7 @@ package body Wasabee.Hypertext is
         end loop;
       end Process_children;
       --
-      procedure Process_tag is
+      procedure Process_body_tag is
       begin
         kind:= Body_kind'Value(Name);
         new_node:= new Body_Node(kind);
@@ -87,18 +88,18 @@ package body Wasabee.Hypertext is
       exception
         when Constraint_Error =>
           null; -- unknown tag
-      end Process_tag;
+      end Process_body_tag;
       --
     begin
       -- Process the node itself
       case Level is
-        when 0 =>
+        when 0 =>      -- nesting level 0
           if Name = "html" then
             Process_children;
           else
             raise Constraint_Error with "Root tag name should be ""html""";
           end if;
-        when 1 =>
+        when 1 =>      -- nesting level 1
           if Name = "head" then
             location:= in_head;
             Process_children;
@@ -116,6 +117,11 @@ package body Wasabee.Hypertext is
                 Node_Name(Item(Children, 0)) = "#text"
               then
                 ho.title:= U(To_UTF_16(Node_Value(Item(Children, 0))));
+              elsif Name = "style" and then
+                Length (Children) > 0 and then
+                Node_Name(Item(Children, 0)) = "#text"
+              then
+                Parse_Information(ho.style_map, U(Node_Value(Item(Children, 0))));
               end if;
             when in_body =>
               if Name = "#text" then
@@ -124,7 +130,7 @@ package body Wasabee.Hypertext is
                 current_body_pointer.all:= new_node;
                 current_body_pointer:= new_node.next'Access; -- ready for next sibling
               else -- try with tags
-                Process_tag;
+                Process_body_tag;
               end if;
             when nowhere =>
               null;
@@ -133,6 +139,7 @@ package body Wasabee.Hypertext is
     end Process;
 
   begin
+    ho.style_map:= CSS_Dictionary.Empty_Map;
     Process(Item(from,0));
   end Load_frame;
 

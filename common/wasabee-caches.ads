@@ -1,7 +1,5 @@
 --
--- All retrieval of internet contents should go through Get_contents
--- First, a Cache_item is searched with its URL, or a new one is created.
--- Then, call Get_contents to retrieve contents.
+-- All retrieval of Internet contents should go through Get_contents.
 --
 
 with Wasabee.Hypertext;                 use Wasabee.Hypertext;
@@ -12,6 +10,7 @@ with Ada.Containers.Ordered_Maps;
 with Ada.Strings.Unbounded;             use Ada.Strings.Unbounded;
 with Ada.Strings.Unbounded.Hash;
 with Ada.Containers.Vectors;
+with Interfaces;                        use Interfaces;
 
 package Wasabee.Caches is
 
@@ -40,6 +39,7 @@ private
     ht                     : HT_object;        -- with layout etc.
     -- File cache --
     file_name              : Unbounded_String;
+    crc_32                 : Unsigned_32; -- protect against file tampering
     first_hit,
     latest_hit             : Time;
     hits                   : Natural;
