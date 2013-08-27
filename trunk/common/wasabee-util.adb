@@ -19,7 +19,7 @@ package body Wasabee.Util is
   begin
     if partial_URL'Length = 0 then
       return complete_URL; -- partial URL is empty: well, use the complete one...
-    elsif Index(partial_URL, "//") > 0 then
+    elsif Index(partial_URL, "://") > 0 then
       return partial_URL;  -- partial URL is actually a complete one: use it!
     end if;
     for i in complete_URL'Range loop
@@ -31,14 +31,19 @@ package body Wasabee.Util is
       end if;
     end loop;
     if protocol < complete_URL'First then
-      raise Build_URL_error with "In complete_URL, ""//"" is missing, like ""http://""";
+      raise Build_URL_error with "In complete_URL, ""//"" is missing, something like ""http://""";
+    end if;
+    if Index(partial_URL, "//") > 0 then
+      -- case [1]: absolute-with-website path given as the partial URL
+      return complete_URL(complete_URL'First..protocol-1) & partial_URL;
     end if;
     for i in reverse protocol + 2 .. complete_URL'Last loop
       if complete_URL(i) = '/' then
         first_slash:= i;
       end if;
     end loop;
-    if partial_URL(partial_URL'First) = '/' then -- absolute path given as the partial URL
+    if partial_URL(partial_URL'First) = '/' then
+      -- case [2]: absolute path given as the partial URL
       return complete_URL(complete_URL'First..first_slash-1) & partial_URL;
     end if;
     -- !! relative paths

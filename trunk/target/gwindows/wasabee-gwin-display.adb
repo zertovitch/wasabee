@@ -52,8 +52,7 @@ package body Wasabee.GWin.Display is
     bw: Browser_window_type renames Browser_window_type(HT_area.Parent.all);
   begin
     if partial_URL /= "" then
-      -- !! complete URL if http:// or file:// or whatever is missing.
-      -- Here we simulate what the user would do by typing and activating the URL
+      -- Here we simulate what the user would do by typing and activating the URL:
       if Keys(Middle_Button) then
         bw.New_Tab;
       end if;

@@ -99,10 +99,15 @@ package body Wasabee.GWin.Tabs is
     Browser_window_type(Window.Parent.all).On_Menu_Select(Item);
   end On_Menu_Select;
 
+  procedure Set_minimal_sliding_panel_size (Window : in out HT_area_type) is
+  begin
+    -- Prepare the panel that is moved through scrolling (= Window.Panel)
+    Panel_Size (Window, 1234, 765); -- !! use maximized window size
+  end Set_minimal_sliding_panel_size;
+
   procedure Finish_creation (Window : in out HT_area_type) is
   begin
-    -- Preparing the panel that is moved through scrolling (= Window.Panel)
-    Panel_Size (Window, 1234, 765); -- !! use maximized window size
+    Window.Set_minimal_sliding_panel_size;
     -- Draw control covering all of Window.Panel
     Create_As_Control (Window.Wasa_Panel.Draw_Control, Window.Panel, "", 0,0,0,0);
     Dock (Window.Wasa_Panel.Draw_Control, Fill);
@@ -113,7 +118,6 @@ package body Wasabee.GWin.Tabs is
 
   procedure Draw_with_resize (Window : in out HT_area_type) is
   begin
-    -- !! should work with invisible to get dimensions
     Window.Wasa_Panel.Draw(Window.HT_contents, invisible);
     Window.Wasa_Panel.Extend_area_height(Window.HT_contents.Bounding_box.p2.y);
     Window.Wasa_Panel.Clear_area;

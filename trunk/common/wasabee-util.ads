@@ -18,7 +18,8 @@ package Wasabee.Util is
 
   -- Examples:
   -- ========
-  -- http://en.wikipedia.org/wiki/OpenVMS , /wiki/Itanium ->  http://en.wikipedia.org/wiki/Itanium
+  -- [1] http://en.wikipedia.org/wiki/UNIX     ,  //fr.wikipedia.org/wiki/Unix -> (guess what ?)
+  -- [2] http://en.wikipedia.org/wiki/OpenVMS  ,  /wiki/Itanium                -> (guess what ?)
 
   Build_URL_error: exception;
 

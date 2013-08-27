@@ -41,7 +41,8 @@ package Wasabee.Hypertext is
 
   type Point is record x, y: Natural; end record;
   type Box is record p1, p2: Point; end record; -- p1.x <= p2.x, p1.y <= p2.y for non-empty boxes
-  function Max(b1, b2: Box) return Box; -- return the smallest rectangle containing b1 and b2
+  function Max(b1, b2: Box) return Box; -- return the smallest box containing boxes b1 and b2
+  pragma Inline(Max);
 
   --------------------------------------------------------------
   -- This is the HyperText object. It contains all the useful --
@@ -114,7 +115,7 @@ private
         case kind is
           when a =>
             URL   : Unbounded_String;
-          when font =>
+          when font => -- !! we'll remove this and use an optional_style
             face  : Font_face_name;
             color : Color_Code:= Default_color;
           when others =>
