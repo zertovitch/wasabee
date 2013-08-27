@@ -93,7 +93,8 @@ package body Wasabee.Xhtml is
                                  Map : in out CSS_Dictionary.Map) is
       List : Node_List ;
       Style : Node ;
-      -- Style_Content : Unbounded_String ;
+      Style_Content : Unbounded_String ;
+      -- Map : CSS_Dictionary.Map ;
    begin
       List := Get_Elements_By_Tag_Name(Doc,"style");
       if Length(List) = 1 then
