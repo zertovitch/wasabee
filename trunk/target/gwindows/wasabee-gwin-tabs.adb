@@ -42,6 +42,12 @@ package body Wasabee.GWin.Tabs is
         if Value = ' ' then
           Window.On_Vertical_Scroll(Next_Page, null);
         end if;
+      when Home_Key =>
+        Window.On_Vertical_Scroll(First, null);
+        Window.On_Vertical_Scroll(Previous_Unit, null);
+      when End_Key =>
+        Window.On_Vertical_Scroll(Last, null);
+        Window.On_Vertical_Scroll(Next_Unit, null);
       when others       =>
         null;
     end case;
