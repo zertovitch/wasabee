@@ -45,6 +45,8 @@ package Wasabee.GWin.Tabs is
         Item   : in     Integer
   );
 
+  procedure Set_minimal_sliding_panel_size (Window : in out HT_area_type);
+
   -- After scroll_panel first resizing(with Dock)
   procedure Finish_creation (Window : in out HT_area_type);
 

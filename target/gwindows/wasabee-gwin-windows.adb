@@ -229,6 +229,7 @@ package body Wasabee.GWin.Windows is
     -- Wasabee.Xhtml.Display_All_Children(Item(xhtml,0)); -- dump XML tree
     active_tab.HT_contents.Load_frame(Xhtml);
     -- active_tab.HTML_contents.Dump(Ada.Wide_Text_IO.Standard_Output); -- dump hypertext
+    active_tab.Set_minimal_sliding_panel_size;
     active_tab.Draw_with_resize;
     Refresh_title_and_URL(Window);
     active_tab.On_Vertical_Scroll(First, null);         -- Move to top of page
