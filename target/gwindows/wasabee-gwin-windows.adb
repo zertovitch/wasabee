@@ -231,6 +231,8 @@ package body Wasabee.GWin.Windows is
     -- active_tab.HTML_contents.Dump(Ada.Wide_Text_IO.Standard_Output); -- dump hypertext
     active_tab.Draw_with_resize;
     Refresh_title_and_URL(Window);
+    active_tab.On_Vertical_Scroll(First, null);         -- Move to top of page
+    active_tab.On_Vertical_Scroll(Previous_Unit, null);
     active_tab.Focus;
   end Go_on_URL;
 

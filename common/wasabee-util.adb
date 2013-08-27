@@ -1,3 +1,5 @@
+with Ada.Strings.Fixed;                 use Ada.Strings.Fixed;
+
 package body Wasabee.Util is
 
   function Version return String is
@@ -9,6 +11,39 @@ package body Wasabee.Util is
   begin
     return "0.0.1";
   end Version_number;
+
+  function Build_URL (complete_URL, partial_URL: String) return String is
+    first_slash: Integer:= complete_URL'First - 1;  -- first /
+    last_slash : Integer:= complete_URL'Last + 1;   -- last /
+    protocol   : Integer:= complete_URL'First - 1;  -- //
+  begin
+    if partial_URL'Length = 0 then
+      return complete_URL; -- partial URL is empty: well, use the complete one...
+    elsif Index(partial_URL, "//") > 0 then
+      return partial_URL;  -- partial URL is actually a complete one: use it!
+    end if;
+    for i in complete_URL'Range loop
+      if complete_URL(i) = '/' then
+        if last_slash = i - 1 and protocol < complete_URL'First then
+          protocol:= last_slash; -- capture the first //
+        end if;
+        last_slash:= i;
+      end if;
+    end loop;
+    if protocol < complete_URL'First then
+      raise Build_URL_error with "In complete_URL, ""//"" is missing, like ""http://""";
+    end if;
+    for i in reverse protocol + 2 .. complete_URL'Last loop
+      if complete_URL(i) = '/' then
+        first_slash:= i;
+      end if;
+    end loop;
+    if partial_URL(partial_URL'First) = '/' then -- absolute path given as the partial URL
+      return complete_URL(complete_URL'First..first_slash-1) & partial_URL;
+    end if;
+    -- !! relative paths
+    return complete_URL; -- !! wrong !! lazy !!
+  end Build_URL;
 
   function Filter_blanks (s : Wide_String) return Wide_String is
     t: Wide_String(s'Range);

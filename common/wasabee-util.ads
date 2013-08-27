@@ -3,8 +3,28 @@ with Ada.Strings.Wide_Unbounded;        use Ada.Strings.Wide_Unbounded;
 
 package Wasabee.Util is
 
-  function Version return String;
-  function Version_number return String;
+  -----------------------------
+  -- Wasabee version strings --
+  -----------------------------
+
+  function Version return String;        -- full
+  function Version_number return String; -- number only, like 0.0.1
+
+  --------------------------
+  -- Manipulation of URLs --
+  --------------------------
+
+  function Build_URL (complete_URL, partial_URL: String) return String;
+
+  -- Examples:
+  -- ========
+  -- http://en.wikipedia.org/wiki/OpenVMS , /wiki/Itanium ->  http://en.wikipedia.org/wiki/Itanium
+
+  Build_URL_error: exception;
+
+  ---------------------------------------
+  -- Shortcuts for string manipulation --
+  ---------------------------------------
 
   function S (Source : Unbounded_String) return String renames To_String;
   function S (Source : Unbounded_Wide_String) return Wide_String renames To_Wide_String;

@@ -47,15 +47,17 @@ package body Wasabee.GWin.Display is
      Y      : in     Integer;
      Keys   : in     Mouse_Key_States) -- Keys contains only the mouse button that clicked
   is
-    URL: constant String:= Mouse_partial_URL(HT_area_type(Window.Parent.Parent.all).HT_contents, X, Y);
-    bw: Browser_window_type renames Browser_window_type(Window.Parent.Parent.Parent.all);
+    HT_area: HT_area_type renames HT_area_type(Window.Parent.Parent.all);
+    partial_URL: constant String:= Mouse_partial_URL(HT_area.HT_contents, X, Y);
+    bw: Browser_window_type renames Browser_window_type(HT_area.Parent.all);
   begin
-    if URL /= "" then
+    if partial_URL /= "" then
       -- !! complete URL if http:// or file:// or whatever is missing.
+      -- Here we simulate what the user would do by typing and activating the URL
       if Keys(Middle_Button) then
         bw.New_Tab;
       end if;
-      bw.control_box.url_box.Text(S2G(URL));
+      bw.control_box.url_box.Text(S2G(Build_URL(S(HT_area.URL), partial_URL)));
       bw.Go_on_URL;
     end if;
   end On_Click;
@@ -68,7 +70,6 @@ package body Wasabee.GWin.Display is
   is
   pragma Unreferenced (Keys);
   begin
-    -- !! measure time between down and up (click or no click ;-) )
     Window.On_Click(X,Y,(Left_Button => True, others => False));
   end On_Left_Mouse_Button_Up;
 
