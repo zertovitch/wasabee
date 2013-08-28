@@ -17,13 +17,13 @@ package Wasabee.Hypertext.Display is
 
   type Draw_mode is (
     invisible,      -- purpose: find the main bounding box
-    all_but_images, 
+    all_but_images,
     images_only,
     full
   );
 
   procedure Draw (
-    on   : in out Frame_plane'Class; 
+    on   : in out Frame_plane'Class;
     o    : in out HT_object;
     mode :        Draw_mode
   );
@@ -38,13 +38,13 @@ package Wasabee.Hypertext.Display is
 
   -- Erase frame with current background style
   procedure Clear_area (on: in out Frame_plane) is abstract;
-  
+
   procedure Area_size (on: Frame_plane; w,h: out Natural) is abstract;
   -- The hypertext page extends vertically. Some implementations
   -- extend the area automatically, some not or not enough.
   -- The following method ask for enough space for a proper display.
   procedure Extend_area_height (on: in out Frame_plane; to: Natural) is abstract;
-  
+
   ------------------
   -- Text display --
   ------------------
@@ -55,31 +55,31 @@ package Wasabee.Hypertext.Display is
   -- By each call of Create_target_font, new_index is increased by one.
 
   procedure Create_target_font(
-    on         : in out Frame_plane; 
+    on         : in out Frame_plane;
     descriptor : in     Font_descriptor;
     new_index  : in     Positive -- the new index should match the new index on target
   )
   is abstract;
-  
+
   procedure Select_target_font(
-    on         : in out Frame_plane; 
-    index      : in     Positive 
+    on         : in out Frame_plane;
+    index      : in     Positive
   )
   is abstract;
 
-  procedure Destroy_target_fonts(on: in out Frame_plane) is abstract; 
+  procedure Destroy_target_fonts(on: in out Frame_plane) is abstract;
 
   -- Display text in the current font and color
   procedure Text_XY (
-    on   : in out Frame_plane; 
-    x,y  : in     Integer; 
+    on   : in out Frame_plane;
+    x,y  : in     Integer;
     text : in     UTF_16_String
-  ) 
+  )
   is abstract;
 
   procedure Text_size (
-    on   : in out Frame_plane; 
-    text : in     UTF_16_String; 
+    on   : in out Frame_plane;
+    text : in     UTF_16_String;
     w,h  :    out Natural
   )
   is abstract;
@@ -88,16 +88,18 @@ package Wasabee.Hypertext.Display is
 
   -- Display text in the current color (and line style, depending on the target system)
   procedure Rectangle (on: in out Frame_plane; coords: Box) is abstract;
+  -- Display_point
+  procedure Draw_Point (On : in out Frame_Plane ; P: Point ; Color : Color_Code) is abstract ;
 
 private
 
   procedure Select_font(
-    on         : in out Frame_plane'Class; 
+    on         : in out Frame_plane'Class;
     descriptor : in     Font_descriptor
   );
 
   function Get_current_font(on : in Frame_plane'Class) return Font_descriptor;
-  
+
   procedure Select_text_color(on: in out Frame_plane'Class; code: in Color_Code);
 
   package Font_Vectors is new Ada.Containers.Vectors(
@@ -111,7 +113,7 @@ private
     current_style       : Style;
     font_list           : Font_Vectors.Vector; -- all defined distinct Font_descriptors
     -- Font modifiers (actually will activate a new font in some systems)
-    modifier_level      : Font_modifier_level; 
+    modifier_level      : Font_modifier_level;
     -- ^ 0: not bold, 1: one <b>, 2: two <b> or <h1><b>, etc.
   end record;
 
