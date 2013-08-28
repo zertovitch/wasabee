@@ -442,12 +442,12 @@ procedure Wasabee_Sdl is
 
       if Display_Rect then
          for I in X .. X+W loop
-            Draw_Pixel(Integer(I/2), Integer(Y)) ;
-            Draw_Pixel(Integer(I/2), Integer(Y+H)) ;
+            Draw_Pixel(Integer(I), Integer(Y)) ;
+            Draw_Pixel(Integer(I), Integer(Y+H)) ;
          end loop;
          for I in Y .. (Y+H) loop
-            Draw_Pixel(Integer(X/2), Integer(I)) ;
-            Draw_Pixel(Integer((X+W)/2), Integer(I)) ;
+            Draw_Pixel(Integer(X), Integer(I)) ;
+            Draw_Pixel(Integer((X+W)), Integer(I)) ;
          end loop;
 
       end if ;
