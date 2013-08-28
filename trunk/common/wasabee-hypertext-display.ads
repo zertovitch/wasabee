@@ -90,7 +90,8 @@ package Wasabee.Hypertext.Display is
   procedure Rectangle (on: in out Frame_plane; coords: Box) is abstract;
   -- Display_point
   procedure Draw_Point (On : in out Frame_Plane ; P: Point ; Color : Color_Code) is abstract ;
-
+  --
+  procedure Flush (On : in out Frame_Plane) is abstract ; 
 private
 
   procedure Select_font(
