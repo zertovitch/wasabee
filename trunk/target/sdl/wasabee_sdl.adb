@@ -97,10 +97,14 @@ procedure Wasabee_Sdl is
                                                 ) ;
 
    procedure Rectangle (on: in out SDL_Plane ; coords: Box);
-   --
+
+   procedure Draw_Point (On : in out SDL_Plane ; P: Point ; Color : Color_Code) ;
+
    -- Implementation
    --
    Window : SDL_Plane ;
+
+   ret : Int ;
 
    use SDL_Fonts_Vector ;
 
@@ -109,12 +113,9 @@ procedure Wasabee_Sdl is
       Pixel : System.Address ;
       Pitch : Uint16;
       Format : access SDL_PixelFormat ;
-
-
       IA : Integer_Address ;
       Lf : Long_Long_Float ;
    begin
-
       --Ada.Text_IO.Put_Line("***************** Draw Pixel *************************");
       --Ada.Text_IO.Put_Line("X: " & Integer'Image(X)) ;
       --Ada.Text_IO.Put_Line("Y: " & Integer'Image(Y)) ;
@@ -126,20 +127,16 @@ procedure Wasabee_Sdl is
       -- IA := Integer_Address( Long_Float(Bit32) + (Long_Float(X)) * 8 + Long_Float((Pitch / 4) * (Long_Float(Y)*8))) ;
 
       Lf := Long_Long_Float(To_Integer(Bit32));
-
-      Lf := Lf + Long_Long_Float(X*8) ;
-
-      Lf := Lf + Long_Long_Float(Pitch / 8) * Long_Long_Float(Y*8) ;
+      Lf := Lf + Long_Long_Float(X*4) ;
+      Lf := Lf + (Long_Long_Float(Pitch) * Long_Long_Float(Y)) ;
 
       Ia := Integer_Address(Lf);
       declare
-         Element : Uint64;
+         Element : Color_Code;
          for Element'Address use To_Address(IA);
       begin
-         Element := Uint64(Current_Color_Code) ;
+         Element := Color_Code(Current_Color_Code) ;
       end ;
-
-
    end ;
 
 
@@ -238,11 +235,41 @@ procedure Wasabee_Sdl is
       Current_Color_Code := Code ;
    end ;
 
+   procedure Draw_Point (On : in out SDL_Plane ; P: Point ; Color : Color_Code) is
+      Bit32 : System.Address ;
+      Pixel : System.Address ;
+      Pitch : Uint16;
+      Format : access SDL_PixelFormat ;
+      IA : Integer_Address ;
+      Lf : Long_Long_Float ;
+      -- X : Integer ;
+   begin
+      --Ada.Text_IO.Put_Line("***************** Draw Pixel *************************");
+      --Ada.Text_IO.Put_Line("X: " & Integer'Image(X)) ;
+      --Ada.Text_IO.Put_Line("Y: " & Integer'Image(Y)) ;
+      Pixel := Window.Surface.Pixels ;
+      Pitch := Uint16(Window.Screen.Pitch);
+      Format := Window.Screen.Format ;
+      Bit32 := Pixel ;
+
+      -- IA := Integer_Address( Long_Float(Bit32) + (Long_Float(X)) * 8 + Long_Float((Pitch / 4) * (Long_Float(Y)*8))) ;
+      Lf := Long_Long_Float(To_Integer(Bit32));
+      Lf := Lf + (Long_Long_Float(P.X*4)) ;
+      Lf := Lf + (Long_Long_Float(Pitch) * Long_Long_Float((P.Y))) ;
+      Ia := Integer_Address(Lf);
+      declare
+         Element : Color_Code;
+         for Element'Address use To_Address(IA);
+      begin
+         Element := Color_Code(Color);
+      end ;
+      Ret := SDL_Flip(On.Screen);
+   end;
+
    Xhtml : DOM.Core.Node_List;
    o: HT_object;
 
    -- function return ;
-   ret : Int ;
 
    --
    -- C'est parti pour un peu de SDL
@@ -275,9 +302,9 @@ procedure Wasabee_Sdl is
       Ret := SDL_Init(SDL_INIT_EVERYTHING) ;
       Ret := TTF_Init ;
       Put_Line("Creating window");
-      Window.Screen := SDL_SetVideoMode (1280, 800, 32, SDL_HWSURFACE or SDL_DOUBLEBUF);
+      Window.Screen := SDL_SetVideoMode (800, 600, 32, SDL_HWSURFACE or SDL_DOUBLEBUF);
       Put_Line("Creating surface");
-      Window.Surface := SDL_CreateRGBSurface (SDL_HWSURFACE, 1280,8000, 32, 0,0,0,0);
+      Window.Surface := SDL_CreateRGBSurface (SDL_HWSURFACE, 800, 600, 32, 0,0,0,0);
 
       Window.XPos := 0 ;
       Window.YPos := 0 ;
@@ -342,11 +369,12 @@ procedure Wasabee_Sdl is
                   Url := To_Unbounded_String(Mouse_Partial_Url(O,
                                                                Window.XPos + Integer(Me.X),
                                                                (Window.YPos * (-1)) + Integer(Me.Y)));
-
-                  Wasabee.Request.Open_Url (To_String(Url) , Xhtml);
-                  Load_frame(o, Xhtml);
-                  Clear_Area(Window);
-                  Window.Draw(O,full);
+                  if URL /= "" then
+                     Wasabee.Request.Open_Url (To_String(Url) , Xhtml);
+                     Load_frame(o, Xhtml);
+                     Clear_Area(Window);
+                     Window.Draw(O,full);
+                  end if ;
                end if ;
                if Me.Button = 4 then
                   Scroll_Up(25) ;
@@ -389,7 +417,7 @@ procedure Wasabee_Sdl is
 
    procedure Rectangle (on: in out SDL_Plane ; coords: Box) is
       X,Y,W,H : Int ;
-      Display_Rect : constant Boolean := False ;
+      Display_Rect : constant Boolean := True ;
    begin
       X := Int(coords.P1.X) ;
       Y := Int(coords.P1.Y) ;
@@ -406,8 +434,6 @@ procedure Wasabee_Sdl is
       --Ada.Text_IO.Put_Line(Integer'Image(Integer(W)));
       --Ada.Text_IO.Put_Line(Integer'Image(Integer(H)));
 
-      -- Draw_Pixel(0,0);
-
       if H > 0 then
          null;
       else
@@ -415,12 +441,10 @@ procedure Wasabee_Sdl is
       end if ;
 
       if Display_Rect then
-
          for I in X .. X+W loop
             Draw_Pixel(Integer(I/2), Integer(Y)) ;
             Draw_Pixel(Integer(I/2), Integer(Y+H)) ;
          end loop;
-
          for I in Y .. (Y+H) loop
             Draw_Pixel(Integer(X/2), Integer(I)) ;
             Draw_Pixel(Integer((X+W)/2), Integer(I)) ;
@@ -430,9 +454,8 @@ procedure Wasabee_Sdl is
    exception
       when others =>
         null;
-
-
    end ;
+
 
    procedure Quit is
    begin
@@ -441,6 +464,7 @@ procedure Wasabee_Sdl is
    end ;
 
 begin
+   Put_Line("Wasabee version 0.0.1");
    --
    -- Ouvrir une fenetre
    --
