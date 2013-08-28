@@ -7,6 +7,8 @@ with Interfaces.C ; use Interfaces.C ;
 -- with Ada.Strings.Unbounded;             use Ada.Strings.Unbounded;
 with Ada.Text_IO;                       --use Ada.Text_IO;
 -- with Ada.Wide_Text_IO;                  use Ada.Wide_Text_IO;
+with Ada.Exceptions ; use Ada.Exceptions ; 
+
 
 package body Wasabee.Hypertext.Display is
 
@@ -238,19 +240,20 @@ package body Wasabee.Hypertext.Display is
 
                   procedure Set_X_Y (x, y: Natural) is
                   begin
-                     Ada.Text_IO.Put_Line("Set_X_Y " &
-					    Natural'Image(Curs.X + posX) & ":" &
-					    Natural'Image(Curs.Y + posY)) ;
+                     --Ada.Text_IO.Put_Line("Set_X_Y " &
+		--			    Natural'Image(Curs.X + posX) & ":" &
+		--			    Natural'Image(Curs.Y + posY)) ;
                      Posx := (Curs.X + X);
                      Posy := Curs.Y + ((P2.Y-P1.Y)) - (Y) ;
                   end ;
+		  
                   procedure Put_Pixel (red, green, blue : Primary_color_range;
                                        alpha            : Primary_color_range
                                       ) is
                      P1 : Point := (PosX,PosY);
                      Clr : Long_Long_Integer ;
                   begin
-                     if True then
+                     if False then
                         Ada.Text_IO.Put_Line("Put_Pixel " &
                                                " X: " & Natural'Image(Posx) &
                                                " Y: " & Natural'Image(Posy) &
@@ -262,13 +265,16 @@ package body Wasabee.Hypertext.Display is
                      Clr := Long_Long_Integer(blue) +
                        Long_Long_Integer(Long_Long_Integer(Green) * (16#100#)) +
                        Long_Long_Integer(Long_Long_Integer(red) * (16#10000#)) ;
-                     -- Ada.Text_IO.Put_Line(Long_Long_Integer'Image(Clr)) ;
+                     --Ada.Text_IO.Put_Line(Integer'Image(P1.X) & 
+		--			    Integer'Image(P1.Y) & 
+		--			    Long_Long_Integer'Image(Clr)) ;
                      On.Draw_Point(P1, Color_Code(Clr));
                      Posx := Posx + 1 ;
                   end ;
                   procedure Feedback (percents: Natural) is
                   begin
                      Ada.Text_IO.Put_Line(Natural'Image(Percents) & " %");
+		     On.Flush ;
                   end ;
 
                   procedure Local_Load_Image_Contents
@@ -278,13 +284,27 @@ package body Wasabee.Hypertext.Display is
                                                    Feedback,
                                                    GID.fast);
                   Next_Frame : Ada.Calendar.Day_Duration ;
+		  E : exception ;
                begin
 		  Advance_vertically(10);
 		  -- On.Rectangle(B);
-		  Local_Load_Image_Contents(Bn.Desc, Next_Frame);
-		  Advance_vertically(GID.Pixel_Height(Bn.Desc) + 10);
-		  New_Line ;
-               end ;
+		  
+		  declare
+		     task Load_Image ;
+		     task body Load_Image is
+		     begin
+			Local_Load_Image_Contents(Bn.Desc, Next_Frame);		  
+		     end ;
+		  begin
+		     null;
+		  end ;
+		  Advance_vertically(GID.Pixel_Height(Bn.Desc)+10);
+		  -- New_Line ;
+	       exception
+		  when E: others => 
+		     Ada.Text_IO.Put_Line (Exception_Name (E));
+		     Ada.Text_IO.Put(Exception_Message (E));
+	       end ;
                New_Line;
             when text       =>
                latest_text_height:= 0;
