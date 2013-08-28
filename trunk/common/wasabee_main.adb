@@ -62,13 +62,12 @@ begin
    N := Item(Xhtml,0);
    Display_Node(N);
    Display_All_Children(N);
+
    --
    -- Fin du programme de test
    --
-   
-   Put_Line("Body color : " & Get_CSS ("body","color")) ;
-   Put_Line("Body background : " & Get_CSS ("body","background")) ;
-   
+   -- Put_Line("Body color : " & Get_CSS ("body","color")) ;
+   -- Put_Line("Body background : " & Get_CSS ("body","background")) ;
    Free(Reader);
 
 end ;
