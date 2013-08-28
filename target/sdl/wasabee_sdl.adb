@@ -99,7 +99,9 @@ procedure Wasabee_Sdl is
    procedure Rectangle (on: in out SDL_Plane ; coords: Box);
 
    procedure Draw_Point (On : in out SDL_Plane ; P: Point ; Color : Color_Code) ;
-
+   
+   procedure Flush (On : in out SDL_Plane) ;
+   
    -- Implementation
    --
    Window : SDL_Plane ;
@@ -120,8 +122,8 @@ procedure Wasabee_Sdl is
       --Ada.Text_IO.Put_Line("X: " & Integer'Image(X)) ;
       --Ada.Text_IO.Put_Line("Y: " & Integer'Image(Y)) ;
       Pixel := Window.Surface.Pixels ;
-      Pitch := Uint16(Window.Screen.Pitch);
-      Format := Window.Screen.Format ;
+      Pitch := Uint16(Window.Surface.Pitch);
+      Format := Window.Surface.Format ;
       Bit32 := Pixel ;
 
       -- IA := Integer_Address( Long_Float(Bit32) + (Long_Float(X)) * 8 + Long_Float((Pitch / 4) * (Long_Float(Y)*8))) ;
@@ -248,8 +250,8 @@ procedure Wasabee_Sdl is
       --Ada.Text_IO.Put_Line("X: " & Integer'Image(X)) ;
       --Ada.Text_IO.Put_Line("Y: " & Integer'Image(Y)) ;
       Pixel := Window.Surface.Pixels ;
-      Pitch := Uint16(Window.Screen.Pitch);
-      Format := Window.Screen.Format ;
+      Pitch := Uint16(Window.Surface.Pitch);
+      Format := Window.Surface.Format ;
       Bit32 := Pixel ;
 
       -- IA := Integer_Address( Long_Float(Bit32) + (Long_Float(X)) * 8 + Long_Float((Pitch / 4) * (Long_Float(Y)*8))) ;
@@ -263,9 +265,15 @@ procedure Wasabee_Sdl is
       begin
          Element := Color_Code(Color);
       end ;
-      Ret := SDL_Flip(On.Screen);
+      --Ret := SDL_Flip(On.Screen);
    end;
-
+   
+   procedure Flush (On : in out SDL_Plane) is
+      Ret : Int;
+   begin
+      Ret := SDL_Flip(On.Screen);
+   end ;
+   
    Xhtml : DOM.Core.Node_List;
    o: HT_object;
 
@@ -304,7 +312,7 @@ procedure Wasabee_Sdl is
       Put_Line("Creating window");
       Window.Screen := SDL_SetVideoMode (800, 600, 32, SDL_HWSURFACE or SDL_DOUBLEBUF);
       Put_Line("Creating surface");
-      Window.Surface := SDL_CreateRGBSurface (SDL_HWSURFACE, 800, 600, 32, 0,0,0,0);
+      Window.Surface := SDL_CreateRGBSurface (SDL_HWSURFACE, 800, 60000, 32, 0,0,0,0);
 
       Window.XPos := 0 ;
       Window.YPos := 0 ;
