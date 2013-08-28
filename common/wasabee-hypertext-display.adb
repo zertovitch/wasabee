@@ -225,9 +225,9 @@ package body Wasabee.Hypertext.Display is
             when Img =>
                New_Line;
                declare
-                  P1 : Point := (Curs.X-1,Curs.Y-1) ;
-                  P2 : Point := (Curs.X + GID.Pixel_Width(Bn.Desc) + 1,
-                                 Curs.Y + GID.Pixel_Height(Bn.Desc) + 1 );
+                  P1 : Point := (Curs.X,Curs.Y) ;
+                  P2 : Point := (Curs.X + GID.Pixel_Width(Bn.Desc),
+                                 Curs.Y + GID.Pixel_Height(Bn.Desc));
                   B : Box := (P1, P2);
                   posX , posY : Natural ;
                   Color : Color_Code := 16#FF0000# ;
@@ -239,8 +239,8 @@ package body Wasabee.Hypertext.Display is
                   procedure Set_X_Y (x, y: Natural) is
                   begin
                      Ada.Text_IO.Put_Line("Set_X_Y " &
-                                            Natural'Image(Curs.X + posX) & ":" &
-                                            Natural'Image(Curs.Y + posY)) ;
+					    Natural'Image(Curs.X + posX) & ":" &
+					    Natural'Image(Curs.Y + posY)) ;
                      Posx := (Curs.X + X);
                      Posy := Curs.Y + ((P2.Y-P1.Y)) - (Y) ;
                   end ;
@@ -250,7 +250,7 @@ package body Wasabee.Hypertext.Display is
                      P1 : Point := (PosX,PosY);
                      Clr : Long_Long_Integer ;
                   begin
-                     if False then
+                     if True then
                         Ada.Text_IO.Put_Line("Put_Pixel " &
                                                " X: " & Natural'Image(Posx) &
                                                " Y: " & Natural'Image(Posy) &
@@ -279,20 +279,11 @@ package body Wasabee.Hypertext.Display is
                                                    GID.fast);
                   Next_Frame : Ada.Calendar.Day_Duration ;
                begin
-                  -- On.Rectangle(B);
-                  declare
-                     task Load_Image ;
-                     task body Load_Image is
-                     begin
-                        Ada.Text_IO.Put_Line("==T ==>Load Image");
-			Local_Load_Image_Contents(Bn.Desc, Next_Frame);
-                     end ;
-                  begin
-                     null ;
-                  end ;
-		  Ada.Text_IO.Put_Line("==M ==>Avance");
-                  Advance_vertically(GID.Pixel_Height(Bn.Desc));
-
+		  Advance_vertically(10);
+		  -- On.Rectangle(B);
+		  Local_Load_Image_Contents(Bn.Desc, Next_Frame);
+		  Advance_vertically(GID.Pixel_Height(Bn.Desc) + 10);
+		  New_Line ;
                end ;
                New_Line;
             when text       =>
