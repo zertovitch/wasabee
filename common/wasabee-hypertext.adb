@@ -76,13 +76,26 @@ package body Wasabee.Hypertext is
                      end if;
                   end loop;
                when Img =>
-                  Put_Line("Image founded !");
+                  -- Put_Line("Image founded !");
                   for Index in 1 .. Length(Attrs) loop
                      Tmp_attr := Item(Attrs, Index-1);
                      if Node_Name(Tmp_Attr) = "src" then
                         new_node.src:= U(Node_Value(Tmp_Attr));
                         Put_Line(S(New_Node.src));
-                        Get_Image_Header (To_String(New_Node.Src), New_Node.Desc);
+			declare
+			   task Load_Header ;
+			   task body Load_Header is
+			   begin
+			      Get_Image_Header (To_String(New_Node.Src), New_Node.Desc);
+			   end Load_Header ;
+			begin
+			   null ;
+			end ;
+			
+		     elsif Node_Name(Tmp_Attr) = "width" then
+			New_Node.Width  := Positive'Value(Node_Value(Tmp_Attr));
+		     elsif Node_Name(Tmp_Attr) = "height" then
+			New_Node.Height := Positive'Value(Node_Value(Tmp_Attr));
                      end if;
                   end loop;
                when others => null;
