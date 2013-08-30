@@ -102,7 +102,9 @@ package body Wasabee.Images is
             null ;
          end if ;
       end loop;
+      Put("Beginning ...");
       GID.Load_image_header(Desc,Channel.all);
+      Put_Line(" End");
    end;
 
 end Wasabee.Images;
