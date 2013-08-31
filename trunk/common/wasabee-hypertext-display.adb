@@ -6,8 +6,8 @@ with Interfaces.C ; use Interfaces.C ;
 
 -- with Ada.Strings.Unbounded;             use Ada.Strings.Unbounded;
 with Ada.Text_IO;                       --use Ada.Text_IO;
-					-- with Ada.Wide_Text_IO;                  use Ada.Wide_Text_IO;
-with Ada.Exceptions ; use Ada.Exceptions ; 
+                                        -- with Ada.Wide_Text_IO;                  use Ada.Wide_Text_IO;
+with Ada.Exceptions ; use Ada.Exceptions ;
 
 
 package body Wasabee.Hypertext.Display is
@@ -227,84 +227,21 @@ package body Wasabee.Hypertext.Display is
             when Img =>
                New_Line;
                declare
-		  P1 : Point := (Curs.X,Curs.Y+10) ;
+                  P1 : Point := (Curs.X,Curs.Y+10) ;
                   P2 : Point := (Curs.X + Bn.Width,Curs.Y + Bn.Height + 10);
                   B : Box := (P1, P2);
-		  posX , posY : Natural ;
+                  posX , posY : Natural ;
                   Color : Color_Code := 16#FF0000# ;
-                  --
-                  -- Ok je dois charger l'image maintenant ...
-                  --
-                  Next_Frame : Ada.Calendar.Day_Duration ;
-		  E : exception ;
-               begin		  
-		  Advance_vertically(10);
-		  declare
-		     task Load_Image ;
-		     task body Load_Image is
-			subtype Primary_Color_Range is Unsigned_8;
-
-			procedure Set_X_Y (x, y: Natural) is
-			begin
-			   --Ada.Text_IO.Put_Line("Set_X_Y " &
-			   --			    Natural'Image(Curs.X + posX) & ":" &
-			   --			    Natural'Image(Curs.Y + posY)) ;
-			   Posx := (Curs.X + X);
-			   Posy := Curs.Y + ((P2.Y-P1.Y)) - (Y) ;
-			end ;
-			
-			procedure Put_Pixel (red, green, blue : Primary_color_range;
-					     alpha            : Primary_color_range
-					    ) is
-			   P1 : Point := (PosX,PosY);
-			   Clr : Long_Long_Integer ;
-			begin
-			   if False then
-			      Ada.Text_IO.Put_Line("Put_Pixel " &
-						     " X: " & Natural'Image(Posx) &
-						     " Y: " & Natural'Image(Posy) &
-						     " R: " & Natural'Image(Integer(Red)) &
-						     " G: " & Natural'Image(Integer(Green)) &
-						     " B: " & Natural'Image(Integer(Blue)) &
-						     " A: " & Natural'Image(Integer(Alpha))) ;
-			   end if ;
-			   Clr := Long_Long_Integer(blue) +
-			     Long_Long_Integer(Long_Long_Integer(Green) * (16#100#)) +
-			     Long_Long_Integer(Long_Long_Integer(red) * (16#10000#)) ;
-			   --Ada.Text_IO.Put_Line(Integer'Image(P1.X) & 
-			   --			    Integer'Image(P1.Y) & 
-			   --			    Long_Long_Integer'Image(Clr)) ;
-			   On.Draw_Point(P1, Color_Code(Clr));
-			   Posx := Posx + 1 ;
-			end ;
-			procedure Feedback (percents: Natural) is
-			begin
-			   Ada.Text_IO.Put_Line(Natural'Image(Percents) & " %");
-			   On.Flush ;
-			end ;
-
-			procedure Local_Load_Image_Contents
-			is new GID.Load_Image_Contents ( Primary_color_range,
-							 Set_X_Y,
-							 Put_Pixel,
-							 Feedback,
-							 GID.fast);
-			
-		     begin
-			On.Rectangle(B);
-			Local_Load_Image_Contents(Bn.Desc, Next_Frame);		  
-		     end ;
-		  begin
-		     null;
-		  end ;
-		  Advance_vertically(Bn.Height+10);
-		  On.Flush ;
-		  New_Line ;
-	       exception
-		  when E: others => 
-		     Ada.Text_IO.Put_Line (Exception_Name (E));
-		     Ada.Text_IO.Put(Exception_Message (E));
-	       end ;
+               begin
+                  On.Rectangle(B);
+                  Advance_vertically(Bn.Height+10);
+                  On.Flush ;
+                  New_Line ;
+               exception
+                  when E: others =>
+                     Ada.Text_IO.Put_Line (Exception_Name (E));
+                     Ada.Text_IO.Put(Exception_Message (E));
+               end ;
                New_Line;
             when text       =>
                latest_text_height:= 0;
