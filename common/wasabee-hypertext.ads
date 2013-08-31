@@ -124,8 +124,8 @@ private
                   color : Color_Code:= Default_color;
                when img =>
                   Src   : Unbounded_String ;
-                  Desc  : GID.Image_Descriptor ;
-		  Width, Height : Natural ;
+                  -- Desc  : GID.Image_Descriptor ;
+                  Width, Height : Natural ;
                when others =>
                   null;
             end case;
