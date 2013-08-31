@@ -1,5 +1,11 @@
-gnatmake -c wasabee_sdl.adb
+SET PATH=c:\GNAT\2013\bin;%PATH%
 
-gnatbind -x wasabee_sdl.ali
+SET ADA_INCLUDE_PATH=c:\GNAT\2013\include\xmlada
+SET ADA_INCLUDE_PATH=%ADA_INCLUDE_PATH%;c:\GNAT\2013\include\gnat_sdl
+SET ADA_INCLUDE_PATH=%ADA_INCLUDE_PATH%;..\..\..\gen-img-dec-code
+SET ADA_INCLUDE_PATH=%ADA_INCLUDE_PATH%;..\..\common
 
-gnatlink wasabee_sdl.ali -lSDL -lSDL_ttf
+SET
+
+gnatmake -P wasabee_sdl
+
