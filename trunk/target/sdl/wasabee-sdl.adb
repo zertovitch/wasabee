@@ -246,9 +246,9 @@ package body Wasabee.SDL is
       Ret := SDL_Init(SDL_INIT_EVERYTHING) ;
       Ret := TTF_Init ;
       Put_Line("Creating window");
-      Window.Screen := SDL_SetVideoMode (800, 600, 32, SDL_HWSURFACE or SDL_DOUBLEBUF);
+      Window.Screen := SDL_SetVideoMode (1024, 1000, 32, SDL_HWSURFACE or SDL_DOUBLEBUF);
       Put_Line("Creating surface");
-      Window.Surface := SDL_CreateRGBSurface (SDL_HWSURFACE, 800, 60000, 32, 0,0,0,0);
+      Window.Surface := SDL_CreateRGBSurface (SDL_HWSURFACE, 1024 , 60000, 32, 0,0,0,0);
 
       Window.XPos := 0 ;
       Window.YPos := 0 ;
