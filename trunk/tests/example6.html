@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<!-- Server: sfn-web-7 -->
+
+<!--[if lt IE 7 ]> <html lang="en" class="no-js ie6"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="en" class="no-js ie7"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="en" class="no-js ie8"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="en" class="no-js ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]>--> <html lang="en" class="no-js"> <!--<![endif]-->
+  <head>
+    <title>Testing some &laquo;difficult&raquo; or ill-formed HTML code</title>
+<style type="text/css">
+td {border-style: solid; border-color:BlanchedAlmond} /* show all cell borders */
+</style>
+<script src="*"></script>
+<noscript>Je n'aime pas les scripts!</noscript>
+  </head>
+  <body><b></b>
+<hr>
+<nav>
+  <a href="example1.html">Example 1</a> |
+  <a href="example2.html">Example 2</a> |
+  <a href="example3.html">Example 3 (Lists and Tables)</a> |
+  <a href="example4.html">Example 4</a> |
+  <a href="example5.html">Example 5</a> |
+  <a href="example6.html">Example 6 (Bad HTML)</a> |
+  <a href="example_css.html">Example with CSS</a> |
+  <a href="example_img.html">Example with Image</a> |
+  <a href="example_img2.html">Example with Image 2</a>.
+</nav>
+<hr>
+<noscript>Je n'aime pas les scripts!</noscript>
+    Testing bracketed tags that are not properly closed (not XHTML compliant!).
+    <p>New paragraph (we forget to close it...)
+    <p>Ordered list 1 to 20 with some &lt;LI&gt; tags not closed. <br>
+	   The numbering is always correct (just lucky), but if the tree is not rectified (see procedure Rectify_tree),
+	   the marker width is not correctly estimated, because LI are children (wrong) instead of siblings.
+	</p>
+    <ol>
+	    <li>an item 1</li> <li>an item 2      <li>an item 3</li> <li>an item 4</li>
+	    <li>an item 5</li> <li>an item 6</li> <li>an item 7</li> <li>an item 8</li>
+	    <li>an item 9</li> <li>an item 10     <li>an item 11</li> <li>an item 12</li>
+	    <li>an item 13</li> <li>an item 14     <li>an item 15</li> <li>an item 16</li>
+	    <li>an item 17     <li>an item 18     <li>an item 19</li> <li>an item 20</li>
+    </ol>
+	Good attributes: <font face="Broadway"  color="#880000">A dark red text with <i>font Broadway (italic not closed!)</font> <br>
+	Bad attributes: <font face=Broadway color='#880000'>A dark red text with <i>font Broadway (italic not closed!)</font>
+	<p>
+<!-- http://www.netmechanic.com/news/vol2/html_no4.htm "HTML Tip: Close Your Table Tags" -->
+Tables with &lt;TR&gt;, &lt;TH&gt; or &lt;TD&gt; not closed:
+<TABLE style="border-style: solid">
+<TR>
+<TD ALIGN="center">
+<B>outer table</B>
+<TABLE style="border-style: solid">
+<TR>
+<TD BGCOLOR="red"> cell 11 
+<TD BGCOLOR="pink"> cell 12 
+<TR>
+<TD BGCOLOR="yellow"> cell 21 
+<TD BGCOLOR="tan">  cell 22
+</TABLE>
+</TABLE>
+<p>
+copyright	&copy;	&#169; <br>
+registered trademark	&reg;	&#174;	<br>
+<br> Singleton tags written as closing tags:<br>
+Bla 1  &lt;BR&gt; (HTML) <br>
+Bla 2  &lt;BR /&gt; (XHTML) <br />
+Bla 3   &lt;BR&gt;&lt;/BR&gt; (Chrome and IE do 2x &lt;BR&gt; hereafter) <br></br>
+Bla 4   &lt;/BR&gt; (wrong) </br>
+Bla 5
+</hr>
+Bla 6
+</p>
+	  </body>
+</html>

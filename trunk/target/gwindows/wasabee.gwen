@@ -11,6 +11,6 @@ INITIALIZE_CONTROLS FALSE
 ADA_MAIN wasabee.exe
 ADA_LISTEN TRUE
 ADA_AUTO_BUILD TRUE
-ADA_COMMAND gnatmake.exe wasabee -Pwasa_gwindows.gpr -d -XBuild_Mode=Fast
+ADA_COMMAND gnatmake.exe wasabee_gwindows -Pwasa_gwindows.gpr -d -XBuild_Mode=Fast
 SHOW_DETAILS TRUE -- in the UI, show the bottom part with message boxes
 SHOW_ADA_BUILD TRUE -- in the UI, show the right part with ada build

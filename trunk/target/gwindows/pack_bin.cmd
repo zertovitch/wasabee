@@ -1,0 +1,1 @@
+zipada -ed3 Wasabee_binary_gwindows_rev_%1 "Wasabee (*".exe read_me_bin.txt

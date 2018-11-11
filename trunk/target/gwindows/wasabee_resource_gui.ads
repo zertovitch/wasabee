@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------
 -- GUI contents of resource script file: wasabee.rc
--- Transcription time: 2013/07/31   14:33:26
+-- Transcription time: 2013/09/11   12:09:35
 --
 -- Translated by the RC2GW or by the GWenerator tool.
 -- URL: http://sf.net/projects/gnavi
@@ -99,6 +99,8 @@ package wasabee_Resource_GUI is
   ID_New_Address       : constant:=  40002;
   ID_Next_Tab          : constant:=  40003;
   ID_Close_Tab         : constant:=  40004;
+  ID_Back              : constant:=  40005;
+  ID_Forward           : constant:=  40006;
 
   -- ** Some helper utilities (spec).
 
@@ -111,6 +113,6 @@ package wasabee_Resource_GUI is
   function Num_resource(id: Natural) return GString;
 
 
-  -- Last line of resource script file: 103
+  -- Last line of resource script file: 105
 
 end wasabee_Resource_GUI;

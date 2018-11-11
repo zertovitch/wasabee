@@ -57,8 +57,10 @@ Browser_Window_Shortcuts ACCELERATORS
     "T",            ID_New_Tab, VIRTKEY, CONTROL
     "L",            ID_New_Address, VIRTKEY, CONTROL
     VK_TAB,        ID_Next_Tab, VIRTKEY, CONTROL
-    VK_F4,        ID_Close_Tab, VIRTKEY, CONTROL
-    "W",        ID_Close_Tab, VIRTKEY, CONTROL
+    VK_F4,         ID_Close_Tab, VIRTKEY, CONTROL
+    "W",            ID_Close_Tab, VIRTKEY, CONTROL
+    VK_LEFT,       ID_Back, VIRTKEY, ALT
+    VK_RIGHT,      ID_Forward, VIRTKEY, ALT
 }
 
 

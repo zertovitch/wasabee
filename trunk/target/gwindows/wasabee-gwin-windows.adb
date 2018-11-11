@@ -1,7 +1,11 @@
+with Wasabee.Encoding;                  use Wasabee.Encoding;
+with Wasabee.Hypertext;                 use Wasabee.Hypertext;
+with Wasabee.Hypertext.Parsing;         use Wasabee.Hypertext.Parsing;
 -- with Wasabee.Hypertext.Display;         use Wasabee.Hypertext.Display;
+with Wasabee.Hypertext.Locations;       use Wasabee.Hypertext.Locations;
+with Wasabee.URL;                       use Wasabee.URL;
 with Wasabee.Util;                      use Wasabee.Util;
 with Wasabee.Request;
--- with Wasabee.Xhtml;
 
 with Wasabee.GWin.Main;                 use Wasabee.GWin.Main;
 with Wasabee.GWin.Tabs;                 use Wasabee.GWin.Tabs;
@@ -11,10 +15,9 @@ with GWindows.Base;                     use GWindows.Base;
 -- with GWindows.Constants;                use GWindows.Constants;
 -- with GWindows.Message_Boxes;            use GWindows.Message_Boxes;
 
-with DOM.Core;
--- with DOM.Core.Nodes;                    use DOM.Core.Nodes;
-
--- with Ada.Text_IO;                       use Ada.Text_IO;
+with Ada.Text_IO;                       use Ada.Text_IO;
+with Ada.Strings.Fixed;                 use Ada.Strings.Fixed;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 -- with Ada.Wide_Text_IO;
 
 package body Wasabee.GWin.Windows is
@@ -89,6 +92,7 @@ package body Wasabee.GWin.Windows is
       Height     => 1, -- will be extended by docking
       Text       => ""
     );
+    Window.url_box.Set_Font(URL_box_font);
     Window.url_box.Dock(Fill);
     Window.tab_visuals.Create_As_Control(
       Parent     => Window,
@@ -139,9 +143,9 @@ package body Wasabee.GWin.Windows is
              Integer'Wide_Image(Window.active_tab)
         );
     else
-      Window.Text(S2G(Version) & " - " & title);
+      Window.Text(title & " - " & S2G(Version));
     end if;
-    Window.control_box.url_box.Text(S2G(S(active_tab.URL)));
+    Window.control_box.url_box.Text(S2G(S(active_tab.URL_with_anchor)));
   end Refresh_title_and_URL;
 
   procedure Set_active_tab(
@@ -221,21 +225,62 @@ package body Wasabee.GWin.Windows is
 
   procedure Go_on_URL(Window : in out Browser_window_type) is
     active_tab: HT_area_type renames Window.tabs.Element(Window.active_tab).all;
-    Xhtml : DOM.Core.Node_List ; -- !! own parser in a future version
+    HTML : Unbounded_String;
+    URL_from_box: constant String:= G2S(Window.control_box.url_box.Text);
+    URL_without_anchor: constant String:= Remove_anchor(URL_from_box);
   begin
-    active_tab.URL:= U(G2S(Window.control_box.url_box.Text));
-    Wasabee.Request.Open_Url (S(active_tab.URL), Xhtml) ;
-    -- ^ !! we will go through the cache to get the xhtml
-    -- Wasabee.Xhtml.Display_All_Children(Item(xhtml,0)); -- dump XML tree
-    active_tab.HT_contents.Load_frame(Xhtml);
-    -- active_tab.HTML_contents.Dump(Ada.Wide_Text_IO.Standard_Output); -- dump hypertext
-    active_tab.Set_minimal_sliding_panel_size;
-    active_tab.Draw_with_resize;
-    Refresh_title_and_URL(Window);
-    active_tab.On_Vertical_Scroll(First, null);         -- Move to top of page
-    active_tab.On_Vertical_Scroll(Previous_Unit, null);
+    if active_tab.HT_contents.Get_own_URL = URL_without_anchor then
+      null; -- Do nothing! Web page is already there.
+    elsif Index(URL_from_box, "://") = 0 then  --  Web address typed without "http://"
+      Window.control_box.url_box.Text("http://" & Window.control_box.url_box.Text);
+      Window.Go_on_URL;
+      return;
+    else
+      active_tab.HT_contents.Set_own_URL(URL_without_anchor);
+      active_tab.URL_with_anchor:= U(URL_from_box);
+      --  We are here on Windows. ISO-8859-1 is close to Windows 1252.
+      --  A web page with non-ASCII characters should specify its encoding.
+      active_tab.HT_contents.Set_Encoding(iso_8859_1);
+      put_line("--> Getting HTML from Web");
+      Wasabee.Request.Retrieve_from_URL (active_tab.HT_contents.Get_own_URL, HTML) ;
+      Dump_string("HTML Source.txt", To_String(HTML));
+      put_line("--> Getting hypertext from HTML");
+      Load_frame(active_tab.HT_contents, To_String(HTML));
+      put_line("--> Done.");
+      active_tab.HT_contents.Post_loading_processing;
+      active_tab.HT_contents.Dump("HTML Tree.txt");
+      active_tab.Set_minimal_sliding_panel_size;
+      active_tab.Draw_with_resize;
+      Refresh_title_and_URL(Window);
+    end if;
+    active_tab.Scroll_to_point(
+      (0, 200) + Anchor_position(active_tab.HT_contents, Anchor_only(URL_from_box))
+    );
     active_tab.Focus;
+    active_tab.navi.Register(URL_from_box);
   end Go_on_URL;
+
+  procedure Activate_current_navigation_item(Window : in out Browser_window_type) is
+    active_tab: HT_area_type renames Window.tabs.Element(Window.active_tab).all;
+  begin
+    if active_tab.navi.Current_URL = "" then
+      return; -- Perhaps the log is empty, or we have an empty URL
+    end if;
+    Window.control_box.url_box.Text(S2G(active_tab.navi.Current_URL));
+    Window.Go_on_URL;
+  end Activate_current_navigation_item;
+
+  procedure Back(Window : in out Browser_window_type) is
+  begin
+    Window.tabs.Element(Window.active_tab).navi.Back; -- go back in the navigation log
+    Activate_current_navigation_item(Window);
+  end Back;
+
+  procedure Forward(Window : in out Browser_window_type) is
+  begin
+    Window.tabs.Element(Window.active_tab).navi.Forward; -- go forward in the navigation log
+    Activate_current_navigation_item(Window);
+  end Forward;
 
   procedure On_Menu_Select (
         Window : in out Browser_window_type;
@@ -252,6 +297,10 @@ package body Wasabee.GWin.Windows is
         Window.Next_Tab;
       when ID_Close_Tab =>
         Window.Close_tab;
+      when ID_Back =>
+        Window.Back;
+      when ID_Forward =>
+        Window.Forward;
       when ID_New_Address =>
         Window.control_box.url_box.Set_Selection(
           0, Window.control_box.url_box.Text'Length

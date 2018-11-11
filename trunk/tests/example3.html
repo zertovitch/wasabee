@@ -1,10 +1,151 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Test with lists (UL, OL) and other tags</title>
+    <title>Test with lists (&lt;UL&gt;, &lt;OL&gt;), &lt;TABLE&gt; and other tags</title>
+<style type="text/css">
+ 
+td {border-style: solid; border-color:BlanchedAlmond} /* show all cell borders */
+
+td.header {
+ text-align: center;
+ background-color: yellow;
+}
+ 
+td.contents {
+ text-align: center;
+ background-color: orange;
+}
+ 
+td.rhsmenu {
+ text-align: center;
+ background-color: green;
+}
+ 
+td.footer {
+ text-align: center;
+ background-color: blue;
+}
+</style>
   </head>
   <body>
-    Some perfectly normal text.<br />Next line...
+    Some perfectly normal text.<br />Next line... 
+    <br>
+<hr>
+<nav>
+  <a href="example1.html">Example 1</a> |
+  <a href="example2.html">Example 2</a> |
+                          Ex. 3 (Lists and Tables)     |
+  <a href="example4.html">Example 4</a> |
+  <a href="example5.html">Example 5</a> |
+  <a href="example6.html">Ex. 6 (Bad HTML)</a> |
+  <a href="example_css.html">Ex. with CSS</a> |
+  <a href="example_img.html">Ex. with Image</a> |
+  <a href="example_img2.html">Ex. with Image 2</a>.
+</nav>
+ After <b>nav</b>.
+<hr>
+ <br>
+    A table with border:
+ <table style="border-style: solid; border-color: #aa3300">
+  <tr>
+    <th>Month</th>
+    <th>Savings</th>
+  </tr>
+  <tr>
+    <td>January</td>
+    <td>$100</td>
+  </tr>
+  <tr>
+    <td>February</td>
+    <td>$80</td>
+  </tr>
+</table> 
+<!-- http://www.netmechanic.com/news/vol2/html_no4.htm "HTML Tip: Close Your Table Tags" -->
+<TABLE style="border-style: solid">
+  <TR>
+    <TD ALIGN="center">
+      <B>outer table</B>
+      <TABLE style="border-style: solid">
+        <TR>
+          <TD BGCOLOR="red"> cell 11 </TD>
+          <TD BGCOLOR="pink"> cell 12 </TD>
+        </TR>
+        <TR>
+          <TD BGCOLOR="yellow"> cell 21 </TD>
+          <TD BGCOLOR="tan">  cell 22 </TD>
+        </TR>
+      </TABLE>
+    </TD>
+  </TR>
+</TABLE>
+<!-- -->
+<br>
+Test with "<b>colspan</b>" attribute:
+<table style="border-style: solid; border-width:1px">
+   <tr height="15%">
+    <td class="header" colspan="2">Header Information</td>
+   </tr>
+   <tr height="65%">
+    <td class="contents">Contents go
+     here</td>
+    <td class="rhsmenu" style="color:white">RHS Panel</td>
+   </tr>
+   <tr height="20%">
+    <td class="footer" colspan="2" style="color:white">Footer Information</td>
+   </tr>
+ </table>
+ <br>
+<!-- -->
+<TABLE style="border-style: solid; border-color: blue">
+<tr>
+<TD> The cell next to this one has a smaller table inside of it.</TD>
+<TD>
+  <TABLE style="border-style: solid; border-color: green">
+    <tr> <TD>2nd Table (Top Left cell)</TD> <TD>2nd Table</TD> </tr>
+    <TR>
+      <TD>2nd Table</TD>
+      <TD>Again a table:
+        <TABLE style="border-style: solid; border-color: red">
+          <tr>
+            <TD>3rd Table (Top Left cell)</TD>
+            <TD>3rd Table</TD>
+		 </tr>
+         <TR>
+            <TD>3rd Table</TD>
+            <TD>3rd Table</TD>
+         </TR>
+       </TABLE>
+	  </TD>
+    </TR>
+  </TABLE>
+</TD>
+</tr>
+</TABLE>
+<!-- http://evc-cit.info/cit040/notes7.html <tbody>'s removed -->
+<table>
+<tr>
+    <td>Row one, cell one</td>
+    <td>Row one, cell two</td>
+    <td>Row one, cell three</td>
+</tr>
+<tr>
+    <td>Row two, cell one</td>
+    <td>
+        Row two, cell two
+        <table>
+        <tr>
+            <td>inner A</td><td>inner B</td>
+        </tr>
+        <tr>
+            <td>inner C</td><td>inner D</td>
+        </tr>
+        </table>
+    </td>
+    <td>Row two, cell three</td>
+</tr>
+</table>
+<!-- -->
+    <p>Now an ordered list:</p>
     <ol>
 	  <li>first item</li>
 	  <li>second item</li>
@@ -21,6 +162,24 @@
       </ul>
 	  <li>third numbered item</li>
 	</ol>
+    <p>Here a short unordered list with squares as markers (pre-CSS styling):</p>
+    <ul type="square">
+	    <li>first square</li>
+	    <li>second square
+          <ul type="circle">
+     	    <li>first circle</li>
+     	    <li>second circle</li>
+		  </ul>
+		</li>
+    </ul>
+    <p>Here a long ordered list:</p>
+    <ol>
+	    <li>an item</li> <li>an item</li> <li>an item</li> <li>an item</li>
+	    <li>an item</li> <li>an item</li> <li>an item</li> <li>an item</li>
+	    <li>an item</li> <li>an item</li> <li>an item</li> <li>an item</li>
+	    <li>an item</li> <li>an item</li> <li>an item</li> <li>an item</li>
+	    <li>an item</li> <li>an item</li> <li>an item</li> <li>an item</li>
+    </ol>
     Here we are <b>after</b> the lists. <br />
     Now a little <blockquote>quotation from Professor Ploff from the
     <abbr title="National Agency of Software Animals">NASA</abbr></blockquote>
@@ -31,14 +190,11 @@
     From <aside>here, an <b>aside</b>.</aside> EOA - Terrific!... <address>Written
     by <a href="mailto:webmaster@example.com">Jon Doe</a>.<br /> 
 Visit us at:<br />Example.com<br />Box 564, Disneyland<br />USA</address>After 
-address... <nav>
-  <a href="/html/">HTML</a> |
-  <a href="/css/">CSS</a> | <a href="/js/">JavaScript</a> |
-  <a href="/jquery/">jQuery</a></nav> After <b>nav</b>.
+address... 
   <p>WWF's goal is to: 
 <q>Build a future where people live in harmony with nature.</q>
 We hope they succeed.</p>
-Something with DL, DT, DD:
+Something with <b>DL, DT, DD</B>:
 <dl>
    <dt>Coffee</dt>
      <dd>Black hot drink</dd>

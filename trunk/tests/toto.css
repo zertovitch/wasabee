@@ -1,15 +1,16 @@
-body h1 {
-    background:red;color:black;
-}
+/* Here is a nice CSS comment */
 
-h1 {
-    font-size : 200% ;
-    color : red ;
+h3 {
+    background:LightSeaGreen;color:Khaki; font-family:"Times New Roman";
+    font-size : 125% ;
 }
 
 #toto {
-    color : green;
+    color : DarkSeaGreen;
     background : yellow ;
-    
+    font-family:"Times New Roman";
 }
 
+/* body h3 {
+}
+*/

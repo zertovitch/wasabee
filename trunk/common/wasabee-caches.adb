@@ -1,12 +1,18 @@
-with Wasabee.Request;                   use Wasabee.Request;
 with Wasabee.Util;                      use Wasabee.Util;
 
 with Ada.IO_Exceptions;                 use Ada.IO_Exceptions;
 with Ada.Directories,
      Ada.Environment_Variables,
      Ada.Sequential_IO;
+with Ada.Unchecked_Deallocation;
+
+-- with Ada.Streams.Stream_IO;
 
 package body Wasabee.Caches is
+
+  -----------------------
+  -- Blocking file I/O --
+  -----------------------
 
   function Load(file_name: String) return String is
     size: constant Ada.Directories.File_Size:= Ada.Directories.Size(file_name);
@@ -21,6 +27,7 @@ package body Wasabee.Caches is
     Close(file);
     return contents;
   end Load;
+  pragma Unreferenced (Load);
 
   procedure Save(file_name, contents: String) is
     subtype Contents_type is String(contents'Range);
@@ -32,6 +39,20 @@ package body Wasabee.Caches is
     Write(file, contents);
     Close(file);
   end Save;
+  pragma Unreferenced (Save);
+
+  -----------------------------------------------------
+  -- Blocking version of retrieval of a Web resource --
+  -----------------------------------------------------
+  -- !! will use the non-blocking version and wait for completion
+
+  procedure Blocking_retrieval (the_URL : in String ; contents : out Unbounded_String)
+  renames Wasabee.Request.Retrieve_from_URL;
+  pragma Unreferenced (Blocking_retrieval);
+
+  ---------------------------
+  -- Cache item management --
+  ---------------------------
 
   function Create_new_item(URL: Unbounded_String) return Cache_item is
     new_item: Cache_item;
@@ -44,11 +65,24 @@ package body Wasabee.Caches is
     return new_item;
   end Create_new_item;
 
-  procedure Get_item_contents_from_Web(item: in out Cache_item) is
+  procedure Start_Load(item: in out Cache_item) is
+  begin
+    -- Cache_item is trivial, so actual loading is not needed
+    item.status:= loaded;
+  end Start_Load;
+
+  -- Get from web, including file:// protocol
+
+  procedure Get_item_contents_from_Web(wrp: in out Cache_item_wrapper) is
+    item: Cache_item'Class renames wrp.pointer.all;
     now: constant Time:= Clock;
   begin
-    Open_URL(S(item.URL), item.contents);
-    item.uncompressed_contents:= Null_Unbounded_String;
+    Start_Load(item);
+    if item.loading_is_blocking then
+      while item.status /= loaded loop
+        null;
+      end loop;
+    end if;
     if Ada.Directories.Exists(S(item.file_name)) then
       Ada.Directories.Delete_File(S(item.file_name));
       item.file_name:= U("");
@@ -58,24 +92,33 @@ package body Wasabee.Caches is
     item.hits:= 1;
   end Get_item_contents_from_Web;
 
-  procedure Get_item_contents(item: in out Cache_item) is
+  procedure Get_item_contents_from_File_cache(wrp: in out Cache_item_wrapper) is
+    item: Cache_item'Class renames wrp.pointer.all;
+    temp_URL: constant Unbounded_String:= U(""); -- !! create here a temporary file:// URL
+    true_URL: constant Unbounded_String:= item.URL;
   begin
-    if item.contents = "" then
+    item.URL:= temp_URL;
+    Get_item_contents_from_Web(wrp);
+    item.URL:= true_URL; -- restore true URL
+  exception
+    when Name_Error | Use_Error =>
+      -- Something went wrong with the file...
+      item.file_name:= Null_Unbounded_String; -- forget the cache file
+      item.URL:= true_URL; -- restore true URL
+      Get_item_contents_from_Web(wrp);
+      return;
+  end Get_item_contents_from_File_cache;
+
+  procedure Get_item_contents(wrp: in out Cache_item_wrapper) is
+    item: Cache_item'Class renames wrp.pointer.all;
+  begin
+    if item.status = not_loaded then
       if item.file_name = "" then
-        Get_item_contents_from_Web(item);
+        Get_item_contents_from_Web(wrp);
         return;
       else
-        -- Read from file
-        begin
-          item.contents:= U(Load(S(item.file_name)));
-          item.uncompressed_contents:= Null_Unbounded_String;
-        exception
-          when Name_Error | Use_Error =>
-            -- Something wrong with the file...
-            item.file_name:= Null_Unbounded_String;
-            Get_item_contents_from_Web(item);
-            return;
-        end;
+        -- Read from cache file
+        Get_item_contents_from_File_cache(wrp);
       end if;
     end if;
     item.hits:= item.hits + 1;
@@ -83,26 +126,34 @@ package body Wasabee.Caches is
   end Get_item_contents;
 
   procedure Get_contents(
-    cache    : in out Cache_type;
+    item     : in     p_Cache_item;     -- item is already allocated with the
+                                        -- appropriate type derivation. If
+                                        -- the item is already in the cache,
+                                        -- the pointer will be freed.
+    cache    : in out Cache_type;       -- Container of all items
     URL      : in     Unbounded_String;
-    reload   : in     Boolean
+    blocking : in     Boolean;          -- Wait for contents to be fully loaded ?
+    reload   : in     Boolean           -- Force reload of resource
   )
   is
     idx: Positive;
-    new_item: Cache_item;
+    wrp: Cache_item_wrapper;
   begin
     -- First, a Cache_item is searched with its URL, or a new one is created.
     begin
       idx:= cache.URL_cat.Element(URL);
     exception
       when Constraint_Error =>
-        new_item:= Create_new_item(URL);
-        cache.data.Append(new_item);
+        Cache_item(item.all):= Create_new_item(URL);
+        -- We add the item to the container
+        wrp.pointer:= item;
+        cache.data.Append(wrp);
         idx:= cache.data.Last_Index;
         -- Update catalogues
         cache.URL_cat.Insert(URL, idx);
-        cache.hit_cat.Insert(new_item.latest_hit, idx);
+        cache.hit_cat.Insert(item.latest_hit, idx);
     end;
+    item.loading_is_blocking:= blocking;
     if reload then
       cache.data.Update_Element(idx, Get_item_contents_from_Web'Access);
     else
@@ -148,11 +199,11 @@ package body Wasabee.Caches is
   procedure Save_to_file(item: in out Cache_item) is
     url: constant String:= S(item.URL);
   begin
-    if url'Length >= 4 and then url(url'First..url'First+3) = "http" and then
+    if url'Length >= 4 and then url(url'First..url'First+3) /= "file" and then
       item.file_name = ""
     then
       item.file_name:= U(Available_cache_item_name);
-      Save(S(item.file_name), S(item.contents));
+      -- Save(S(item.file_name), S(item.contents)); -- !! get contents: inherited
     end if;
   end Save_to_file;
   pragma Unreferenced (Save_to_file);
@@ -161,5 +212,12 @@ package body Wasabee.Caches is
   begin
     return Integer(c.data.Length);
   end Object_count;
+
+  procedure Finalize(Object : in out Cache_item_wrapper) is
+    procedure Dispose is new Ada.Unchecked_Deallocation(Cache_item'Class, p_Cache_item);
+  begin
+    Dispose(Object.pointer);
+  end Finalize;
+
 
 end Wasabee.Caches;

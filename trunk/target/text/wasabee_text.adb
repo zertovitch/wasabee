@@ -2,25 +2,29 @@
 -- Actually we may have two text modes - see Text_mode below
 
 with Wasabee;                           use Wasabee;
--- with Wasabee.Util;                      use Wasabee.Util;
+with Wasabee.Colors;                    use Wasabee.Colors;
+with Wasabee.Encoding;                  use Wasabee.Encoding;
 with Wasabee.Hypertext;                 use Wasabee.Hypertext;
 with Wasabee.Hypertext.Display;         use Wasabee.Hypertext.Display;
-with Wasabee.Request;                   use Wasabee.Request;
+with Wasabee.Hypertext.Parsing;         use Wasabee.Hypertext.Parsing;
+with Wasabee.Images;                    use Wasabee.Images;
+with Wasabee.Request;
+with Wasabee.Util;                      use Wasabee.Util;
 
-with DOM.Core;
-
-with Ada.Command_Line;            use Ada.Command_Line;
+with Ada.Characters.Handling;           use Ada.Characters.Handling;
+with Ada.Command_Line;                  use Ada.Command_Line;
 -- with Ada.Exceptions;
 -- with Ada.Text_IO;                       use Ada.Text_IO;
 with Ada.Strings.Wide_Fixed;
 with Ada.Wide_Text_IO;                  use Ada.Wide_Text_IO;
+with Ada.Strings.Unbounded;             use Ada.Strings.Unbounded;
 -- with GNAT.Traceback.Symbolic;
 
 procedure Wasabee_text is
 
   type Text_mode is (
     pure_text, -- only characters and line feeds
-    terminal   -- with excape sequences to position cursor, set colours, etc.
+    terminal   -- with escape sequences to position cursor, set colours, etc.
   );
 
   mode: constant Text_mode:= pure_Text;
@@ -43,16 +47,31 @@ procedure Wasabee_text is
     index      : in     Positive
   ) is null;
   overriding procedure Destroy_target_fonts(on: in out Text_plane) is null;
-  overriding procedure Text_XY(on: in out Text_plane; x,y: Integer; text: UTF_16_String);
+  overriding procedure Text_at(on: in out Text_plane; p: Point; text: UTF_16_String);
   overriding procedure Text_size (
     on   : in out Text_plane;
     text : in     UTF_16_String;
     x,y  :    out Natural
   );
-  overriding procedure Select_target_text_color(
+  overriding procedure Select_target_fore_color(
     on: in out Text_plane;
     code: in Color_Code
   ) is null;
+  overriding procedure Select_target_back_color(
+    on: in out Text_plane;
+    code: in Color_Code
+  ) is null;
+
+
+  overriding procedure Rectangle (on: in out Text_plane; coords: Box) is null;
+  overriding procedure Full_Rectangle (on: in out Text_plane; coords: Box) is null;
+
+  overriding procedure Put_RGB_Bitmap (
+    on     : in out Text_plane;
+    bitmap :        Bitmap_type;
+    coords :        Box
+  )
+  is null;
 
   ---------------------------
   -- Body - implementation --
@@ -101,12 +120,12 @@ procedure Wasabee_text is
     on.y:= y;
   end Set_XY;
 
-  procedure Text_XY(on: in out Text_plane; x,y: Integer; text: UTF_16_String) is
+  procedure Text_at(on: in out Text_plane; p: Point; text: UTF_16_String) is
   begin
-    Set_XY(on,x+1,y+1); -- We are 1-based.
+    Set_XY(on, p.x+1, p.y+1); -- We are 1-based.
     Put(text);
     on.x:= on.x + text'Length;
-  end Text_XY;
+  end Text_at;
 
   procedure Text_size (
     on   : in out Text_plane;
@@ -121,20 +140,29 @@ procedure Wasabee_text is
   end Text_size;
 
   txt: Text_plane;
-  Xhtml : DOM.Core.Node_List;
+  HTML : Unbounded_String;
   o: HT_object;
 
 begin
   if Argument_Count = 0 then
     case mode is
       when pure_text =>
+        Put_Line(Standard_Error, "Wasabee, target pure text console, version " & To_Wide_String(Version));
         Put_Line(Standard_Error, "Provide an URL as command-line argument");
+        Put_Line(Standard_Error, "Syntax: wasabee_text url [verbosity level]");
+        Put_Line(Standard_Error, "Verbosity level = 0, 1, ...");
       when terminal =>
-        null; -- !! some interaction
+        null; -- !! some interaction (Lynx-style)
     end case;
   else
-    Wasabee.Request.Open_Url (Argument(1), Xhtml);
-    Load_frame(o, Xhtml);
-    txt.Draw(o);
+    Wasabee.Request.Retrieve_from_URL (Argument(1), HTML);
+    if argument_count > 1 then
+      Wasabee.Verbosity := Integer'Value (Argument(2));
+    end if;
+    o.Set_own_URL(Argument(1));
+    Load_frame(o, To_String(HTML));
+    o.Post_loading_processing;
+    txt.Clear_area;
+    txt.Draw(o, full);
   end if;
 end Wasabee_text;

@@ -1,8 +1,10 @@
---------------------------------------
--- Wasabee - a portable Web browser --
---------------------------------------
+----------------------------------------
+--  Wasabee - a portable Web browser  --
+----------------------------------------
 --
--- Copyright (c) Frederic Boyer and Gautier de Montmollin 2013
+--  Copyright (c) Frederic Boyer and Gautier de Montmollin 2013 .. 2018
+--
+--  Contributions by Stephen Leake and Joakim Dahlgren Strandberg
 --
 --  Permission is hereby granted, free of charge, to any person obtaining a copy
 --  of this software and associated documentation files (the "Software"), to deal
@@ -22,12 +24,18 @@
 --  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 --  THE SOFTWARE.
 --
--- NB: this is the MIT License, as found 10-Aug-2013 on the site
--- http://www.opensource.org/licenses/mit-license.php
+--  NB: this is the MIT License, as found 10-Aug-2013 on the site
+--  http://www.opensource.org/licenses/mit-license.php
 
 package Wasabee is
 
-   pragma Pure(Wasabee) ;
+   Verbosity : Integer := 0;   
+   
+   --  Controls diagnostic/debug output during all operations.
+   --
+   --  0: no output
+   --  1: some output
+   --  > 1: more output
 
 end Wasabee ;
 

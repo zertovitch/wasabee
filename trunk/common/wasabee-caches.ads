@@ -1,8 +1,11 @@
 --
+-- Wasabee memory and file cache management
+--
 -- All retrieval of Internet contents should go through Get_contents.
 --
 
-with Wasabee.Hypertext;                 use Wasabee.Hypertext;
+-- with Wasabee.Hypertext;                 use Wasabee.Hypertext;
+with Wasabee.Request;
 
 with Ada.Calendar;                      use Ada.Calendar;
 with Ada.Containers.Hashed_Maps;
@@ -10,6 +13,8 @@ with Ada.Containers.Ordered_Maps;
 with Ada.Strings.Unbounded;             use Ada.Strings.Unbounded;
 with Ada.Strings.Unbounded.Hash;
 with Ada.Containers.Vectors;
+with Ada.Finalization;
+
 with Interfaces;                        use Interfaces;
 
 package Wasabee.Caches is
@@ -18,39 +23,58 @@ package Wasabee.Caches is
   -- with URLs cached in files, memory, not neither (to be loaded)
 
   type Cache_type is private;
-
-  procedure Get_contents(
-    cache    : in out Cache_type;
-    URL      : in     Unbounded_String;
-    reload   : in     Boolean
-  );
-
   function Object_count(c: Cache_type) return Natural;
 
-  function Load(file_name: String) return String;
+  type Cache_item is tagged private;
+
+  procedure Start_Load(item: in out Cache_item);
+  -- Only derived types will do anything non trivial
+
+  -- Cache_item can be a Web page, an image, etc.
+
+  type p_Cache_item is access Cache_item'Class;
+
+  procedure Get_contents(
+    item     : in     p_Cache_item;     -- item is already allocated with the
+                                        -- appropriate type derivation. If
+                                        -- the item is already in the cache,
+                                        -- the pointer will be freed.
+    cache    : in out Cache_type;       -- Container of all items
+    URL      : in     Unbounded_String;
+    blocking : in     Boolean;          -- Wait for contents to be fully loaded ?
+    reload   : in     Boolean           -- Force reload of resource
+  );
 
 private
 
-  type Cache_item is record
-    URL,
-    -- Memory cache - we memorize decoded contents when there are --
-    contents,
-    uncompressed_contents  : Unbounded_String; -- e.g. JPEG -> BMP
-    ht                     : HT_object;        -- with layout etc.
-    -- File cache --
-    file_name              : Unbounded_String;
+  type Loading_status is (not_loaded, being_loaded, loaded);
+
+  type File_cache_item is tagged record
+    file_name              : Unbounded_String; -- "" means item is not (yet) in a file
     crc_32                 : Unsigned_32; -- protect against file tampering
     first_hit,
     latest_hit             : Time;
     hits                   : Natural;
   end record;
 
-  -- contents = "" means item is not (yet) in memory
-  -- file_name = "" means item is not (yet) in a file
+  type Cache_item is new File_cache_item with record
+    URL                    : Unbounded_String;
+    connect                : Wasabee.Request.p_Connection;
+    status                 : Loading_status:= not_loaded;
+    pragma Volatile(status); -- will be changed by loader task
+    loading_is_blocking    : Boolean;
+  end record;
+
+  -- Just a wrapper to ensure we do not get a memory leak when cache is reduced.
+  type Cache_item_wrapper is new Ada.Finalization.Controlled with record
+    pointer: p_Cache_item;
+  end record;
+
+  overriding procedure Finalize(Object : in out Cache_item_wrapper);
 
   package Cache_Vectors is new Ada.Containers.Vectors(
     Index_Type   => Positive,
-    Element_Type => Cache_item
+    Element_Type => Cache_item_wrapper
   );
 
   -- Quick search by URL
@@ -76,29 +100,3 @@ private
   end record;
 
 end Wasabee.Caches;
-
---  Below a tagged version - a "wrong good idea"...
-
---  type Abstract_cache_item is abstract tagged record
---    URL        : Unbounded_String;
---    first_hit,
---    latest_hit : Time;
---    hits       : Natural;
---  end record;
---
---  function Get_contents(item: Abstract_cache_item) return Unbounded_String
---  is abstract;
---
---  type Memory_cache_item is new Abstract_cache_item with record
---    contents   : Unbounded_String;
---  end record;
---
---  overriding
---  function Get_contents(item: Memory_cache_item) return Unbounded_String;
---
---  type File_cache_item is new Abstract_cache_item with record
---    file_name  : Unbounded_String;
---  end record;
---
---  overriding
---  function Get_contents(item: File_cache_item) return Unbounded_String;

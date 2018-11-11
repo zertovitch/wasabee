@@ -1,9 +1,12 @@
+with Dom.Core.Documents           ; use Dom.Core.Documents                    ;
+with Dom.Core.Nodes               ; use Dom.Core.Nodes                        ;
+with Dom.Core.Attrs               ; use Dom.Core.Attrs                        ;
+
 with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 with Ada.Text_IO ; use Ada.Text_IO ;
+with input_sources.Strings        ; use input_sources.Strings            ;
 
 with Unicode.CES.Utf8        ;
-
-with Wasabee.Css ; use Wasabee.Css ;
 
 package body Wasabee.Xhtml is
 
@@ -93,7 +96,7 @@ package body Wasabee.Xhtml is
                                  Map : in out CSS_Dictionary.Map) is
       List : Node_List ;
       Style : Node ;
-      Style_Content : Unbounded_String ;
+      -- Style_Content : Unbounded_String ;
       -- Map : CSS_Dictionary.Map ;
    begin
       List := Get_Elements_By_Tag_Name(Doc,"style");

@@ -7,6 +7,8 @@ with GWindows.Base;                     use GWindows.Base;
 -- with GWindows.Message_Boxes;            use GWindows.Message_Boxes;
 -- with GWindows.Application;
 
+-- with Ada.Text_IO;                       use Ada.Text_IO;
+
 package body Wasabee.GWin.Tabs is
 
   procedure On_Character_Down(
@@ -76,6 +78,11 @@ package body Wasabee.GWin.Tabs is
         Window.On_Vertical_Scroll(Next_Page, null);
       end if;
     end if;
+    -- put_line(
+    --   Window.Client_Area_Height'img &
+    --   " Panel:" & Window.Panel.Client_Area_Height'img &
+    --   " top: " & Window.Panel.Top'img
+    -- );
   end On_Mouse_Wheel;
 
   procedure On_Focus (Window : in out HT_area_type) is
@@ -102,7 +109,7 @@ package body Wasabee.GWin.Tabs is
   procedure Set_minimal_sliding_panel_size (Window : in out HT_area_type) is
   begin
     -- Prepare the panel that is moved through scrolling (= Window.Panel)
-    Panel_Size (Window, 1234, 765); -- !! use maximized window size
+    Panel_Size (Window, 1234, 2345); -- !! use maximized window size
   end Set_minimal_sliding_panel_size;
 
   procedure Finish_creation (Window : in out HT_area_type) is
@@ -119,11 +126,31 @@ package body Wasabee.GWin.Tabs is
   procedure Draw_with_resize (Window : in out HT_area_type) is
   begin
     Window.Wasa_Panel.Draw(Window.HT_contents, invisible);
+    Window.HT_contents.Fit_bounding_boxes;
     Window.Wasa_Panel.Extend_area_height(Window.HT_contents.Bounding_box.p2.y);
+    Window.Wasa_Panel.Select_main_background(Window.HT_contents);
     Window.Wasa_Panel.Clear_area;
     Window.Wasa_Panel.Draw(Window.HT_contents, full);
     -- !! ^ will be a bit more complicated with images...
     Window.Parent.Redraw(Redraw_Now => True);
   end Draw_with_resize;
+
+  procedure Scroll_to_point (Window : in out HT_area_type; p: Point) is
+    margin: constant:= 30;
+  begin
+    if p.y >= Window.Panel.Client_Area_Height then
+      Window.On_Vertical_Scroll(Last, null);
+      Window.On_Vertical_Scroll(Next_Unit, null);   -- Move to bottom of page
+      return;
+    end if;
+    Window.On_Vertical_Scroll(First, null);         -- Move to top of page to begin with
+    Window.On_Vertical_Scroll(Previous_Unit, null);
+    Window.Parent.Freeze;
+    while Window.Client_Area_Height - Window.Panel.Top + margin < p.y loop
+      Window.On_Vertical_Scroll(Next_Unit, null);   -- Scroll down
+    end loop;
+    Window.Parent.Thaw;
+    Window.Parent.Redraw;
+  end Scroll_to_point;
 
 end Wasabee.GWin.Tabs;

@@ -1,4 +1,5 @@
-with Wasabee.Hypertext;
+with Wasabee.Hypertext;                 use Wasabee.Hypertext;
+with Wasabee.Navigation;                use Wasabee.Navigation;
 with Wasabee.GWin.Display;              use Wasabee.GWin.Display;
 
 -- with GWindows.Drawing;                  use GWindows.Drawing;
@@ -13,10 +14,11 @@ with Ada.Strings.Unbounded;             use Ada.Strings.Unbounded;
 package Wasabee.GWin.Tabs is
 
   type HT_area_type is new Scroll_Panel_Type with record
-    URL          : Unbounded_String;
-    HT_contents  : Wasabee.Hypertext.HT_object;
+    HT_contents     : Wasabee.Hypertext.HT_object;
+    URL_with_anchor : Unbounded_String;
+    navi            : Navigation_log;
     --
-    wasa_panel   : Wasa_GWin_Panel; -- panel sliding within the scroll panel
+    wasa_panel      : Wasa_GWin_Panel; -- panel sliding within the scroll panel
   end record;
 
   overriding
@@ -51,5 +53,7 @@ package Wasabee.GWin.Tabs is
   procedure Finish_creation (Window : in out HT_area_type);
 
   procedure Draw_with_resize (Window : in out HT_area_type);
+
+  procedure Scroll_to_point (Window : in out HT_area_type; p: Point);
 
 end Wasabee.GWin.Tabs;

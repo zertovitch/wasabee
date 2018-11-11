@@ -1,29 +1,105 @@
 <html>
 <head>
-<title>Test avec CSS</title>
+<title>Test avec CSS inclus</title>
 <style>
 
-h1{ 
-color:black; 
-}
+/* Here is a nice CSS comment */
 
-p{ 
-color:gray; 
-background:yellow;
-}
+* {font-family: arial}
 
-body{
-color:purple;
-background:white;
-}
+body{ color:purple; background:LightSteelBlue; }
+
+h1{   color : slateblue;  FONT-family : "Bookman Old Style"  }
+
+H2  { color : DarkViolet;   font-family
+  : "Bookman Old Style",  "Times New Roman",   Times, serif;}
+
+ p{ color:gray; background:LightGoldenRodYellow}
+
+span { color:red }
+*.la_classe { color:pink }  
+ .la_classe { color:magenta }  /* equivalent -> rule overwritten */
+
+.l_autre_classe { text-decoration: underline; }
+ 
+span.la_classe {color:darkgreen}
+
+#wasaaaa { Color : DodgerBlue; Font-family : Garamond }
+
+span#bleuet { color:darkblue }
+#bleuet { color:white }
+
+#surligne { text-decoration: overline; }
+#biffe { text-decoration: line-through; color:red}
+#souligne { text-decoration: underline;}
+#gras { font-weight:bold }
 
 </style>
-
+<LINK href="toto.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
-  <h1 style='color:red;'>Bonjour le monde</h1>
-  <p>Du texte</p>
+  <h1 style='color:red;'>Bonjour le <i>monde</i>! Oh, c'est rouge!</h1>
+  <hr>
+<nav>
+  <a href="example1.html">Example 1</a> |
+  <a href="example2.html">Example 2</a> |
+  <a href="example3.html">Ex. 3 (Lists and Tables)</a> |
+  <a href="example4.html">Example 4</a> |
+  <a href="example5.html">Example 5</a> |
+  <a href="example6.html">Ex. 6 (Bad HTML)</a> |
+                             Ex. with CSS     |
+  <a href="example_img.html">Ex. with Images</a> |
+  <a href="example_img2.html">Ex. with Images 2</a>.
+</nav>
+<hr>
+  <div style="display:none">Ce texte doit etre invisible et ne prendre aucune place!</div>Coucou
+    <h1>H1 - Introduction</h1>
+    <h2>H2 header</h2>
+    <h3>H3 header, style (khaki, Times New Roman) from <tt>toto.css</tt>, <u>with underline</u></h3>
+    <h4 style='font-family:broadway'>H4 header in Broadway font</h4>
+    <h5>H5 header</h5>
+    <h6>H6 header</h6>
+  <p>Du texte, plein de texte (fond jaune clair)!
+  <b id="wasaaaa">Ici un peu de bleu et Garamond (style #wasaaaa), en gras avec la balise &lt;B&gt;.  <BR>
+    <span style="color:green; TEXT-DECORATION: underline;font-style: italic;">Garamond (style #wasaaaa), gras (&lt;B&gt;), 
+	  mais vert, soulign&eacute; et italique par style imm&eacute;diat</span>
+  </b>
+  <br>
+  <span id="biffe">Texte biff&eacute; rouge via feuille de style incluse</span>
+  <br>
+  <span id="toto">Texte au style #toto (vert, fond jaune, fonte Times New Roman) de <tt>toto.css</tt>.</span><br>
+  Fin du fond jaune clair ici : [X]
+  </p>
+  <h3>Testing style conflicts: color is defined by parent, #id, tag#id, class, tag, tag.class, immediate...</h3>
+  <span style="color:yellow">
+    <span id="bleuet" class="la_classe">Jaune, magenta, vert, rouge, blanc ou <B>bleu</B> ?</span><br>  <!-- tag#id wins over tag.class or class -->
+    <span             class="la_classe">Jaune, magenta, <B>vert</B>, rouge, blanc ou bleu ?</span><br>  <!-- tag.class wins, not *.class -->
+    <span id="bleuet"                  >Jaune, magenta, vert, rouge, blanc ou <B>bleu</B> ?</span><br>  <!-- tag#id wins over *#id-->
+    <span                              >Jaune, magenta, vert, <B>rouge</B>, blanc ou bleu ?</span><br>  <!-- tag has to win -->
+    <u id="bleuet"                     >Jaune, magenta, vert, rouge, <b>blanc</b> ou bleu ?</u><br>  <!-- *#id has to win -->
+    <u                                 ><b>Jaune</b>, magenta, vert, rouge, blanc ou bleu ?</u><br>  <!-- parent with immediate style wins -->
+    <i                class="la_classe">Jaune, <b>magenta</b>, vert, rouge, blanc ou bleu ?</i><br>  <!-- *.class -->
+    <span id="bleuet" class="la_classe" style="color:brown"><B>Brun</B> ?</span><br>  <!-- immediate wins -->
+    <span style="color:brown" id="bleuet" class="la_classe"><B>Brun</B> ?</span><br>  <!-- immediate wins -->
+  </span>
+  <h3>Style with two classes</h3>
+  <span class=" la_classe   l_autre_classe ">This should be dark green <b>and</b> underlined.</span>
+  <h3>Font sizes</h3>
+  <div style="font-size:xx-small">  Some predefined size, <span style="font-size:smaller">smaller</span>, <span style="font-size:larger">larger</span>.</div>
+  <div style="font-size: x-small">  Some predefined size, <span style="font-size:smaller">smaller</span>, <span style="font-size:larger">larger</span>.</div>
+  <div style="font-size:   small">  Some predefined size, <span style="font-size:smaller">smaller</span>, <span style="font-size:larger">larger</span>.</div>
+  <div style="font-size:   medium"> Some predefined size, <span style="font-size:smaller">smaller</span>, <span style="font-size:larger">larger</span>.</div>
+  <div style="font-size:   large">  Some predefined size, <span style="font-size:smaller">smaller</span>, <span style="font-size:larger">larger</span>.</div>
+  <div style="font-size: x-large">  Some predefined size, <span style="font-size:smaller">smaller</span>, <span style="font-size:larger">larger</span>.</div>
+  <div style="font-size:xx-large">  Some predefined size, <span style="font-size:smaller">smaller</span>, <span style="font-size:larger">larger</span>.</div>
+  <h3>Styles on lists</h3>
+  Ordered list... <ol ><li>premier</li><li>second</li></ol>
+  Unordered list... <ul><li>premier</li><li>second</li></ul>
+  Ordered list with bullets (ugh ? but it's possible with CSS)... <ol style="list-style: disc"><li>premier</li><li>second</li></ol>
+  Unordered list with decimal (ugh ? but it's possible with CSS)... <ul style="list-style: decimal"><li>premier</li><li>second</li></ul>
+  Unordered list with another marker... <ul style="list-style: circle"><li>premier</li><li>second</li></ul>
+  Unordered list with another marker... <ul style="list-style: square"><li>premier</li><li>second</li></ul>
 </body>
 
 </html>

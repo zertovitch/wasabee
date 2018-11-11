@@ -14,14 +14,20 @@
 --
 -- * Generic Image Decoder
 --   Project URL: http://gen-img-dec.sf.net/
---
--- * XMLAda:
---   [GNAT directory]\include\xmlada
+
+with "AWS"; 
+--  For GNAT prior to GPL 2017:
+--    aws.gpr must be available via GPR_PROJECT_PATH or ADA_PROJECT_PATH
+--    AWS: http://libre.adacore.com/tools/aws/
 
 project Wasa_GWindows is
 
    type Build_Mode_Type is
-      ("Debug", "Fast", "Profiling");
+      ("Debug", 
+	   "Fast", 
+	   "Fast_Range_Checks",   --  The release mode
+	   "Profiling"
+	  );
    Build_Mode : Build_Mode_Type := external ("Build_Mode", "Debug");
    for Source_Dirs use ("../../common", ".") & external_as_list("GNAT_SOURCE_PATH", ";");
    for Exec_Dir use ".";
@@ -32,17 +38,14 @@ project Wasa_GWindows is
          for Object_Dir use "../../obj/debug";
       when "Fast" =>
          for Object_Dir use "../../obj/fast";
+      when "Fast_Range_Checks" =>
+         for Object_Dir use "../../obj/fast_rg_chk";
       when "Profiling" =>
          for Object_Dir use "../../obj/profiling";
    end case;
 
    package Binder is
-      case Build_Mode is
-         when "Debug" =>
-            for Default_Switches ("ada") use ("-E");
-         when "Fast" =>
-         when "Profiling" =>
-      end case;
+      for Default_Switches ("ada") use ("-Es");
    end Binder;
 
    package Linker is
@@ -50,6 +53,9 @@ project Wasa_GWindows is
          when "Debug" =>
             for Default_Switches ("ada") use ("-g", "wasabee.rbj");
          when "Fast" =>
+            for Default_Switches ("ada") use ("-s", "-Wl,--gc-sections", "wasabee.rbj"); 
+			-- "-mwindows"
+         when "Fast_Range_Checks" =>
             for Default_Switches ("ada") use ("-s", "-Wl,--gc-sections", "wasabee.rbj"); 
 			-- "-mwindows"
          when "Profiling" =>
@@ -61,16 +67,20 @@ project Wasa_GWindows is
    package Compiler is
       case Build_Mode is
          when "Debug" =>
-            for Default_Switches ("ada") use ("-gnat05", "-gnatf", "-gnato", "-fstack-check", "-g", "-gnatwa", "-gnatVa", "-gnatecdebug.pra");
+            for Default_Switches ("ada") use ("-gnat12", "-gnatf", "-gnato", "-fstack-check", "-g", "-gnatwa", "-gnatVa", "-gnatec=" & project'Project_Dir & "../../common/debug.pra");
          when "Fast" =>
-            for Default_Switches ("ada") use ("-gnat05", "-gnatwa", "-O2", "-gnatpn", "-funroll-loops", "-fpeel-loops", "-funswitch-loops", "-ftracer", "-fweb", "-frename-registers", "-ffunction-sections");
+            for Default_Switches ("ada") use ("-gnat12", "-gnatwa", "-O2", "-gnatpn", "-funroll-loops", "-fpeel-loops", "-funswitch-loops", "-ftracer", "-fweb", "-frename-registers", "-ffunction-sections");
+         when "Fast_Range_Checks" =>
+            for Default_Switches ("ada") use ("-gnat12", "-gnatwa", "-O2", "-gnatn",  "-funroll-loops", "-fpeel-loops", "-funswitch-loops", "-ftracer", "-fweb", "-frename-registers", "-ffunction-sections");
          when "Profiling" =>
-            for Default_Switches ("ada") use ("-gnat05", "-gnatwa", "-O2", "-gnatp",  "-funroll-loops", "-fpeel-loops", "-funswitch-loops", "-ftracer", "-fweb", "-frename-registers", "-g", "-pg");
+            for Default_Switches ("ada") use ("-gnat12", "-gnatwa", "-O2",            "-funroll-loops", "-fpeel-loops", "-funswitch-loops", "-ftracer", "-fweb", "-frename-registers", "-g", "-pg");
       end case;
    end Compiler;
 
    package Builder is
-      for Default_Switches ("ada") use ("-j7", "-C", "-x");
+      --   "If -j0 is used, then the maximum number of simultaneous compilation
+      --    jobs is the number of core processors on the platform."
+      for Default_Switches ("ada") use ("-j0");  --  "-C", "-x"
    end Builder;
    
 end Wasa_GWindows;
