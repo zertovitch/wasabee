@@ -8,7 +8,7 @@ rem goto debug_mode
 
 rem *** Build in Fast mode
 
-gprbuild -P wasa_gwindows %1 -XBuild_Mode=Fast
+gprbuild -p -P wasa_gwindows %1 -XBuild_Mode=Fast
 copy wasabee_gwindows.exe Wasabee.exe
 copy Wasabee.exe "Wasabee (ver) win32.exe"
 rem upx --ultra-brute "Wasabee (ver) win32.exe"
@@ -20,6 +20,6 @@ del wasabee_gwindows.exe
 
 rem *** Build in Debug mode
 
-gprbuild -P wasa_gwindows %1 -XBuild_Mode=Debug -XPRJ_TARGET=Windows_NT
+gprbuild -p -P wasa_gwindows %1 -XBuild_Mode=Debug -XPRJ_TARGET=Windows_NT
 copy wasabee_gwindows.exe Wasabee_Debug.exe
 
