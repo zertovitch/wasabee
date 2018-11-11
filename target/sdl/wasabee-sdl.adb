@@ -1,36 +1,38 @@
-with Wasabee.Hypertext;                 use Wasabee.Hypertext;
-with Wasabee.Hypertext.Display;         use Wasabee.Hypertext.Display;
-with Wasabee.Request;                   use Wasabee.Request;
+-- with Wasabee.Hypertext;                 use Wasabee.Hypertext;
+-- with Wasabee.Hypertext.Display;         use Wasabee.Hypertext.Display;
+-- with Wasabee.Request;                   use Wasabee.Request;
+with Wasabee.Util;                      use Wasabee.Util;
 
-with Wasabee.Hypertext.Locations ;      use Wasabee.Hypertext.Locations ;
+with Wasabee.Hypertext.Parsing ;        use Wasabee.Hypertext.Parsing ;
+-- with Wasabee.Hypertext.Locations ;      use Wasabee.Hypertext.Locations ;
 
-with Ada.Strings.Wide_Fixed;
-with Ada.Strings.Unbounded ;            use Ada.Strings.Unbounded ;
-with Ada.Wide_Text_IO;                  use Ada.Wide_Text_IO;
+-- with Ada.Strings.Wide_Fixed;
+-- with Ada.Strings.Unbounded ;            use Ada.Strings.Unbounded ;
+-- with Ada.Wide_Text_IO;                  use Ada.Wide_Text_IO;
 
 
-with Ada.Characters.Handling ; use Ada.Characters.Handling ;
-with Ada.Containers.Vectors ;
+-- with Ada.Characters.Handling ; use Ada.Characters.Handling ;
+-- with Ada.Containers.Vectors ;
 
 with Ada.Text_IO;
 
-with DOM.Core;
+-- with DOM.Core;
 
-with SDL_SDL_H ; use SDL_SDL_H ;
-with SDL_SDL_Video_H ; use SDL_SDL_Video_H ;
-with SDL_SDL_Events_H ; use SDL_SDL_Events_H ;
-with SDL_SDL_Keyboard_H ; use SDL_SDL_Keyboard_H ;
-with SDL_SDL_Ttf_H; use SDL_SDL_Ttf_H;
-with SDL_SDL_Stdinc_H ; use SDL_SDL_Stdinc_H ;
+-- with SDL_SDL_H ; use SDL_SDL_H ;
+-- with SDL_SDL_Video_H ; use SDL_SDL_Video_H ;
+-- with SDL_SDL_Events_H ; use SDL_SDL_Events_H ;
+-- with SDL_SDL_Keyboard_H ; use SDL_SDL_Keyboard_H ;
+-- with SDL_SDL_Ttf_H; use SDL_SDL_Ttf_H;
+-- with SDL_SDL_Stdinc_H ; use SDL_SDL_Stdinc_H ;
 
-with Interfaces ; use Interfaces ;
-with Interfaces.C ; use Interfaces.C ;
-with Interfaces.C.Strings ; use Interfaces.C.Strings ;
+-- with Interfaces ; use Interfaces ;
+-- with Interfaces.C ; use Interfaces.C ;
+-- with Interfaces.C.Strings ; use Interfaces.C.Strings ;
 
-with System ; use System ;
-with System.Storage_elements ; use System.Storage_elements ;
+-- with System ; use System ;
+-- with System.Storage_elements ; use System.Storage_elements ;
 
-with Ada.Unchecked_Conversion ;
+-- with Ada.Unchecked_Conversion ;
 
 
 
@@ -56,6 +58,9 @@ package body Wasabee.SDL is
       IA : Integer_Address ;
       Lf : Long_Long_Float ;
    begin
+      if X < 0 or Y < 0 then
+	     return;
+      end if;
       --Ada.Text_IO.Put_Line("***************** Draw Pixel *************************");
       --Ada.Text_IO.Put_Line("X: " & Integer'Image(X)) ;
       --Ada.Text_IO.Put_Line("Y: " & Integer'Image(Y)) ;
@@ -92,7 +97,7 @@ package body Wasabee.SDL is
       H := Natural(Window.Surface.H) ;
    end;
 
-   procedure Text_XY(on: in out SDL_plane; x,y: Integer; text: UTF_16_String) is
+   procedure Text_at(on: in out SDL_plane; p: Point; text: UTF_16_String) is
       Ts : access SDL_Surface ;
       Font : System.Address ;
       Color : SDL_Color := (0,0,0,0);
@@ -100,10 +105,13 @@ package body Wasabee.SDL is
       Rect : aliased SDL_Rect ;
       Ret : Int ;
    begin
+      if text = "" then
+        return;
+      end if;
       Font := Current_Font ; -- Ttf_OpenFont(New_String("arial.ttf"),12);
       Ts := TTF_RenderText_Solid (Font,New_String(To_String(Text)),Current_Color) ;
-      Rect.X := Sint16(X) ;
-      Rect.Y := Sint16(Y) ;
+      Rect.X := Sint16(p.X) ;
+      Rect.Y := Sint16(p.Y) ;
       Rect.W := Uint16(Ts.W) ;
       Rect.H := Uint16(Ts.H) ;
       Ret := SDL_UpperBlit(Ts,null,Window.Surface,Rect'Access);
@@ -133,18 +141,18 @@ package body Wasabee.SDL is
       Style : Uint16 ;
    begin
       -- Ada.Text_IO.Put_Line("Creating font " & Positive'Image(New_Index) & " with size " & Integer'Image(Descriptor.Size));
-      Font := Ttf_OpenFont(New_String("arial.ttf"),Int(Descriptor.Size)/2);
+      Font := Ttf_OpenFont(New_String("arial.ttf"),Int(Descriptor.Size)/10);
       Style := TTF_STYLE_NORMAL;
-      if Descriptor.Modifier(Bold) = True then
+      if Descriptor.Modifier(Bold) > 0 then
          Style := Style or TTF_STYLE_BOLD ;
       end if ;
-      if Descriptor.Modifier(Italic) = True then
+      if Descriptor.Modifier(Italic) > 0 then
          Style := Style or TTF_STYLE_ITALIC ;
       end if ;
-      if Descriptor.Modifier(Underlined) = True then
+      if Descriptor.Modifier(Underlined) > 0 then
          Style := Style or TTF_STYLE_UNDERLINE ;
       end if ;
-      if Descriptor.Modifier(STRIKETHROUGH) = True then
+      if Descriptor.Modifier(STRIKETHROUGH) > 0 then
          Style := Style or TTF_STYLE_STRIKETHROUGH ;
       end if ;
 
@@ -167,12 +175,19 @@ package body Wasabee.SDL is
    end ;
 
 
-   procedure Select_target_text_color(on: in out SDL_plane;
+   procedure Select_target_fore_color(on: in out SDL_plane;
                                       code: in Color_Code
                                      ) is
    begin
       Current_Color := To_SDL_Color(Code) ;
       Current_Color_Code := Code ;
+   end ;
+
+   procedure Select_target_back_color(on: in out SDL_plane;
+                                      code: in Color_Code
+                                     ) is
+   begin
+      Current_BG_Color := To_SDL_Color(Code) ;
    end ;
 
    procedure Draw_Point (On : in out SDL_Plane ; P: Point ; Color : Color_Code) is
@@ -257,10 +272,17 @@ package body Wasabee.SDL is
          Put_Line("error");
       end if ;
 
+	  Window.Select_main_background(Object);
       Clear_Area(Window);
 
+      Window.Draw(Object,invisible);
+      -- (Area resizing happens here)
+      Object.Fit_bounding_boxes;
+
       Window.Draw(Object,full);
-      SDL_WM_SetCaption(New_String("Wasabee version 0.0.1 - " & To_String(Object.Title)) , New_String("")) ;
+      SDL_WM_SetCaption(
+        New_String("Wasabee version " & Version & " - " & To_String(Object.Title)) ,
+        New_String("")) ;
       Ret := SDL_UpperBlit(Window.Surface, null, Window.Screen, Rect'access) ;
       Ret := SDL_Flip(Window.Screen);
       loop
@@ -307,15 +329,15 @@ package body Wasabee.SDL is
                -- Ada.Text_IO.Put_Line("Button: " & Integer'Image(Integer(Me.Button))) ;
 
                if Me.Button = 1 then
-                  Ada.Text_IO.Put_Line(Mouse_Partial_Url(Object,
-                                                         Window.XPos + Integer(Me.X),
-                                                         (Window.YPos * (-1)) + Integer(Me.Y))) ;
-                  Url := To_Unbounded_String(Mouse_Partial_Url(Object,
-                                                               Window.XPos + Integer(Me.X),
-                                                               (Window.YPos * (-1)) + Integer(Me.Y)));
+                  Ada.Text_IO.Put_Line(Mouse_URL(Object,
+                                                 (Window.XPos + Integer(Me.X),
+                                                 (Window.YPos * (-1)) + Integer(Me.Y)))) ;
+                  Url := To_Unbounded_String(Mouse_Url(Object,
+                                                               (Window.XPos + Integer(Me.X),
+                                                               (Window.YPos * (-1)) + Integer(Me.Y))));
                   if URL /= "" then
-                     Wasabee.Request.Open_Url (To_String(Url) , Xhtml);
-                     Load_frame(Object , Xhtml);
+                     Wasabee.Request.Retrieve_from_URL (To_String(Url) , HTML);
+                     Load_frame(Object , To_String(HTML));
                      Clear_Area(Window);
                      Window.Draw(Object,full);
                   end if ;
@@ -343,8 +365,8 @@ package body Wasabee.SDL is
                Me := Event.Motion ;
 
                Mcs := Mouse_cursor(Object ,
-                                   Window.XPos + Integer(Me.X),
-                                   (Window.YPos * (-1)) + Integer(Me.Y)) ;
+                                   (Window.XPos + Integer(Me.X),
+                                   (Window.YPos * (-1)) + Integer(Me.Y))) ;
                if Mcs = Finger then
                   null ; --Put_Line("=>");
                end if ;
@@ -400,6 +422,50 @@ package body Wasabee.SDL is
         null;
    end ;
 
+   procedure Full_Rectangle (on: in out SDL_Plane ; coords: Box) is
+      Ret : Int ;
+      Fill_Color : SDL_Color ;
+      Fill_Color_32: Uint32;
+      rect : aliased SDL_Rect;
+   begin
+      Fill_Color := Current_BG_Color ;
+      -- ada.text_IO.put(coords.P1.X'img);
+      if coords.P1.X < 0 then
+        return;
+      end if;
+      rect.X := Sint16(coords.P1.X) ;
+      rect.Y := Sint16(coords.P1.Y) ;
+      rect.W := Uint16(coords.P2.X - coords.P1.X) ;
+      rect.H := Uint16(coords.P2.Y - coords.P1.Y) ;
+      Fill_Color_32:= Uint32(Fill_Color.r) + 256 * Uint32(Fill_Color.g) + 65536 * Uint32(Fill_Color.b);
+      Ret := SDL_FillRect (Window.Surface, rect'Access, Fill_Color_32) ;
+   end Full_Rectangle;
+
+   procedure Put_RGB_Bitmap (
+     on     : in out SDL_Plane;
+     bitmap :        Wasabee.Images.Bitmap_type;
+     coords :        Box
+   )
+   is
+     i: Integer:= 0;
+     use Wasabee.Images;
+   begin
+     if bitmap.data = null then
+       return;
+     end if;
+     -- !! Snail mode drawing !!
+     for y in 1..bitmap.height loop
+       for x in 1..bitmap.width loop
+         Current_Color_Code:=
+           Color_Code(bitmap.data(i+2))+
+           Color_Code(bitmap.data(i+1))*256+
+           Color_Code(bitmap.data(i  ))*65536
+         ;
+         i:= i + 4;
+         -- Draw_Pixel(x-1+coords.p1.x, -y+1+coords.p2.y);
+       end loop;
+     end loop;
+   end Put_RGB_Bitmap;
 
    procedure Quit is
    begin

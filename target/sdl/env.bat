@@ -1,6 +1,6 @@
 set PATH=C:\cygwin\bin;%PATH%
-set PATH=C:\GNAT\2013\bin;%PATH%
+set PATH=C:\GNAT\2014\bin;%PATH%
 
-set ADA_INCLUDE_PATH=C:\GNAT\2013\include\xmlada;%ADA_INCLUDE_PATH%
+set ADA_INCLUDE_PATH=C:\GNAT\2014\include\xmlada;%ADA_INCLUDE_PATH%
 set ADA_INCLUDE_PATH=C:\GNAT\2013\include\gnat_sdl;%ADA_INCLUDE_PATH%
 set ADA_INCLUDE_PATH=..\..\common;%ADA_INCLUDE_PATH%

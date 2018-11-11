@@ -1,5 +1,6 @@
 with Wasabee.GWin.Windows;              use Wasabee.GWin.Windows;
 with Wasabee;                           use Wasabee;
+with Wasabee.Util;                      use Wasabee.Util;
 
 package body Wasabee.GWin.Main is
 
@@ -25,6 +26,7 @@ package body Wasabee.GWin.Main is
     if super_user then
       Window.control_frame.Show;
     end if;
+    URL_box_font.Create_Font("Arial", 16);
     --
     -- First window
     --
@@ -40,7 +42,7 @@ package body Wasabee.GWin.Main is
     Window.Update_control_frame;
     newcomer.window_info_string:=
       G2GU(
-        "Wasa browser, window opened as #" &
+        S2G(Version & ", window opened as #") &
         Integer'Wide_Image(Window.windows.Find_Index(newcomer)));
     newcomer.Create;
     newcomer.Small_Icon ("AAA_Main_Icon");

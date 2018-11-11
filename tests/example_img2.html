@@ -1,10 +1,33 @@
 <html>
   <head>
-    <title>Ada lovelace</title>
+    <title>Various tests</title>
   </head>  
   <body> 
-    <h1>A nice image</h1>
-    <img src="http://steamykitchen.com/wp-content/uploads/2011/04/real-fresh-wasabi-38.jpg"></img>
+  <hr>
+<nav>
+  <a href="example1.html">Example 1</a> |
+  <a href="example2.html">Example 2</a> |
+  <a href="example3.html">Example 3 (Lists and Tables)</a> |
+  <a href="example4.html">Example 4</a> |
+  <a href="example5.html">Example 5</a> |
+  <a href="example6.html">Example 6 (Bad HTML)</a> |
+  <a href="example_css.html">Example with CSS</a> |
+  <a href="example_img.html">Example with Images</a> |
+                              Example with Images 2    .
+</nav>
+<hr>
+    <h2>Testing width / height from image or from attributes</h2>
+    From image <img src="wasamini.jpg"><br>
+    From attributes, original size <img src="wasamini.jpg" width=240 height=207><br>
+    From attributes, fuzzy size <img src="wasamini.jpg" width=333 height=111><br>
+    From attributes, custom width <img src="wasamini.jpg" width=333><br>
+    From attributes, custom height <img src="wasamini.jpg" height=111><br>
+
+    <h2>Testing EXIF orientation - all images should show the box with the top up</h2>
+    <img src="exif_000.jpg">
+    <img src="exif_090.jpg">
+    <img src="exif_180.jpg">
+    <img src="exif_270.jpg">
     <hr/>  
   </body>
 </html>

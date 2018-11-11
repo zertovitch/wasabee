@@ -2,86 +2,122 @@ with Wasabee.Util;                      use Wasabee.Util;
 
 package body Wasabee.Hypertext.Locations is
 
-  function In_Box(x,y: Natural; b: Box) return Boolean is
+  function In_Box(p: Point; b: Box) return Boolean is
   pragma Inline(In_Box);
   begin
-    return x in b.p1.x .. b.p2.x and y in b.p1.y .. b.p2.y;
+    return p.x in b.p1.x .. b.p2.x and p.y in b.p1.y .. b.p2.y;
   end In_Box;
 
-  function Mouse_partial_URL (ho: HT_object; x, y: Natural) return String is
-    rough_result, result: Unbounded_String;
+  function Mouse_URL (ho: HT_object; mouse_point: Point) return String is
+    candidate, result: Unbounded_String;
     done: exception;
     --
-    procedure Traverse(bn: p_Body_Node) is
+    procedure Traverse (node : p_Body_Node) is
     begin
-      if bn = null then
+      if node = null then
         return;
       end if;
-      if In_Box(x,y,bn.bounding_box) then -- Location AND tree pruning for children here!
-        case bn.kind is
-          when text => -- !! img too
-            result:= rough_result;
-            raise done; -- leaf object found
-          when hr | br =>
+      --  Location AND tree pruning happen here.
+      if In_Box (mouse_point, node.bounding_box) then
+        case node.kind is
+          when body_text | img =>
+            --  Mouse pointer is within a leaf node's box with something
+            --  visible. If hyperlinks were on the way down to here, the one
+            --  in the smallest box will be returned.
+            result := candidate;
+            raise done;  --  Leaf object was found, quit tree traversal.
+          when Body_singleton_tag_no_img =>
             null;
           when a =>
-            rough_result:= bn.URL;
-            Traverse(bn.first_child);
-            rough_result:= Null_Unbounded_String;
-          when Normal_tag_no_a =>
-            Traverse(bn.first_child);
+            --  Mouse pointer is within an "a" tag's box with perhaps an URL.
+            candidate := node.URL;
+            Traverse (node.first_child);
+            candidate := Null_Unbounded_String;
+          when Body_bracketing_tag_no_a =>
+            Traverse(node.first_child);
         end case;
       end if;
-      Traverse(bn.next);
+      Traverse(node.next);  --  Next sibling.
     end Traverse;
   begin
     begin
       Traverse(ho.the_body);
     exception
       when done =>
-        null; -- found the right node and cancelled search
+        null;  --  Found the right node and cancelled search.
     end;
     return S(result);
-  end Mouse_partial_URL;
+  end Mouse_URL;
 
-  function Mouse_cursor(ho: HT_object; x,y: Natural) return Mouse_cursor_style is
-    rough_result, result: Mouse_cursor_style:= arrow;
+  function Mouse_cursor(ho: HT_object; mouse_point: Point) return Mouse_cursor_style is
+    candidate, result: Mouse_cursor_style:= arrow;
     done: exception;
     --
-    procedure Traverse(bn: p_Body_Node) is
+    procedure Traverse(node: p_Body_Node) is
     begin
-      if bn = null then
+      if node = null then
         return;
       end if;
-      if In_Box(x,y,bn.bounding_box) then -- Location AND tree pruning for children here!
-        case bn.kind is
-          when text => -- !! img too
-            if rough_result = finger then
+      if In_Box(mouse_point,node.bounding_box) then -- Location AND tree pruning for children here!
+        case node.kind is
+          when body_text | img =>
+            if candidate = finger then
               result:= finger;
             else
               result:= I_beam;
             end if;
-            raise done; -- leaf object found
-          when hr | br =>
+            raise done;  --  Leaf object was found, quit tree traversal.
+          when area | br | col | hr | input | param =>
             null;
           when a =>
-            rough_result:= finger;
-            Traverse(bn.first_child);
-            rough_result:= arrow;
-          when Normal_tag_no_a =>
-            Traverse(bn.first_child);
+            if node.URL /= "" then
+              candidate:= finger;
+            end if;
+            Traverse(node.first_child);
+            candidate:= arrow;
+          when Body_bracketing_tag_no_a =>
+            Traverse(node.first_child);
         end case;
       end if;
-      Traverse(bn.next);
+      Traverse(node.next);
     end Traverse;
   begin
     begin
       Traverse(ho.the_body);
     exception
       when done =>
-        null; -- found the right node and cancelled search
+        null;  --  Found the right node and cancelled search.
     end;
     return result;
   end Mouse_cursor;
+
+  function Anchor_position(ho: HT_object; anchor: String) return Point is
+    result: Point:= (0,0);
+    done: exception;
+    --
+    procedure Traverse(node: p_Body_Node) is
+    begin
+      if node = null then
+        return;
+      end if;
+      if node.id = anchor then
+        result:= node.bounding_box.p1;
+        raise done;   --  Anchor was found, quit tree traversal.
+      end if;
+      if node.kind in Body_bracketing_tag then
+        Traverse(node.first_child);
+      end if;
+      Traverse(node.next);
+    end Traverse;
+    --
+  begin
+    begin
+      Traverse(ho.the_body);
+    exception
+      when done =>
+        null;  --  Found the right node and cancelled search.
+    end;
+    return result;
+  end Anchor_position;
 
 end Wasabee.Hypertext.Locations;

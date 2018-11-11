@@ -16,7 +16,7 @@ project Wasa_Farm is
    Build_Mode : Build_Mode_Type := external ("Build_Mode", "Debug");
    for Source_Dirs use ("../common", ".");
    for Exec_Dir use ".";
-   for Main use ("main.adb", "wasabee_main.adb", "wasabee_url.adb", "wasabee_xhttp.adb");
+   for Main use ("main.adb", "misc.adb", "wasabee_main.adb", "wasabee_url.adb", "wasabee_xhttp.adb");
 
    case Build_Mode is
       when "Debug" =>

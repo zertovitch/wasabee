@@ -1,10 +1,13 @@
+with Wasabee.Colors;                    use Wasabee.Colors;
+with Wasabee.Encoding;                  use Wasabee.Encoding;
 with Wasabee.Hypertext;                 use Wasabee.Hypertext;
 with Wasabee.Hypertext.Display;         use Wasabee.Hypertext.Display;
+with Wasabee.Images;
 with Wasabee.Request;                   use Wasabee.Request;
 
 with Wasabee.Hypertext.Locations ;      use Wasabee.Hypertext.Locations ;
 
-with Ada.Strings.Wide_Fixed;
+-- with Ada.Strings.Wide_Fixed;
 with Ada.Strings.Unbounded ;            use Ada.Strings.Unbounded ;
 with Ada.Wide_Text_IO;                  use Ada.Wide_Text_IO;
 
@@ -12,9 +15,9 @@ with Ada.Wide_Text_IO;                  use Ada.Wide_Text_IO;
 with Ada.Characters.Handling ; use Ada.Characters.Handling ;
 with Ada.Containers.Vectors ;
 
-with Ada.Text_IO;
+-- with Ada.Text_IO;
 
-with DOM.Core;
+-- with DOM.Core;
 
 with SDL_SDL_H ; use SDL_SDL_H ;
 with SDL_SDL_Video_H ; use SDL_SDL_Video_H ;
@@ -44,6 +47,7 @@ package Wasabee.SDL is
    Current_Font : System.Address ;
 
    Current_Color : SDL_Color ;
+   Current_BG_Color : SDL_Color ;
 
    Current_Color_Code : Color_Code ;
 
@@ -74,18 +78,32 @@ package Wasabee.SDL is
                                            index      : in     Positive
                                           ) ;
    overriding procedure Destroy_target_fonts(on: in out SDL_plane) ;
-   overriding procedure Text_XY(on: in out SDL_plane; x,y: Integer; text: UTF_16_String);
+   overriding procedure Text_at(on: in out SDL_plane; p: Point; text: UTF_16_String);
    overriding procedure Text_size (
                                    on   : in out SDL_plane;
                                    text : in     UTF_16_String;
                                    x,y  :    out Natural
                                   );
-   overriding procedure Select_target_text_color(
+   overriding procedure Select_target_fore_color(
                                                  on: in out SDL_plane;
                                                  code: in Color_Code
                                                 ) ;
 
-   procedure Rectangle (on: in out SDL_Plane ; coords: Box);
+   overriding procedure Select_target_back_color(
+                                                 on: in out SDL_plane;
+                                                 code: in Color_Code
+                                                ) ;
+
+   overriding procedure Rectangle (on: in out SDL_Plane ; coords: Box);
+
+   overriding procedure Full_Rectangle (on: in out SDL_Plane ; coords: Box);
+
+   overriding
+   procedure Put_RGB_Bitmap (
+     on     : in out SDL_Plane;
+     bitmap :        Wasabee.Images.Bitmap_type;
+     coords :        Box
+   );
 
    procedure Draw_Point (On : in out SDL_Plane ; P: Point ; Color : Color_Code) ;
 
@@ -97,11 +115,14 @@ package Wasabee.SDL is
 
    -- Implementation
    --
+
+   -- ( !! Ouch, global variables! )
+
    Window : SDL_Plane ;
 
    ret : Int ;
 
-   Xhtml : DOM.Core.Node_List;
+   HTML : Unbounded_String;
 
    Object : HT_object;
 

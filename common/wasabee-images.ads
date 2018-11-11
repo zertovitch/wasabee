@@ -1,38 +1,23 @@
 -- This is a draft and may change much,
 -- depending on how the bitmap abstraction is implemented.
 
-with Ada.Strings.Unbounded;             use Ada.Strings.Unbounded;
-
-
-with Ada.Text_IO                  ; use Ada.Text_IO ;
-with Ada.Strings.Unbounded        ; use Ada.Strings.Unbounded;
-
-with Dom.Core                     ; use Dom.Core ;
-with Dom.Core.Elements            ; use Dom.Core.Elements ;
-with Dom.Core.Nodes               ; use Dom.Core.Nodes ;
-with Dom.Core.Attrs               ; use Dom.Core.Attrs ;
-
-with Wasabee.Request   ;      use Wasabee.Request ;
-with Wasabee.Xhtml ;          use Wasabee.Xhtml ;
-with Wasabee.Url   ;          use Wasabee.Url ;
-with Wasabee.Net   ;          use Wasabee.Net ;
-
-with GNAT.Sockets ; use GNAT.Sockets ;
-with Interfaces; use Interfaces ;
-with Ada.Unchecked_Deallocation;
-with Ada.Calendar;
-with Ada.Streams                      ; use Ada.Streams                      ;
-with GID ;
+with Ada.Finalization;
 
 package Wasabee.Images is
 
-  procedure Decode(image_data: Unbounded_String);
-  -- Same for progressive decoding
+  type Byte is mod 2**8;
+  type Byte_Array is array(Integer range <>) of aliased Byte;
+  type p_Byte_Array is access all Byte_Array;
 
-  function Read_Line (Channel : in Stream_Access) return String ;
+  type Bitmap_type is new Ada.Finalization.Controlled with record
+    width, height: Natural:= 0;           -- Image's own dimensions
+    data         : p_Byte_Array:= null;   -- RGB, 32 bit per pixel
+    transparency : Boolean;
+  end record;
 
-  procedure Get_Image_Header (Nd : in Node ; Img : in out GID.Image_Descriptor) ;
+  overriding procedure Finalize (Object : in out Bitmap_type);
 
-  procedure Get_Image_Header (Url : in String ; Desc : in out GID.Image_Descriptor) ;
+  -- Blocking reading of a bitmap
+  procedure Get_Full_Image_Blocking (URL: String; bitmap: out Bitmap_type);
 
 end Wasabee.Images;

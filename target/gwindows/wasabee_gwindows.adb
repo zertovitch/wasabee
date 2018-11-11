@@ -1,11 +1,11 @@
 with GWindows.Application;              use GWindows.Application;
-with GWindows.Base;                     use GWindows.Base;
+with GWindows.Base;
 with GWindows.GStrings;                 use GWindows.GStrings;
 with GWindows.Message_Boxes;            use GWindows.Message_Boxes;
 
 with Wasabee.GWin.Main;                 use Wasabee.GWin.Main;
 
-with Ada.Exceptions;                    use Ada.Exceptions;
+with Ada.Exceptions;
 with Ada.Command_Line;                  use Ada.Command_Line;
 with Ada.Strings.UTF_Encoding.Conversions;
 use Ada.Strings.UTF_Encoding.Conversions;

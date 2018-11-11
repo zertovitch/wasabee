@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------
 -- GUI contents of resource script file: wasabee.rc
--- Transcription time: 2013/07/31   14:33:26
+-- Transcription time: 2013/09/11   12:09:35
 --
 -- Translated by the RC2GW or by the GWenerator tool.
 -- URL: http://sf.net/projects/gnavi
@@ -218,6 +218,6 @@ package body wasabee_Resource_GUI is
 begin
   Common_Fonts.Create_Common_Fonts;
 
-  -- Last line of resource script file: 103
+  -- Last line of resource script file: 105
 
 end wasabee_Resource_GUI;

@@ -12,3 +12,5 @@
 #define ID_New_Address                          40002
 #define ID_Next_Tab                             40003
 #define ID_Close_Tab                            40004
+#define ID_Back                                 40005
+#define ID_Forward                              40006

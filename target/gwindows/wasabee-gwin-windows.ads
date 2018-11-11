@@ -1,6 +1,7 @@
 with Wasabee.GWin.Tabs;
 
 with GWindows.Edit_Boxes;               use GWindows.Edit_Boxes;
+with GWindows.Drawing_Objects;          use GWindows.Drawing_Objects;
 with GWindows.Drawing_Panels;           use GWindows.Drawing_Panels;
 with GWindows.Packing_Boxes;            use GWindows.Packing_Boxes;
 with GWindows.Panels;                   use GWindows.Panels;
@@ -77,6 +78,10 @@ package Wasabee.GWin.Windows is
   -- A URL was given (perhaps typed) in the URL box and should be started
   procedure Go_on_URL(Window : in out Browser_window_type);
 
+  -- Navigation
+  procedure Back(Window : in out Browser_window_type);
+  procedure Forward(Window : in out Browser_window_type);
+
   -- NB: the menu is not created; only commands and shortcuts are used
 
   overriding
@@ -87,5 +92,8 @@ package Wasabee.GWin.Windows is
   overriding
   procedure On_Close (Window    : in out Browser_window_type;
                       Can_Close :    out Boolean);
+
+  URL_box_font  : Font_Type;
+  -- one global variable for preventing GDI object leak
 
 end Wasabee.GWin.Windows;

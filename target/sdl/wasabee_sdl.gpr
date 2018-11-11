@@ -1,6 +1,6 @@
 -- This is a GNAT, GCC or GNAT Programming Studio (GPS) project file
 -- for the Wasabee project ( http://wasabee.sf.net ), test version for console ("Lynx" mode).
--- Build me with "gnatmake -P wasa_text", or open me with GPS
+-- Build me with "gnatmake -P wasa_sdl", or open me with GPS
 
 -- External libraries.
 --   You need to make the following source files visible to GNAT through the
@@ -11,6 +11,9 @@
 --
 -- XMLAda:
 --   [GNAT directory]/include/xmlada
+
+with "AWS"; -- aws.gpr must be available via GPR_PROJECT_PATH of ADA_PROJECT_PATH
+-- AWS: http://libre.adacore.com/tools/aws/
 
 project wasabee_sdl is
 
@@ -53,11 +56,11 @@ project wasabee_sdl is
    package Compiler is
       case Build_Mode is
          when "Debug" =>
-            for Default_Switches ("ada") use ("-gnat05", "-gnatf", "-gnato", "-fstack-check", "-g", "-gnatwa", "-gnatVa", "-gnatecdebug.pra");
+            for Default_Switches ("ada") use ("-gnat12", "-gnatf", "-gnato", "-fstack-check", "-g", "-gnatwa", "-gnatVa", "-gnatec=" & project'Project_Dir & "../../common/debug.pra");
          when "Fast" =>
-            for Default_Switches ("ada") use ("-gnat05", "-gnatwa", "-O2", "-gnatpn", "-funroll-loops", "-fpeel-loops", "-funswitch-loops", "-ftracer", "-fweb", "-frename-registers", "-ffunction-sections");
+            for Default_Switches ("ada") use ("-gnat12", "-gnatwa", "-O2", "-gnatpn", "-funroll-loops", "-fpeel-loops", "-funswitch-loops", "-ftracer", "-fweb", "-frename-registers", "-ffunction-sections");
          when "Profiling" =>
-            for Default_Switches ("ada") use ("-gnat05", "-gnatwa", "-O2", "-gnatp",  "-funroll-loops", "-fpeel-loops", "-funswitch-loops", "-ftracer", "-fweb", "-frename-registers", "-g", "-pg");
+            for Default_Switches ("ada") use ("-gnat12", "-gnatwa", "-O2", "-gnatp",  "-funroll-loops", "-fpeel-loops", "-funswitch-loops", "-ftracer", "-fweb", "-frename-registers", "-g", "-pg");
       end case;
    end Compiler;
 

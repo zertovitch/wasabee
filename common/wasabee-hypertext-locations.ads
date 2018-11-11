@@ -1,13 +1,15 @@
 package Wasabee.Hypertext.Locations is
 
-  -- If an URL (complete or not) is under the (x,y) point, return it, return "" otherwise.
-  -- Needs completion if http:// or file:// or whatever is missing.
-  function Mouse_partial_URL(ho: HT_object; x,y: Natural) return String;
+  -- If an hyperlink is under mouse_point, return the URL; return "" otherwise.
+  function Mouse_URL(ho: HT_object; mouse_point: Point) return String;
 
   type Mouse_cursor_style is (arrow, finger, I_beam);
 
   -- Upon a normal mouse move (no selection), this function returns
   -- the appropriate mouse cursor.
-  function Mouse_cursor(ho: HT_object; x, y: Natural) return Mouse_cursor_style;
+  function Mouse_cursor(ho: HT_object; mouse_point: Point) return Mouse_cursor_style;
+
+  -- Given an anchor name, return the element position
+  function Anchor_position(ho: HT_object; anchor: String) return Point;
 
 end Wasabee.Hypertext.Locations;
