@@ -31,4 +31,4 @@ if "%1"=="" set ver=XXX
 
 rem zip -9 -R Wasa_branch_Zrt_Dev_ver_%ver%_date_%nice_date%_.zip *.ads *.adb *.gpr *.pra *.gwen *.rc *.h *.ico *.bmp *.rbj *.cmd *.html *.jpg *.png *.css *.xls
 
-zipada -r2 -ep2 Wasa_branch_Zrt_Dev_ver_%ver%_date_%nice_date%.zip '*.ads' '*.adb' '*.gpr' '*.pra' '*.gwen' '*.rc' '*.h' '*.ico' '*.bmp' '*.rbj' '*.cmd' '*.html' '*.jpg' '*.png' '*.css' '*.xls'
+zipada -r2 -ep2 Wasa_ver_%ver%_date_%nice_date%.zip '*.ads' '*.adb' '*.gpr' '*.pra' '*.gwen' '*.rc' '*.h' '*.ico' '*.bmp' '*.rbj' '*.cmd' '*.html' '*.jpg' '*.png' '*.css' '*.xls'
