@@ -7,5 +7,5 @@ SET ADA_INCLUDE_PATH=%ADA_INCLUDE_PATH%;..\..\common
 
 SET
 
-gprbuild -P wasabee_sdl.gpr -XBuild_Mode=Debug
+gprbuild -p -P wasabee_sdl.gpr -XBuild_Mode=Debug
 
