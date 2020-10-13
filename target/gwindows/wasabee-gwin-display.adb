@@ -361,11 +361,11 @@ package body Wasabee.GWin.Display is
       for i in reverse 1..w*h loop
         for fc in Integer_Address'(0)..2 loop -- r,g,b
           declare
-            dibmp: Byte;
+            dibmp: Wasabee.Images.Byte;
             for dibmp'Address use To_Address(IA_bmp+fc);
-            dibmp_a: Byte; -- alpha value
+            dibmp_a: Wasabee.Images.Byte; -- alpha value
             for dibmp_a'Address use To_Address(IA_bmp+3);
-            dibkg: Byte;
+            dibkg: Wasabee.Images.Byte;
             for dibkg'Address use To_Address(IA_bkg);
           begin
             dibkg:= dibmp; -- !! just a copy so far
@@ -422,7 +422,7 @@ package body Wasabee.GWin.Display is
       IA_bmp:= To_Integer(pxls_bmp);
       for i in bitmap.data'range loop
         declare
-          dibmp: Byte;
+          dibmp: Wasabee.Images.Byte;
           for dibmp'Address use To_Address(IA_bmp);
         begin
           dibmp:= 127; -- 127: gray semi-transp. -- bitmap.data(i);

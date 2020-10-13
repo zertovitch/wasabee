@@ -32,6 +32,7 @@ project Wasa_GWindows is
    for Source_Dirs use ("../../common", ".") & external_as_list("GNAT_SOURCE_PATH", ";");
    for Exec_Dir use ".";
    for Main use ("wasabee_gwindows.adb");
+   for Create_Missing_Dirs use "True";  --  Flips by default the "-p" switch
 
    case Build_Mode is
       when "Debug" =>

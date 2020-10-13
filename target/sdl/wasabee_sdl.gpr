@@ -12,8 +12,10 @@
 -- XMLAda:
 --   [GNAT directory]/include/xmlada
 
-with "AWS"; -- aws.gpr must be available via GPR_PROJECT_PATH of ADA_PROJECT_PATH
--- AWS: http://libre.adacore.com/tools/aws/
+with "AWS"; 
+--  For GNAT prior to GPL 2017:
+--    aws.gpr must be available via GPR_PROJECT_PATH or ADA_PROJECT_PATH
+--    AWS: http://libre.adacore.com/tools/aws/
 
 project wasabee_sdl is
 
@@ -23,6 +25,7 @@ project wasabee_sdl is
    for Source_Dirs use ("../../common", ".");
    for Exec_Dir use ".";
    for Main use ("wasabee_sdl.adb");
+   for Create_Missing_Dirs use "True";  --  Flips by default the "-p" switch
 
    case Build_Mode is
       when "Debug" =>
