@@ -1,5 +1,4 @@
-Wasabee
-=======
+# Wasabee
 
 The project Wasabee aims at providing a Web browser fully written in Ada.
 
